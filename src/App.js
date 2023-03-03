@@ -34,7 +34,7 @@ class App extends Component {
     }
     this.strokeColor = '#002f2b'
     this.fillColor = '#004842'
-    this.fillColorAlpha = 'rgba(0, 28, 26, 0.4)'
+    this.fillColorAlpha = 'rgba(0, 28, 26, 0.3)'
     this.strokeWidth = 8
   }
 
@@ -42,6 +42,7 @@ class App extends Component {
     this.canvas = window.Canvas
 
     this.sceneEl = document.querySelector('a-scene')
+    this.sceneEl.renderer = new THREE.WebGLRenderer({ alpha: true })
     this.sceneEl.addEventListener('loaded', () => {
       console.log('gjoefjeo')
       this.init()
@@ -68,11 +69,21 @@ class App extends Component {
     let konvaEl = document.querySelector('.konvajs-content canvas')
     // konvaEl.width = konvaEl.height = this.size
     console.log(konvaEl)
-    let texture = new THREE.Texture(konvaEl)
-    let material = new THREE.MeshBasicMaterial({ map: texture, side: THREE.DoubleSide, opacity: 0.2 })
-    mesh.material.alphaTest = 0.3
+    let texture = new THREE.CanvasTexture(konvaEl)
+    let material = new THREE.MeshBasicMaterial({
+      map: texture,
+      side: THREE.DoubleSide,
+      transparent: true,
+      opacity: 1,
+      alphaTest: 0.01,
+      // alphaMap: texture,
+      blending: THREE.NormalBlending,
+
+  // blending: THREE.CustomBlending,
+  // blendSrc: THREE.SrcAlphaFactor,
+  // blendDst: THREE.OneMinusSrcAlphaFactor,
+    })
     mesh.material = material
-    mesh.material.transparent = true
     this.mesh = mesh
     el.sceneEl.addEventListener('mousedown', this.mouseDown.bind(this))
     el.sceneEl.addEventListener('mousemove', this.mouseMove.bind(this))
@@ -147,7 +158,7 @@ class App extends Component {
         <Canvas />
         { isCameraOn ? '' :
           <a-scene>
-            <a-plane drawing-plane id="drawing-plane" class="cantap" position="0 1.9 -1" width="1" height="1">
+            <a-plane drawing-plane id="drawing-plane" class="cantap" position="0 1.5 -1" width="1" height="1">
             </a-plane>
             <a-image src="http://localhost:4000/public/sample.jpg" position="0 1.5 -1.1"></a-image>
           </a-scene>
