@@ -6,7 +6,7 @@ import Konva from 'konva'
 // import visualize from './sample/visualize.json'
 
 window.Konva = Konva
-let debug = true
+let debug = false
 
 class Canvas extends Component {
   constructor(props) {
@@ -36,7 +36,7 @@ class Canvas extends Component {
                 y={ 0 }
                 width={ App.size }
                 height={ App.size }
-                fill={ 'rgba(0, 0, 0, 0)' }
+                fill={ 'rgba(255, 255, 0, 0.3)' }
               />
               {/* Paper Outline */}
 
@@ -54,8 +54,7 @@ class Canvas extends Component {
                 radius={ 50 }
                 strokeWidth={ App.strokeWidth }
                 stroke={ App.strokeColor }
-                // fill={ App.fillColorAlpha }
-                fill={'rgba(0, 255, 0, 0.3)'}
+                fill={ App.fillColorAlpha }
                 visible={ true }
                 draggable
               />

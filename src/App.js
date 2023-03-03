@@ -43,6 +43,7 @@ class App extends Component {
 
     this.sceneEl = document.querySelector('a-scene')
     this.sceneEl.renderer = new THREE.WebGLRenderer({ alpha: true })
+    this.sceneEl.renderer.setClearColor(0x00000, 0)
     this.sceneEl.addEventListener('loaded', () => {
       console.log('gjoefjeo')
       this.init()
@@ -70,19 +71,57 @@ class App extends Component {
     // konvaEl.width = konvaEl.height = this.size
     console.log(konvaEl)
     let texture = new THREE.CanvasTexture(konvaEl)
+
+    let canvas = document.getElementById('canvas')
+    canvas.width = canvas.height = 128;
+    let ctx = canvas.getContext('2d');
+    ctx.globalAlpha = 0.5
+    texture = new THREE.Texture(canvas)
+    texture.needsUpdate = true;
+
+
+    let t = 0
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+
+        ctx.beginPath();
+        ctx.moveTo(canvas.width / 2, -2);
+        ctx.lineTo(-2, canvas.height + 2);
+        ctx.lineTo(lerp(canvas.width / 4 - 2, canvas.width / 2, Math.sin(t / 323 + 2 * Math.PI / 3) / 2 + 0.5), canvas.height / 2);
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.moveTo(canvas.width / 2, -2);
+        ctx.lineTo(canvas.width + 2, canvas.height + 2);
+        ctx.lineTo(lerp(3 * canvas.width / 4 - 2, canvas.width / 2, Math.sin(t / 343 + 4 * Math.PI / 3) / 2 + 0.5), canvas.height / 2);
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.moveTo(canvas.width / 2, lerp(canvas.height + 2, canvas.height / 2, Math.sin(t / 333) / 2 + 0.5));
+        ctx.lineTo(-2, canvas.height + 2);
+        ctx.lineTo(canvas.width + 2, canvas.height + 2);
+        ctx.fill();
+
+    texture.needsUpdate = true;
+
+
+    function lerp(a, b, pct) {
+      return (1 - pct) * a + b * pct;
+    }
+
     let material = new THREE.MeshBasicMaterial({
-      map: texture,
+      // map: texture,
+      color: 0xffff00,
       side: THREE.DoubleSide,
       transparent: true,
-      opacity: 1,
-      alphaTest: 0.01,
+      opacity: 0.4,
+      alphaTest: 0.1,
+      // wireframe: true
       // alphaMap: texture,
-      blending: THREE.NormalBlending,
-
-  // blending: THREE.CustomBlending,
-  // blendSrc: THREE.SrcAlphaFactor,
-  // blendDst: THREE.OneMinusSrcAlphaFactor,
+      // blending: THREE.NormalBlending,
+      // depthTest: false
     })
+    // material.needsUpdate = true
     mesh.material = material
     this.mesh = mesh
     el.sceneEl.addEventListener('mousedown', this.mouseDown.bind(this))
@@ -122,7 +161,7 @@ class App extends Component {
   }
 
   tick() {
-    this.mesh.material.map.needsUpdate = true
+    // this.mesh.material.map.needsUpdate = true
     return
     if (this.state.dragging) {
       const screenPositionX = this.state.mouse2D.x / window.innerWidth * 2 - 1
@@ -156,9 +195,10 @@ class App extends Component {
     return (
       <>
         <Canvas />
+        <canvas id="canvas"></canvas>
         { isCameraOn ? '' :
           <a-scene>
-            <a-plane drawing-plane id="drawing-plane" class="cantap" position="0 1.5 -1" width="1" height="1">
+            <a-plane drawing-plane id="drawing-plane" class="cantap" position="0 1.9 -1" width="1" height="1" material="color: red; opacity: 0.5; transparent: true">
             </a-plane>
             <a-image src="http://localhost:4000/public/sample.jpg" position="0 1.5 -1.1"></a-image>
           </a-scene>
