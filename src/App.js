@@ -69,9 +69,10 @@ class App extends Component {
     // konvaEl.width = konvaEl.height = this.size
     console.log(konvaEl)
     let texture = new THREE.Texture(konvaEl)
-    let material = new THREE.MeshBasicMaterial({ map: texture, side: THREE.DoubleSide })
+    let material = new THREE.MeshBasicMaterial({ map: texture, side: THREE.DoubleSide, opacity: 0.2 })
+    mesh.material.alphaTest = 0.3
     mesh.material = material
-    // mesh.material.transparent = true
+    mesh.material.transparent = true
     this.mesh = mesh
     el.sceneEl.addEventListener('mousedown', this.mouseDown.bind(this))
     el.sceneEl.addEventListener('mousemove', this.mouseMove.bind(this))
@@ -146,7 +147,9 @@ class App extends Component {
         <Canvas />
         { isCameraOn ? '' :
           <a-scene>
-            <a-plane drawing-plane id="drawing-plane" class="cantap" position="0 1.5 -1" width="1" height="1"></a-plane>
+            <a-plane drawing-plane id="drawing-plane" class="cantap" position="0 1.9 -1" width="1" height="1">
+            </a-plane>
+            <a-image src="http://localhost:4000/public/sample.jpg" position="0 1.5 -1.1"></a-image>
           </a-scene>
         }
         { !isCameraOn ? '' :

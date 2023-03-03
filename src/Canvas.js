@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Stage, Layer, Rect, Text, Line, Group, Circle, Path } from 'react-konva'
+import { Stage, Layer, Rect, Text, Line, Group, Circle, Path, Image } from 'react-konva'
 import Konva from 'konva'
 // import ocr from './sample/ocr.json'
 // import summary from './sample/summary.json'
@@ -36,18 +36,10 @@ class Canvas extends Component {
                 y={ 0 }
                 width={ App.size }
                 height={ App.size }
-                fill={ '#eee' }
+                fill={ 'rgba(255, 255, 0, 0.1)' }
               />
               {/* Paper Outline */}
-              <Rect
-                x={ App.size/2 }
-                y={ App.size/2 }
-                width={ App.size * 850 / 1100 }
-                height={ App.size }
-                offsetX={ App.size * 850 / 1100 /2 }
-                offsetY={ App.size/2 }
-                fill={ App.fillColorAlpha }
-              />
+
               {/* Summary */}
 
               {/* Drawing Line */}
