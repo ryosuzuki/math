@@ -1,0 +1,56 @@
+body {
+  margin: 0;
+}
+
+#container {
+  overflow: hidden;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+#drawing-plane {
+  width: 400px;
+  height: 800px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+#html-canvas {
+  width: 400px;
+  height: 800px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+#buttons {
+  position: fixed;
+  z-index: 1010;
+  top: 0px;
+  right: 0px;
+}
+
+#buttons button {
+  margin-top: 10px;
+  margin-right: 10px;
+}
+
+#canvasOutput {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1001;
+  display: none;
+}
+
+#canvasOutput2 {
+  position: fixed;
+  top: 700px;
+  left: 0;
+  z-index: 1001;
+}
+
+#canvasOutput3 {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1002;
+}
