@@ -4,6 +4,7 @@ import Konva from 'konva'
 
 import MathCircle from './MathCircle.js'
 import MathSine from './MathSine.js'
+import DrawingLine from './DrawingLine.js'
 
 window.Konva = Konva
 let debug = false
@@ -14,18 +15,14 @@ class Canvas extends Component {
     window.Canvas = this
     window.canvas = this
     this.state = {
-      isPaint: false,
-      currentPoints: [],
-      currentPaths: [],
       currentId: -1,
       event: {},
       paperImage: null,
     }
+    this.drawingLineRef = React.createRef()
   }
 
   componentDidMount() {
-    this.socket = App.socket
-
     let paperImage = document.getElementById('paper')
     this.setState({ paperImage: paperImage })
     this.stage = Konva.stages[0]
@@ -52,29 +49,19 @@ class Canvas extends Component {
   stageMouseDown(event) {
     console.log(event)
     this.setState({ event: event })
-    // if (event.target !== this.stage) return
-    let pos = this.stage.getPointerPosition()
-    this.setState({ isPaint: true, currentPoints: [pos.x, pos.y, pos.x, pos.y] })
+    this.drawingLineRef.current.mouseDown()
   }
 
   stageMouseMove(event) {
     // console.log(this.state)
     this.setState({ event: event })
-    let pos = this.stage.getPointerPosition()
-    if (!this.state.isPaint) return false
-    let points = this.state.currentPoints
-    if (points[points.length-2] === pos.x && points[points.length-1] === pos.y) return false
-    points = points.concat([pos.x, pos.y])
-    this.setState({ currentPoints: points })
+    this.drawingLineRef.current.mouseMove()
   }
 
   stageMouseUp(event) {
     // console.log(event)
     this.setState({ event: event })
-    let pos = this.stage.getPointerPosition()
-    if (!this.state.isPaint) return false
-    this.setState({ isPaint: false })
-    if (this.state.currentPoints.length === 0) return false
+    this.drawingLineRef.current.mouseUp()
   }
 
   render() {
@@ -96,9 +83,8 @@ class Canvas extends Component {
                 y={ 0 }
                 width={ App.size }
                 height={ App.size }
-                fill={ 'rgba(255, 255, 0, 0)' }
+                fill={ 'rgba(255, 255, 0, 0.1)' }
               />
-
 
               {/* Paper Image */}
               <Image image={ this.state.paperImage } />
@@ -111,14 +97,10 @@ class Canvas extends Component {
               {/* Summary */}
               <MathCircle />
 
-              <MathSine />
+              {/*<MathSine />*/}
 
               {/* Drawing Line */}
-              <Line
-                points={ this.state.currentPoints }
-                stroke={ App.strokeColor }
-                strokeWidth={ App.strokeWidth }
-              />
+              <DrawingLine ref={this.drawingLineRef} />
             </Layer>
           </Stage>
         </div>
