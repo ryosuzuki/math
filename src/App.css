@@ -2,9 +2,9 @@ body {
   margin: 0;
 }
 
-#hoge {
+#mafs-container {
   /* display: none not working */
-  margin-top: 10000px;
+/*  margin-top: 10000px;*/
 }
 
 #container {

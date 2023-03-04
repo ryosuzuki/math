@@ -2,6 +2,11 @@ import React, { Component } from 'react'
 import { Stage, Layer, Rect, Text, Line, Group, Circle, Path, Image, Shape} from 'react-konva'
 import Konva from 'konva'
 
+import coreCSSContent from '!!raw-loader!mafs/core.css'
+import fontCSSContent from '!!raw-loader!mafs/font.css'
+import appCSSContent from '!!raw-loader!./App.css'
+import mafsCSSContent from '!!raw-loader!./Mafs.css'
+
 window.Konva = Konva
 let debug = false
 
@@ -23,13 +28,20 @@ class Canvas extends Component {
     let paperImage = document.getElementById('paper')
     this.setState({ paperImage: paperImage })
 
-    setInterval(() => {
-      this.load()
+    setTimeout(() => {
+      this.loadMafs()
     }, 1000)
   }
 
-  load() {
+  loadMafs() {
+    const cssContent = `${coreCSSContent}\n${fontCSSContent}\n${appCSSContent.toString()}\n${mafsCSSContent}`;
     let svgElement = document.querySelector('.MafsView svg')
+    const styleElement = document.createElementNS("http://www.w3.org/2000/svg", "style");
+    svgElement.setAttribute('id', 'mafs-embed')
+    styleElement.textContent = cssContent
+    svgElement.appendChild(styleElement)
+
+    console.log(svgElement)
     const serializer = new XMLSerializer()
     const svgString = serializer.serializeToString(svgElement)
     const mafsImage = new window.Image()

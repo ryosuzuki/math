@@ -1,5 +1,8 @@
 import React, { Component } from 'react'
+import 'mafs/core.css'
+import 'mafs/font.css'
 import './App.css'
+import './Mafs.css'
 import { io } from 'socket.io-client'
 import Canvas from './Canvas.js'
 import Graph from './Graph.js'
@@ -159,7 +162,9 @@ class App extends Component {
       <>
         <Canvas />
         <img id='paper' src='http://localhost:4000/public/sample.jpg' crossOrigin='anonymous' style={{ display: 'none' }} />
-        <Graph />
+        <div id="mafs-container">
+          <Graph />
+        </div>
         { isCameraOn ? '' :
           <a-scene>
             <a-plane drawing-plane id="drawing-plane" class="cantap" position="0 1.5 -1" width="1" height="1" color="#ccc" opacity="0">
