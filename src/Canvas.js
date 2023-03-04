@@ -1,9 +1,8 @@
 import React, { Component } from 'react'
 import { Stage, Layer, Rect, Text, Line, Group, Circle, Path, Image } from 'react-konva'
 import Konva from 'konva'
-// import ocr from './sample/ocr.json'
-// import summary from './sample/summary.json'
-// import visualize from './sample/visualize.json'
+// import Graph from './Graph.js'
+import { Mafs, Coordinates } from "mafs";
 
 window.Konva = Konva
 let debug = false
@@ -14,15 +13,18 @@ class Canvas extends Component {
     window.Canvas = this
     window.canvas = this
     this.state = {
-      image: null
+      image: null,
+      svg: null,
     }
+
   }
 
   componentDidMount() {
     this.socket = App.socket
 
     let img = document.getElementById('paper')
-    this.setState({ image: img })
+    let svg = document.getElementById('svg')
+    this.setState({ image: img, svg: svg })
   }
 
   render() {
@@ -45,6 +47,11 @@ class Canvas extends Component {
               {/*<Paper Image />*/}
               <Image image={ this.state.image } />
               {/* Paper Outline */}
+
+              <Image image={ this.state.svg } />
+
+
+              {/*<Graph />*/}
 
               {/* Summary */}
 
