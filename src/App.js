@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import './App.css'
 import { io } from 'socket.io-client'
 import Canvas from './Canvas.js'
+import Graph from './Graph.js'
 
 AFRAME.registerComponent('drawing-plane', {
   init: () => {},
@@ -159,6 +160,7 @@ class App extends Component {
           <Canvas />
           <img id='paper' src='http://localhost:4000/public/sample.jpg' crossOrigin='anonymous' style={{ display: 'none' }} />
           <img id='svg' src='http://localhost:4000/public/410.svg' crossOrigin='anonymous' style={{ display: 'none' }} />
+          <Graph />
           <canvas id="canvas"></canvas>
         { isCameraOn ? '' :
           <a-scene>
