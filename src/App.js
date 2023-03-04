@@ -1,18 +1,14 @@
 import React, { Component } from 'react'
-import 'mafs/core.css'
-import 'mafs/font.css'
 import './App.css'
-import './Mafs.css'
 import { io } from 'socket.io-client'
 import Canvas from './Canvas.js'
-import Graph from './Graph.js'
 
 AFRAME.registerComponent('drawing-plane', {
   init: () => {},
   tick: () => {}
 })
 
-const isCameraOn = false
+let isCameraOn = false
 
 class App extends Component {
   constructor(props) {
@@ -26,8 +22,6 @@ class App extends Component {
 
     this.size = 1024
     this.state = {
-      summary: '',
-      highlight: [],
       dragging: false,
       initDrawing: true,
       distance: 0,
@@ -39,30 +33,16 @@ class App extends Component {
     this.fillColor = '#004842'
     this.fillColorAlpha = 'rgba(0, 28, 26, 0.3)'
     this.strokeWidth = 8
+    this.canvasRef = React.createRef()
   }
 
   componentDidMount() {
-    this.canvas = window.Canvas
-
     this.sceneEl = document.querySelector('a-scene')
     this.sceneEl.renderer = new THREE.WebGLRenderer({ alpha: true })
     this.sceneEl.addEventListener('loaded', () => {
-      console.log('gjoefjeo')
       this.init()
-      // AFRAME.components['drawing-plane'].Component.prototype.init = this.init.bind(this)
       AFRAME.components['drawing-plane'].Component.prototype.tick = this.tick.bind(this)
     })
-
-  }
-
-  showSummary(res) {
-    let summaryEl = document.querySelector('#summary-res')
-    summaryEl.textContent = res.text
-  }
-
-  showVisualize(res) {
-    let visualizeEl = document.querySelector('#visualize-res')
-    visualizeEl.textContent = res.text
   }
 
   init() {
@@ -73,14 +53,7 @@ class App extends Component {
     // konvaEl.width = konvaEl.height = this.size
     console.log(konvaEl)
     let texture = new THREE.CanvasTexture(konvaEl)
-
-    let material = new THREE.MeshBasicMaterial({
-      map: texture,
-      side: THREE.DoubleSide,
-      // transparent: true,
-      // opacity: 1,
-      // alphaTest: 0.1,
-    })
+    let material = new THREE.MeshBasicMaterial({ map: texture, side: THREE.DoubleSide })
     mesh.material = material
     this.mesh = mesh
     el.sceneEl.addEventListener('mousedown', this.mouseDown.bind(this))
@@ -102,7 +75,7 @@ class App extends Component {
 
   mouseUp(event) {
     this.setState({ dragging: false, initDrawing: true })
-    this.canvas.mouseUp(this.state.mouse)
+    this.canvasRef.current.mouseUp(this.state.mouse)
   }
 
   touchStart(event) {
@@ -116,7 +89,7 @@ class App extends Component {
 
   touchEnd(event) {
     this.setState({ dragging: false, initDrawing: true })
-    this.canvas.mouseUp()
+    this.canvasRef.current.mouseUp()
   }
 
   tick() {
@@ -139,27 +112,23 @@ class App extends Component {
         }
         this.setState({ distance: intersect.distance, mouse: mouse })
         if (this.state.initDrawing) {
-          this.canvas.mouseDown(mouse)
+          this.canvasRef.current.mouseDown(mouse)
           this.setState({ initDrawing: false })
         } else {
-          this.canvas.mouseMove(mouse)
+          this.canvasRef.current.mouseMove(mouse)
         }
       }
     }
   }
 
-
   render() {
     return (
       <>
-        <Canvas />
+        <Canvas ref={this.canvasRef} />
         <img id='paper' src='http://localhost:4000/public/sample-2.jpg' crossOrigin='anonymous' style={{ display: 'none' }} />
-        <div id="mafs-container">
-          <Graph />
-        </div>
         { isCameraOn ? '' :
           <a-scene>
-            <a-camera id="camera" position="0 1.5 0" look-controls="enabled: false" raycaster="objects: .cantap" cursor="fuse: false; rayOrigin: mouse;"></a-camera>
+            <a-camera id="camera" position="0 1.5 -0.4" look-controls="enabled: false" raycaster="objects: .cantap" cursor="fuse: false; rayOrigin: mouse;"></a-camera>
             <a-plane drawing-plane id="drawing-plane" class="cantap" position="0 1.5 -1" width="1" height="1" color="#ccc" opacity="0">
             </a-plane>
           </a-scene>
@@ -183,8 +152,6 @@ class App extends Component {
       </>
     )
   }
-
-
 }
 
 export default App

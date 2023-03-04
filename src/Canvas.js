@@ -4,9 +4,9 @@ import Konva from 'konva'
 
 import MathCircle from './MathCircle.js'
 import MathSine from './MathSine.js'
+import MathText from './MathText.js'
 import DrawingLine from './DrawingLine.js'
 
-window.Konva = Konva
 let debug = false
 
 class Canvas extends Component {
@@ -14,6 +14,7 @@ class Canvas extends Component {
     super(props)
     window.Canvas = this
     window.canvas = this
+    window.Konva = Konva
     this.state = {
       currentId: -1,
       event: {},
@@ -65,7 +66,6 @@ class Canvas extends Component {
   }
 
   render() {
-
     return (
       <>
         <div style={{ display: debug ? 'block' : 'none' }}>

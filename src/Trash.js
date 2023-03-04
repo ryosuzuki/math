@@ -17,6 +17,31 @@ class Trash extends Component {
     }, 100)
   }
 
+  init() {
+    console.log('init')
+    let el = document.querySelector('#drawing-plane')
+    let mesh = el.object3D.children[0]
+    let konvaEl = document.querySelector('.konvajs-content canvas')
+    // konvaEl.width = konvaEl.height = this.size
+    console.log(konvaEl)
+    let texture = new THREE.CanvasTexture(konvaEl)
+    let material = new THREE.MeshBasicMaterial({
+      map: texture,
+      side: THREE.DoubleSide,
+      transparent: true,
+      opacity: 1,
+      alphaTest: 0.1,
+    })
+    mesh.material = material
+    this.mesh = mesh
+    el.sceneEl.addEventListener('mousedown', this.mouseDown.bind(this))
+    el.sceneEl.addEventListener('mousemove', this.mouseMove.bind(this))
+    el.sceneEl.addEventListener('mouseup', this.mouseUp.bind(this))
+    el.sceneEl.addEventListener('touchstart', this.touchStart.bind(this))
+    el.sceneEl.addEventListener('touchmove', this.touchMove.bind(this))
+    el.sceneEl.addEventListener('touchend', this.touchEnd.bind(this))
+  }
+
   embedMafs() {
     const cssContent = `${coreCSSContent}\n${fontCSSContent}\n${appCSSContent.toString()}\n${mafsCSSContent}`;
     let svgElement = document.querySelector('.MafsView svg')
