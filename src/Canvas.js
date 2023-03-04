@@ -2,12 +2,8 @@ import React, { Component } from 'react'
 import { Stage, Layer, Rect, Text, Line, Group, Circle, Path, Image, Shape} from 'react-konva'
 import Konva from 'konva'
 
-/*
-import coreCSSContent from '!!raw-loader!mafs/core.css'
-import fontCSSContent from '!!raw-loader!mafs/font.css'
-import appCSSContent from '!!raw-loader!./App.css'
-import mafsCSSContent from '!!raw-loader!./Mafs.css'
-*/
+import MathCircle from './MathCircle.js'
+import MathSine from './MathSine.js'
 
 window.Konva = Konva
 let debug = false
@@ -24,7 +20,6 @@ class Canvas extends Component {
       currentId: -1,
       event: {},
       paperImage: null,
-      // mafsImage: null,
     }
   }
 
@@ -33,13 +28,6 @@ class Canvas extends Component {
 
     let paperImage = document.getElementById('paper')
     this.setState({ paperImage: paperImage })
-
-    /*
-    setTimeout(() => {
-      this.embedMafs()
-    }, 100)
-    */
-
     this.stage = Konva.stages[0]
   }
 
@@ -87,59 +75,9 @@ class Canvas extends Component {
     if (!this.state.isPaint) return false
     this.setState({ isPaint: false })
     if (this.state.currentPoints.length === 0) return false
-    /*
-    if (this.state.shapes.length === 3) {
-      this.setState({ currentPoints: [], toios: [{ x: 100, y: 100 }] })
-      return
-    }
-    */
   }
-
-
-  onMouseDown() {
-    console.log(this)
-  }
-
-  onMouseMove() {
-    console.log('move')
-  }
-
-  onMouseUp() {
-    console.log('up')
-  }
-
-  /*
-  embedMafs() {
-    const cssContent = `${coreCSSContent}\n${fontCSSContent}\n${appCSSContent.toString()}\n${mafsCSSContent}`;
-    let svgElement = document.querySelector('.MafsView svg')
-    const styleElement = document.createElementNS("http://www.w3.org/2000/svg", "style");
-    svgElement.setAttribute('id', 'mafs-embed')
-    styleElement.textContent = cssContent
-    svgElement.appendChild(styleElement)
-
-    console.log(svgElement)
-    const serializer = new XMLSerializer()
-    const svgString = serializer.serializeToString(svgElement)
-    const mafsImage = new window.Image()
-    mafsImage.src = `data:image/svg+xml;utf8,${encodeURIComponent(svgString)}`;
-    mafsImage.onload = () => {
-      this.setState({ mafsImage: mafsImage })
-    }
-  }
-  */
 
   render() {
-  const width = 500;
-  const height = 200;
-  const amplitude = 50;
-  const frequency = 0.1;
-  const points = [];
-
-  // Generate points for the sine curve
-  for (let x = 0; x <= width; x += 5) {
-    const y = amplitude * Math.sin(frequency * x);
-    points.push(x, height / 2 + y);
-  }
 
     return (
       <>
@@ -171,29 +109,9 @@ class Canvas extends Component {
               <Image image={this.state.mafsImage} />
 
               {/* Summary */}
+              <MathCircle />
 
-              <Circle
-                x={ 800 }
-                y={ 310 }
-                radius={ 50 }
-                strokeWidth={ App.strokeWidth }
-                stroke={ App.strokeColor }
-                fill={ App.fillColorAlpha }
-                visible={ true }
-                draggable
-              />
-
-              <Line
-                points={ this.state.currentPoints }
-                stroke={ App.strokeColor }
-                strokeWidth={ App.strokeWidth }
-              />
-
-              <Line
-                points={points}
-                stroke="black"
-                strokeWidth={2}
-              />
+              <MathSine />
 
               {/* Drawing Line */}
               <Line
