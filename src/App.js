@@ -153,7 +153,7 @@ class App extends Component {
     return (
       <>
         <Canvas />
-        <img id='paper' src='http://localhost:4000/public/sample.jpg' crossOrigin='anonymous' style={{ display: 'none' }} />
+        <img id='paper' src='http://localhost:4000/public/sample-2.jpg' crossOrigin='anonymous' style={{ display: 'none' }} />
         <div id="mafs-container">
           <Graph />
         </div>

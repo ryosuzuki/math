@@ -172,31 +172,34 @@ class Canvas extends Component {
 
               {/* Summary */}
 
+              <Circle
+                x={ 800 }
+                y={ 310 }
+                radius={ 50 }
+                strokeWidth={ App.strokeWidth }
+                stroke={ App.strokeColor }
+                fill={ App.fillColorAlpha }
+                visible={ true }
+                draggable
+              />
+
               <Line
                 points={ this.state.currentPoints }
                 stroke={ App.strokeColor }
                 strokeWidth={ App.strokeWidth }
               />
 
-       <Line
-          points={points}
-          stroke="black"
-          strokeWidth={2}
-        />
+              <Line
+                points={points}
+                stroke="black"
+                strokeWidth={2}
+              />
+
               {/* Drawing Line */}
               <Line
                 points={ this.state.currentPoints }
                 stroke={ App.strokeColor }
                 strokeWidth={ App.strokeWidth }
-              />
-              <Circle
-                x={ 400 }
-                y={ 500 }
-                radius={ 50 }
-                strokeWidth={ App.strokeWidth }
-                stroke={ App.strokeColor }
-                fill={ App.fillColorAlpha }
-                visible={ true }
               />
             </Layer>
           </Stage>
