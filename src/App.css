@@ -2,6 +2,11 @@ body {
   margin: 0;
 }
 
+#hoge {
+  /* display: none not working */
+  margin-top: 10000px;
+}
+
 #container {
   overflow: hidden;
   position: absolute;

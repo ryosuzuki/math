@@ -157,11 +157,9 @@ class App extends Component {
   render() {
     return (
       <>
-          <Canvas />
-          <img id='paper' src='http://localhost:4000/public/sample.jpg' crossOrigin='anonymous' style={{ display: 'none' }} />
-          <img id='svg' src='http://localhost:4000/public/410.svg' crossOrigin='anonymous' style={{ display: 'none' }} />
-          <Graph />
-          <canvas id="canvas"></canvas>
+        <Canvas />
+        <img id='paper' src='http://localhost:4000/public/sample.jpg' crossOrigin='anonymous' style={{ display: 'none' }} />
+        <Graph />
         { isCameraOn ? '' :
           <a-scene>
             <a-plane drawing-plane id="drawing-plane" class="cantap" position="0 1.5 -1" width="1" height="1" color="#ccc" opacity="0">

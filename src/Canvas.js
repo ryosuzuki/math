@@ -1,31 +1,9 @@
 import React, { Component } from 'react'
 import { Stage, Layer, Rect, Text, Line, Group, Circle, Path, Image, Shape} from 'react-konva'
 import Konva from 'konva'
-// import Graph from './Graph.js'
-import { Mafs, Coordinates } from "mafs";
 
 window.Konva = Konva
-let debug = true
-
-const MySVG = () => {
-  const drawCircle = (context) => {
-    const svgString = '<svg><circle cx="50" cy="50" r="300" fill="red" /></svg>';
-    const DOMURL = window.URL || window.webkitURL || window;
-    const img = new window.Image();
-    const svg = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
-    const url = DOMURL.createObjectURL(svg);
-
-    img.onload = () => {
-      context.drawImage(img, 0, 0);
-      DOMURL.revokeObjectURL(url);
-    };
-
-    img.src = url;
-  };
-
-  return <Shape sceneFunc={drawCircle} />;
-};
-
+let debug = false
 
 class Canvas extends Component {
   constructor(props) {
@@ -33,9 +11,8 @@ class Canvas extends Component {
     window.Canvas = this
     window.canvas = this
     this.state = {
-      image: null,
-      svg: null,
-      svgShape: null
+      paperImage: null,
+      mafsImage: null,
     }
 
   }
@@ -43,17 +20,8 @@ class Canvas extends Component {
   componentDidMount() {
     this.socket = App.socket
 
-    // let img = document.getElementById('paper')
-    // let svg = document.querySelector('.MafsView svg')
-
-    // this.setState({ image: img, svg: svg })
-
-    // Konva.Image.fromURL('path/to/your/svg/file.svg#hoge', (image) => {
-    //   // Set the image as the shape for rendering
-    //   this.setState({ svgShape: image });
-    // });
-
-    // const svgElement = document.getElementById('hoge');
+    let paperImage = document.getElementById('paper')
+    this.setState({ paperImage: paperImage })
 
     setInterval(() => {
       this.load()
@@ -62,21 +30,13 @@ class Canvas extends Component {
 
   load() {
     let svgElement = document.querySelector('.MafsView svg')
-    // Create a new XMLSerializer to serialize the SVG element
-    const serializer = new XMLSerializer();
-    const svgString = serializer.serializeToString(svgElement);
-
-    // Create a new Image object
-    const img = new window.Image();
-    // img.src = `data:image/svg+xml;utf8,${svgString}`;
-    img.src = `data:image/svg+xml;utf8,${encodeURIComponent(svgString)}`;
-
-    // img2.src = `data:image/svg+xml;utf8,${svgString}`;
-    // Set the image as the shape for rendering
-    img.onload = () => {
-      this.setState({ image: img });
-    };
-
+    const serializer = new XMLSerializer()
+    const svgString = serializer.serializeToString(svgElement)
+    const mafsImage = new window.Image()
+    mafsImage.src = `data:image/svg+xml;utf8,${encodeURIComponent(svgString)}`;
+    mafsImage.onload = () => {
+      this.setState({ mafsImage: mafsImage })
+    }
   }
 
   render() {
@@ -96,15 +56,13 @@ class Canvas extends Component {
                 height={ App.size }
                 fill={ 'rgba(255, 255, 0, 0)' }
               />
-              {/*<Paper Image />*/}
-              <Image image={ this.state.image } />
+              {/* Paper Image */}
+              <Image image={ this.state.paperImage } />
+
               {/* Paper Outline */}
 
-              {/*<Image image={ this.state.svg } />*/}
-
-              <Shape image={this.state.svg} />
-
-              {/*<Graph />*/}
+              {/* Graph */}
+              <Image image={this.state.mafsImage} />
 
               {/* Summary */}
 
