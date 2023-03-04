@@ -159,6 +159,7 @@ class App extends Component {
         </div>
         { isCameraOn ? '' :
           <a-scene>
+            <a-camera id="camera" position="0 1.5 0" look-controls="enabled: false" raycaster="objects: .cantap" cursor="fuse: false; rayOrigin: mouse;"></a-camera>
             <a-plane drawing-plane id="drawing-plane" class="cantap" position="0 1.5 -1" width="1" height="1" color="#ccc" opacity="0">
             </a-plane>
           </a-scene>
@@ -171,7 +172,7 @@ class App extends Component {
             vr-mode-ui="enabled: false"
             device-orientation-permission-ui="enabled: false"
           >
-            <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+            <a-camera id="camera" position="0 0 0" look-controls="enabled: false" raycaster="objects: .cantap" cursor="fuse: false; rayOrigin: mouse;"></a-camera>
             <a-entity mindar-image-target="targetIndex: 0">
               <a-plane drawing-plane id="drawing-plane" class="cantap" position="0 0 0" width="1" height="1" color="#ccc" opacity="0">
               </a-plane>
