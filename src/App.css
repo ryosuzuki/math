@@ -4,7 +4,8 @@ body {
 
 #mafs-container {
   /* display: none not working */
-/*  margin-top: 10000px;*/
+/*  display: none;*/
+  margin-top: 10000px;
 }
 
 #container {

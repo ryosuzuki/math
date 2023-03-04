@@ -47,6 +47,7 @@ svg#mafs-embed:focus-visible {
   outline: 3px solid #58a6ff;
 }
 
+/* Custom CSS */
 svg#mafs-embed {
   --mafs-bg: none;
   --mafs-fg: black;

@@ -28,7 +28,6 @@ class App extends Component {
     this.state = {
       summary: '',
       highlight: [],
-
       dragging: false,
       initDrawing: true,
       distance: 0,
@@ -81,13 +80,7 @@ class App extends Component {
       // transparent: true,
       // opacity: 1,
       // alphaTest: 0.1,
-      // wireframe: true
-      // alphaMap: texture,
-      // blending: THREE.NormalBlending,
-      // depthTest: false
     })
-    // material.transparent = true
-    // material.needsUpdate = true
     mesh.material = material
     this.mesh = mesh
     el.sceneEl.addEventListener('mousedown', this.mouseDown.bind(this))
@@ -128,7 +121,6 @@ class App extends Component {
 
   tick() {
     this.mesh.material.map.needsUpdate = true
-    return
     if (this.state.dragging) {
       const screenPositionX = this.state.mouse2D.x / window.innerWidth * 2 - 1
       const screenPositionY = this.state.mouse2D.y / window.innerHeight * 2 - 1

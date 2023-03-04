@@ -16,10 +16,10 @@ class Canvas extends Component {
     window.Canvas = this
     window.canvas = this
     this.state = {
+      event: {},
       paperImage: null,
       mafsImage: null,
     }
-
   }
 
   componentDidMount() {
@@ -29,11 +29,11 @@ class Canvas extends Component {
     this.setState({ paperImage: paperImage })
 
     setTimeout(() => {
-      this.loadMafs()
-    }, 1000)
+      this.embedMafs()
+    }, 100)
   }
 
-  loadMafs() {
+  embedMafs() {
     const cssContent = `${coreCSSContent}\n${fontCSSContent}\n${appCSSContent.toString()}\n${mafsCSSContent}`;
     let svgElement = document.querySelector('.MafsView svg')
     const styleElement = document.createElementNS("http://www.w3.org/2000/svg", "style");
@@ -51,7 +51,49 @@ class Canvas extends Component {
     }
   }
 
+  mouseDown(pos) {
+    let event = new MouseEvent('mousedown' , { clientX: pos.x, clientY: pos.y, pageX: pos.x, pageY: pos.y })
+    this.stage._pointerdown(event)
+  }
+
+  mouseMove(pos) {
+    let event = new MouseEvent('mousedown' , { clientX: pos.x, clientY: pos.y, pageX: pos.x, pageY: pos.y })
+    this.stage._pointermove(event)
+    Konva.DD._drag(event)
+  }
+
+  mouseUp(pos) {
+    let event = new MouseEvent('mousedown' , { clientX: pos.x, clientY: pos.y, pageX: pos.x, pageY: pos.y })
+    Konva.DD._endDragBefore(event)
+    this.stage._pointerup(event)
+    Konva.DD._endDragAfter(event)
+  }
+
+  onMouseDown() {
+    console.log(this)
+  }
+
+  onMouseMove() {
+    console.log('move')
+  }
+
+  onMouseUp() {
+    console.log('up')
+  }
+
   render() {
+  const width = 500;
+  const height = 200;
+  const amplitude = 50;
+  const frequency = 0.1;
+  const points = [];
+
+  // Generate points for the sine curve
+  for (let x = 0; x <= width; x += 5) {
+    const y = amplitude * Math.sin(frequency * x);
+    points.push(x, height / 2 + y);
+  }
+
     return (
       <>
         <div style={{ display: debug ? 'block' : 'none' }}>
@@ -68,6 +110,8 @@ class Canvas extends Component {
                 height={ App.size }
                 fill={ 'rgba(255, 255, 0, 0)' }
               />
+
+
               {/* Paper Image */}
               <Image image={ this.state.paperImage } />
 
@@ -78,6 +122,11 @@ class Canvas extends Component {
 
               {/* Summary */}
 
+       <Line
+          points={points}
+          stroke="black"
+          strokeWidth={2}
+        />
               {/* Drawing Line */}
               <Line
                 points={ this.state.currentPoints }
