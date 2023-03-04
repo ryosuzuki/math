@@ -58,7 +58,7 @@ class Canvas extends Component {
   }
 
   stageMouseMove(event) {
-    console.log(this.state)
+    // console.log(this.state)
     this.setState({ event: event })
     let pos = this.stage.getPointerPosition()
     if (!this.state.isPaint) return false
@@ -69,7 +69,7 @@ class Canvas extends Component {
   }
 
   stageMouseUp(event) {
-    console.log(event)
+    // console.log(event)
     this.setState({ event: event })
     let pos = this.stage.getPointerPosition()
     if (!this.state.isPaint) return false

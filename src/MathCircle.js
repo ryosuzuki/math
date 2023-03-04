@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Circle } from 'react-konva'
+import { Group, Circle } from 'react-konva'
 
 class MathCircle extends Component {
   constructor(props) {
@@ -7,7 +7,7 @@ class MathCircle extends Component {
     this.state = {
       x: 800,
       y: 300,
-      radius: 50
+      radius: 50,
     }
   }
 
@@ -15,32 +15,52 @@ class MathCircle extends Component {
   }
 
   handleDragMove = (event) => {
-    const { radius } = this.state;
-    const { x, y } = event.target.attrs;
-    const dx = event.target.getStage().getPointerPosition().x - x;
-    const dy = event.target.getStage().getPointerPosition().y - y;
-    const newRadius = Math.max(10, radius + dx + dy);
-    this.setState({ circle: {
-      radius: newRadius,
-      x: x - dx,
-      y: y - dy,
-    }})
-  };
+    console.log(event)
+    const x = event.evt.clientX
+    const y = event.evt.clientY
+    const dx = this.state.x - x
+    const dy = this.state.y - y
+    console.log(x, y)
+    const newRadius = Math.sqrt(dx**2 + dy**2)
+    this.setState({ radius: newRadius })
+  }
 
   render() {
     return (
       <>
-        <Circle
+        <Group
           x={ this.state.x }
           y={ this.state.y }
-          radius={ this.state.radius }
-          strokeWidth={ App.strokeWidth }
-          stroke={ App.strokeColor }
-          fill={ App.fillColorAlpha }
-          visible={ true }
           draggable
-          onDragMove={this.handleDragMove}
-        />
+        >
+          <Circle
+            x={ 0 }
+            y={ 0 }
+            radius={ this.state.radius }
+            strokeWidth={ App.strokeWidth }
+            stroke={ App.strokeColor }
+            fill={ App.fillColorAlpha }
+            visible={ true }
+          />
+          <Circle
+            x={ 0 }
+            y={ 0 }
+            radius={ 10 }
+            fill={ App.strokeColor }
+            visible={ true }
+            draggable
+            onDragMove={this.handleDragMove}
+          />
+          <Circle
+            x={ this.state.radius * Math.sin(Math.PI/4) }
+            y={ -this.state.radius * Math.sin(Math.PI/4) }
+            radius={ 10 }
+            fill={ '#ee00ab' }
+            visible={ true }
+            draggable
+            onDragMove={this.handleDragMove}
+          />
+        </Group>
       </>
     )
   }
