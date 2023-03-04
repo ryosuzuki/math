@@ -157,13 +157,12 @@ class App extends Component {
     return (
       <>
         <Canvas />
-        <img id='cat' src='http://localhost:4000/public/sample.jpg' crossOrigin='anonymous' style={{ display: 'none' }} />
+        <img id='paper' src='http://localhost:4000/public/sample.jpg' crossOrigin='anonymous' style={{ display: 'none' }} />
         <canvas id="canvas"></canvas>
         { isCameraOn ? '' :
           <a-scene>
-            <a-plane drawing-plane id="drawing-plane" class="cantap" position="0 1.9 -1" width="1" height="1" color="#ccc" opacity="0">
+            <a-plane drawing-plane id="drawing-plane" class="cantap" position="0 1.5 -1" width="1" height="1" color="#ccc" opacity="0">
             </a-plane>
-            <a-box color="red" position="0 1.9 -3"></a-box>
           </a-scene>
         }
         { !isCameraOn ? '' :
