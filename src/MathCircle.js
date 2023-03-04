@@ -15,14 +15,12 @@ class MathCircle extends Component {
   }
 
   handleDragMove = (event) => {
-    console.log(event)
     const x = event.evt.clientX
     const y = event.evt.clientY
     const dx = this.state.x - x
     const dy = this.state.y - y
-    console.log(x, y)
-    const newRadius = Math.sqrt(dx**2 + dy**2)
-    this.setState({ radius: newRadius })
+    const radius = Math.sqrt(dx**2 + dy**2)
+    this.setState({ radius: radius })
   }
 
   render() {
@@ -48,8 +46,6 @@ class MathCircle extends Component {
             radius={ 10 }
             fill={ App.strokeColor }
             visible={ true }
-            draggable
-            onDragMove={this.handleDragMove}
           />
           <Circle
             x={ this.state.radius * Math.sin(Math.PI/4) }
