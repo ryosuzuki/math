@@ -4,7 +4,7 @@ import Konva from 'konva'
 
 import MathCircle from './MathCircle.js'
 import MathSine from './MathSine.js'
-import MathText from './MathText.js'
+import Variable from './Variable.js'
 import DrawingLine from './DrawingLine.js'
 import Words from './Words.js'
 
@@ -23,7 +23,7 @@ class Canvas extends Component {
       event: {},
       paperImage: null,
       textAnnotations: [],
-      selectMode: true
+      selectMode: false
     }
     this.drawingLineRef = React.createRef()
   }

@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Group, Circle } from 'react-konva'
 
-import MathText from './MathText.js'
+import Variable from './Variable.js'
 
 class MathCircle extends Component {
   constructor(props) {
@@ -103,7 +103,7 @@ class MathCircle extends Component {
                 break
             }
             return (
-              <MathText
+              <Variable
                 key={ `${i}-${j}` }
                 parent={ this }
                 symbol={ symbol }

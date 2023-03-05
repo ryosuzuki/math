@@ -2,8 +2,8 @@ import React, { Component } from 'react'
 import { Stage, Layer, Rect, Text, Line, Group, Circle, Path, Image, Shape} from 'react-konva'
 import Konva from 'konva'
 import _ from 'lodash'
-
 import ocr from './sample/ocr-2.json'
+import Variable from './Variable.js'
 
 class Words extends Component {
   constructor(props) {
@@ -12,7 +12,7 @@ class Words extends Component {
     this.state = {
       textAnnotations: [],
       currentId: -1,
-      symbols: []
+      symbols: ['h', 'k', 'r']
     }
   }
 
@@ -76,19 +76,37 @@ class Words extends Component {
           let color = 'rgba(0, 0, 0, 0.05)'
           if (this.state.symbols.includes(word)) color = App.highlightColorAlpha
           if (this.state.currentId === i) color = App.highlightColorAlpha
-          return (
-            <Rect
-              key={ i }
-              x={ x }
-              y={ y }
-              width={ width }
-              height={ height }
-              fill={ color }
-              onMouseDown={ this.onMouseDown.bind(this, i) }
-              onMouseEnter={ this.onMouseEnter.bind(this, i) }
-              onMouseLeave={ this.onMouseLeave.bind(this, i) }
-            />
-          )
+
+          if (this.props.selectMode) {
+            return (
+              <Rect
+                key={ i }
+                x={ x }
+                y={ y }
+                width={ width }
+                height={ height }
+                fill={ color }
+                onMouseDown={ this.onMouseDown.bind(this, i) }
+                onMouseEnter={ this.onMouseEnter.bind(this, i) }
+                onMouseLeave={ this.onMouseLeave.bind(this, i) }
+              />
+            )
+          } else if (this.state.symbols.includes(word)) {
+            return (
+              <Variable
+                key={ i }
+                x={ x }
+                y={ y }
+                width={ width }
+                height={ height }
+                word={ word }
+              />
+            )
+          } else {
+            return (
+              <></>
+            )
+          }
         })}
       </>
     )
