@@ -8,8 +8,6 @@ import Variable from './Variable.js'
 import DrawingLine from './DrawingLine.js'
 import Words from './Words.js'
 
-import ocr from './sample/ocr-2.json'
-
 let debug = false
 
 class Canvas extends Component {
@@ -36,10 +34,6 @@ class Canvas extends Component {
     let paperImage = document.getElementById('paper')
     this.setState({ paperImage: paperImage })
     this.stage = Konva.stages[0]
-
-    window.ocr = ocr
-    const rawtext = ocr.textAnnotations[0].description
-    const text = rawtext.replace(/(\r\n|\n|\r)/gm, " ")
   }
 
   updateValue(hash) {
@@ -61,7 +55,6 @@ class Canvas extends Component {
   }
 
   mouseDrag(pos) {
-    console.log(pos.x)
     let event = new MouseEvent('mousemove' , { clientX: pos.x, clientY: pos.y, pageX: pos.x, pageY: pos.y })
     Konva.DD._drag(event)
   }

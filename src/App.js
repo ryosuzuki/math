@@ -16,10 +16,11 @@ class App extends Component {
     window.app = this
     window.App = this
 
+    this.sampleId = 1
+
     if (window.location.href.includes('localhost')) {
       this.socket = io('http://localhost:4000')
     }
-
     this.size = 1024
     this.state = {
       dragging: false,
@@ -129,7 +130,7 @@ class App extends Component {
     return (
       <>
         <Canvas ref={this.canvasRef} />
-        <img id='paper' src='http://localhost:4000/public/sample-2.jpg' crossOrigin='anonymous' style={{ display: 'none' }} />
+        <img id='paper' src={ `http://localhost:4000/public/sample/sample-${this.sampleId}.jpg` } crossOrigin='anonymous' style={{ display: 'none' }} />
         { isCameraOn ? '' :
           <a-scene>
             <a-camera id="camera" position="0 1.5 -0.4" look-controls="enabled: false" raycaster="objects: .cantap" cursor="fuse: false; rayOrigin: mouse;"></a-camera>

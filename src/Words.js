@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import { Stage, Layer, Rect, Text, Line, Group, Circle, Path, Image, Shape} from 'react-konva'
 import Konva from 'konva'
 import _ from 'lodash'
-import ocr from './sample/ocr-2.json'
 import Variable from './Variable.js'
 
 class Words extends Component {
@@ -16,13 +15,28 @@ class Words extends Component {
   }
 
   componentDidMount() {
-    window.ocr = ocr
-    const rawtext = ocr.textAnnotations[0].description
-    const text = rawtext.replace(/(\r\n|\n|\r)/gm, " ")
-    let textAnnotations = ocr.textAnnotations
-    textAnnotations.shift()
-    this.setState({ textAnnotations: textAnnotations })
+    const url = `http://localhost:4000/public/sample/ocr-${App.sampleId}.json`
+    this.fetchData(url)
   }
+
+  async fetchData(url) {
+    try {
+      const response = await fetch(url)
+      const jsonData = await response.json()
+      const ocr = jsonData
+      window.ocr = ocr
+      const rawtext = ocr.textAnnotations[0].description
+      const text = rawtext.replace(/(\r\n|\n|\r)/gm, " ")
+      let textAnnotations = ocr.textAnnotations
+      textAnnotations.shift()
+      this.setState({ textAnnotations: textAnnotations })
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+
+
 
   onMouseDown(i) {
     if (!this.props.selectMode) return
