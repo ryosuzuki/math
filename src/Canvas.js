@@ -19,12 +19,10 @@ class Canvas extends Component {
     window.canvas = this
     window.Konva = Konva
     this.state = {
-      currentId: -1,
       event: {},
       paperImage: null,
-      textAnnotations: [],
-      selectMode: true,
-      currentSymbols: {},
+      selectMode: false,
+      currentSymbols: { h: 10, k: 10, r: 30 },
     }
     this.drawingLineRef = React.createRef()
   }
@@ -37,14 +35,6 @@ class Canvas extends Component {
     window.ocr = ocr
     const rawtext = ocr.textAnnotations[0].description
     const text = rawtext.replace(/(\r\n|\n|\r)/gm, " ")
-
-    let words = ['h', 'k', 'r']
-    console.log(words)
-    let textAnnotations = ocr.textAnnotations.filter((textAnnotation) => {
-      return words.includes(textAnnotation.description)
-    })
-    console.log(textAnnotations)
-    this.setState({ textAnnotations: textAnnotations })
   }
 
   updateValue(key, value) {
@@ -116,18 +106,13 @@ class Canvas extends Component {
               {/* Paper Image */}
               <Image image={ this.state.paperImage } />
 
-              {/* Paper Outline */}
-
-              {/* Graph */}
-              <Image image={this.state.mafsImage} />
-
-              {/* Summary */}
+              {/* Circle */}
               <MathCircle />
 
+              {/* Words */}
               <Words
                 selectMode={ this.state.selectMode }
               />
-              {/*<MathSine />*/}
 
               {/* Drawing Line */}
               <DrawingLine ref={this.drawingLineRef} />

@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { Group, Circle } from 'react-konva'
 
 import Variable from './Variable.js'
+import _ from 'lodash'
 
 class MathCircle extends Component {
   constructor(props) {
@@ -38,82 +39,42 @@ class MathCircle extends Component {
   }
 
   render() {
-    let symbols = {
-      x: [
-        { x: 330, y: 300 },
-        { x: 450, y: 180 },
-      ],
-      y: [
-        { x: 400, y: 300 },
-        { x: 530, y: 180 },
-      ],
-      radius: [
-        { x: 440, y: 300 },
-        { x: 580, y: 180 },
-      ]
+    let currentSymbols = Canvas.state.currentSymbols
+    if (!_.has(currentSymbols, 'h') || !_.has(currentSymbols, 'k') || !_.has(currentSymbols, 'r')) {
+      return <></>
     }
-    symbols = {}
+    let origin = { x: 687, y: 400 }
+    let radius = currentSymbols['r']
+    let h = currentSymbols['h']
+    let k = currentSymbols['k']
+    let center = { x: origin.x + h, y: origin.y - k }
     return (
       <>
-        <Group
-          x={ this.state.x }
-          y={ this.state.y }
+        <Circle
+          x={ center.x }
+          y={ center.y }
+          radius={ radius }
+          strokeWidth={ App.strokeWidth }
+          stroke={ App.strokeColor }
+          fill={ App.fillColorAlpha }
+        />
+        <Circle
+          x={ center.x }
+          y={ center.y }
+          radius={ 3 }
+          fill={ App.highlightColor }
+        />
+        <Circle
+          x={ center.x + radius * Math.sin(Math.PI/4) }
+          y={ center.y - radius * Math.sin(Math.PI/4) }
+          radius={ 10 }
+          fill={ App.highlightColor }
           draggable
-          onDragMove={ this.handleDragMove2.bind(this) }
-        >
-          <Circle
-            x={ 0 }
-            y={ 0 }
-            radius={ this.state.radius }
-            strokeWidth={ App.strokeWidth }
-            stroke={ App.strokeColor }
-            fill={ App.fillColorAlpha }
-            visible={ true }
-          />
-          <Circle
-            x={ 0 }
-            y={ 0 }
-            radius={ 10 }
-            fill={ App.strokeColor }
-            visible={ true }
-          />
-          <Circle
-            x={ this.state.radius * Math.sin(Math.PI/4) }
-            y={ -this.state.radius * Math.sin(Math.PI/4) }
-            radius={ 10 }
-            fill={ '#ee00ab' }
-            visible={ true }
-            draggable
-            onDragMove={this.handleDragMove.bind(this) }
-            onMouseEnter={ e => {
-              e.cancelBubble = true;
-            }}
-          />
-        </Group>
-        { Object.keys(symbols).map((symbol, i) => {
-          let positions = symbols[symbol]
-          return positions.map((pos, j) => {
-            let value = this.state[symbol]
-            switch (symbol) {
-              case 'x':
-                value = value - 690
-                break
-              case 'y':
-                value = - (value - 400)
-                break
-            }
-            return (
-              <Variable
-                key={ `${i}-${j}` }
-                parent={ this }
-                symbol={ symbol }
-                value={ value }
-                x={ pos.x }
-                y={ pos.y }
-              />
-            )
-          })
-        })}
+          onDragMove={this.handleDragMove.bind(this) }
+          onMouseEnter={ e => {
+            e.cancelBubble = true;
+          }}
+        />
       </>
     )
   }

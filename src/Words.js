@@ -19,13 +19,6 @@ class Words extends Component {
     window.ocr = ocr
     const rawtext = ocr.textAnnotations[0].description
     const text = rawtext.replace(/(\r\n|\n|\r)/gm, " ")
-
-    let words = ['h', 'k', 'r']
-    console.log(words)
-    // let textAnnotations = ocr.textAnnotations.filter((textAnnotation) => {
-    //   return words.includes(textAnnotation.description)
-    // })
-    // console.log(textAnnotations)
     let textAnnotations = ocr.textAnnotations
     textAnnotations.shift()
     this.setState({ textAnnotations: textAnnotations })
