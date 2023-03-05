@@ -23,7 +23,8 @@ class Canvas extends Component {
       event: {},
       paperImage: null,
       textAnnotations: [],
-      selectMode: false
+      selectMode: true,
+      currentSymbols: {},
     }
     this.drawingLineRef = React.createRef()
   }
@@ -44,6 +45,12 @@ class Canvas extends Component {
     })
     console.log(textAnnotations)
     this.setState({ textAnnotations: textAnnotations })
+  }
+
+  updateValue(key, value) {
+    let currentSymbols = this.state.currentSymbols
+    currentSymbols[key] = value
+    this.setState({ currentSymbols: currentSymbols })
   }
 
   mouseDown(pos) {

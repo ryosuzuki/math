@@ -12,7 +12,6 @@ class Words extends Component {
     this.state = {
       textAnnotations: [],
       currentId: -1,
-      symbols: ['h', 'k', 'r']
     }
   }
 
@@ -36,13 +35,14 @@ class Words extends Component {
     if (!this.props.selectMode) return
     console.log(this.state.textAnnotations[i])
     let word = this.state.textAnnotations[i].description
-    let symbols = this.state.symbols
-    if (symbols.includes(word)) {
-      _.pull(symbols, word)
+    let symbols = Canvas.state.currentSymbols
+    let words = Object.keys(symbols)
+    if (words.includes(word)) {
+      delete symbols[word]
     } else {
-      symbols.push(word)
+      symbols[word] = 0
     }
-    this.setState({ symbols: symbols })
+    Canvas.setState({ symbols: symbols })
   }
 
   onMouseEnter(i) {
@@ -56,10 +56,11 @@ class Words extends Component {
   }
 
   render() {
+    let currentSymbols = Canvas.state.currentSymbols
     return (
       <>
         <Text
-          text={ `Selected Variables: ${ this.state.symbols }` }
+          text={ `Selected Variables: ${ JSON.stringify(currentSymbols) }` }
           x={ 50 }
           y={ 50 }
           fontSize={ 20 }
@@ -74,7 +75,7 @@ class Words extends Component {
           let width = vertices[2].x - vertices[0].x + offset
           let height = vertices[2].y - vertices[0].y + offset
           let color = 'rgba(0, 0, 0, 0.05)'
-          if (this.state.symbols.includes(word)) color = App.highlightColorAlpha
+          if (Object.keys(currentSymbols).includes(word)) color = App.highlightColorAlpha
           if (this.state.currentId === i) color = App.highlightColorAlpha
 
           if (this.props.selectMode) {
@@ -91,7 +92,7 @@ class Words extends Component {
                 onMouseLeave={ this.onMouseLeave.bind(this, i) }
               />
             )
-          } else if (this.state.symbols.includes(word)) {
+          } else if (Object.keys(currentSymbols).includes(word)) {
             return (
               <Variable
                 key={ i }
@@ -100,6 +101,7 @@ class Words extends Component {
                 width={ width }
                 height={ height }
                 word={ word }
+                value={ currentSymbols[word] }
               />
             )
           } else {

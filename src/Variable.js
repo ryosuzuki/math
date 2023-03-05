@@ -17,7 +17,7 @@ class Variable extends Component {
 
   onDragStart(event) {
     const target = event.target
-    this.originValue = this.state.currentValue
+    this.originValue = this.props.value
     this.originX = this.props.x + this.props.width/2
     this.originY = this.props.y + this.props.height/2
   }
@@ -30,10 +30,8 @@ class Variable extends Component {
     let y = event.evt.clientY
     this.setState({ currentX: x, currentY: this.originY })
     let dx = x - this.originX
-    console.log(dx)
-    this.setState({ currentValue: this.originValue + dx })
+    Canvas.updateValue(this.props.word, this.originValue + dx)
     return false
-
     // let newValue = this.originValue + dx
     // if (this.props.symbol === 'x') newValue = newValue + 690
     // if (this.props.symbol === 'y') newValue = - (newValue - 400)
@@ -65,7 +63,7 @@ class Variable extends Component {
     return (
       <>
         <Text
-          text={ this.state.currentValue }
+          text={ this.props.value }
           x={ center.x }
           y={ this.props.y }
           fontSize={ 20 }
@@ -103,50 +101,6 @@ class Variable extends Component {
           verticalAlign='middle'
           visible={ this.state.arrowVisible }
         />
-        {/*
-        <Group
-          x={ this.props.x - 20 }
-          y={ this.props.y - 50 }
-        >
-          <Rect
-            x={ 0 }
-            y={ 0 }
-            width={ 30 }
-            height={ 30 }
-            fill='rgba(255, 255, 255, 0.9)'
-          />
-          <Text
-            text={ this.props.value }
-            fontSize={ 20 }
-            fill={ App.highlightColor }
-            width={ 50 }
-            height={ 30 }
-            offsetX={(50-30)/2}
-            align='center'
-            verticalAlign='middle'
-          />
-          <Rect
-            x={0}
-            y={40}
-            width={30}
-            height={30}
-            fill={ App.highlightColorAlpha }
-          />
-        </Group>
-        <Text
-          x={ this.state.currentX }
-          y={ this.state.currentY }
-          text={ '<->' }
-          fontSize={ 20 }
-          fill={ '#ee00ab' }
-          width={ 50 }
-          height={ 30 }
-          offsetX={ (50-30)/2 }
-          align='center'
-          verticalAlign='middle'
-          visible={ this.state.arrowVisible }
-        />
-        */}
       </>
     )
   }
