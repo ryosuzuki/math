@@ -52,6 +52,7 @@ class MathCircle extends Component {
         { x: 580, y: 180 },
       ]
     }
+    symbols = {}
     return (
       <>
         <Group

@@ -7,6 +7,8 @@ import MathSine from './MathSine.js'
 import MathText from './MathText.js'
 import DrawingLine from './DrawingLine.js'
 
+import ocr from './sample/ocr-2.json'
+
 let debug = false
 
 class Canvas extends Component {
@@ -19,6 +21,7 @@ class Canvas extends Component {
       currentId: -1,
       event: {},
       paperImage: null,
+      textAnnotations: []
     }
     this.drawingLineRef = React.createRef()
   }
@@ -27,6 +30,19 @@ class Canvas extends Component {
     let paperImage = document.getElementById('paper')
     this.setState({ paperImage: paperImage })
     this.stage = Konva.stages[0]
+
+    window.ocr = ocr
+    const rawtext = ocr.textAnnotations[0].description
+    const text = rawtext.replace(/(\r\n|\n|\r)/gm, " ")
+
+    let words = ['h', 'k', 'r']
+    console.log(words)
+    let textAnnotations = ocr.textAnnotations.filter((textAnnotation) => {
+      return words.includes(textAnnotation.description)
+    })
+    console.log(textAnnotations)
+    this.setState({ textAnnotations: textAnnotations })
+
   }
 
   mouseDown(pos) {
@@ -96,6 +112,24 @@ class Canvas extends Component {
 
               {/* Summary */}
               <MathCircle />
+
+              { this.state.textAnnotations.map((textAnnotation, i) => {
+                let offset = 5
+                let vertices = textAnnotation.boundingPoly.vertices
+                let x = vertices[0].x - offset/2
+                let y = vertices[0].y - offset/2
+                let width = vertices[2].x - vertices[0].x + offset
+                let height = vertices[2].y - vertices[0].y + offset
+                return (
+                  <Rect
+                    x={ x }
+                    y={ y }
+                    width={ width }
+                    height={ height }
+                    fill='rgba(238, 0, 171, 0.3)'
+                  />
+                )
+              })}
 
               {/*<MathSine />*/}
 
