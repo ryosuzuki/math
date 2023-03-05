@@ -88,7 +88,7 @@ class MathText extends Component {
             y={40}
             width={30}
             height={30}
-            fill='rgba(238, 0, 171, 0.3)'
+            fill={ App.highlightColorAlpha }
           />
         </Group>
         <Text

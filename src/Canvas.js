@@ -6,6 +6,7 @@ import MathCircle from './MathCircle.js'
 import MathSine from './MathSine.js'
 import MathText from './MathText.js'
 import DrawingLine from './DrawingLine.js'
+import Words from './Words.js'
 
 import ocr from './sample/ocr-2.json'
 
@@ -21,7 +22,8 @@ class Canvas extends Component {
       currentId: -1,
       event: {},
       paperImage: null,
-      textAnnotations: []
+      textAnnotations: [],
+      selectMode: true
     }
     this.drawingLineRef = React.createRef()
   }
@@ -42,7 +44,6 @@ class Canvas extends Component {
     })
     console.log(textAnnotations)
     this.setState({ textAnnotations: textAnnotations })
-
   }
 
   mouseDown(pos) {
@@ -64,7 +65,6 @@ class Canvas extends Component {
   }
 
   stageMouseDown(event) {
-    console.log(event)
     this.setState({ event: event })
     this.drawingLineRef.current.mouseDown()
   }
@@ -84,6 +84,10 @@ class Canvas extends Component {
   render() {
     return (
       <>
+        <div id="buttons">
+          <button id="select" onClick={ () => this.setState({ selectMode: !this.state.selectMode }) }>{ `Select Mode: ${this.state.selectMode}` }</button>
+        </div>
+
         <div style={{ display: debug ? 'block' : 'none' }}>
           <Stage
             width={ App.size }
@@ -113,24 +117,9 @@ class Canvas extends Component {
               {/* Summary */}
               <MathCircle />
 
-              { this.state.textAnnotations.map((textAnnotation, i) => {
-                let offset = 5
-                let vertices = textAnnotation.boundingPoly.vertices
-                let x = vertices[0].x - offset/2
-                let y = vertices[0].y - offset/2
-                let width = vertices[2].x - vertices[0].x + offset
-                let height = vertices[2].y - vertices[0].y + offset
-                return (
-                  <Rect
-                    x={ x }
-                    y={ y }
-                    width={ width }
-                    height={ height }
-                    fill='rgba(238, 0, 171, 0.3)'
-                  />
-                )
-              })}
-
+              <Words
+                selectMode={ this.state.selectMode }
+              />
               {/*<MathSine />*/}
 
               {/* Drawing Line */}

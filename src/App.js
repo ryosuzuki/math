@@ -32,6 +32,8 @@ class App extends Component {
     this.strokeColor = '#002f2b'
     this.fillColor = '#004842'
     this.fillColorAlpha = 'rgba(0, 28, 26, 0.3)'
+    this.highlightColor = '#ee00ab'
+    this.highlightColorAlpha = 'rgba(238, 0, 171, 0.3)'
     this.strokeWidth = 8
     this.canvasRef = React.createRef()
   }
@@ -94,29 +96,31 @@ class App extends Component {
 
   tick() {
     this.mesh.material.map.needsUpdate = true
-    if (this.state.dragging) {
-      const screenPositionX = this.state.mouse2D.x / window.innerWidth * 2 - 1
-      const screenPositionY = this.state.mouse2D.y / window.innerHeight * 2 - 1
-      const screenPosition = new THREE.Vector2(screenPositionX, -screenPositionY)
+    const screenPositionX = this.state.mouse2D.x / window.innerWidth * 2 - 1
+    const screenPositionY = this.state.mouse2D.y / window.innerHeight * 2 - 1
+    const screenPosition = new THREE.Vector2(screenPositionX, -screenPositionY)
 
-      let camera = document.getElementById('camera')
-      let threeCamera = camera.getObject3D('camera')
-      this.state.raycaster.setFromCamera(screenPosition, threeCamera)
-      const intersects = this.state.raycaster.intersectObject(this.mesh, true)
-      if (intersects.length > 0) {
-        const intersect = intersects[0]
-        let point = intersect.point
-        let mouse = {
-          x: this.size * intersect.uv.x,
-          y: this.size * (1- intersect.uv.y)
-        }
-        this.setState({ distance: intersect.distance, mouse: mouse })
+    let camera = document.getElementById('camera')
+    let threeCamera = camera.getObject3D('camera')
+    this.state.raycaster.setFromCamera(screenPosition, threeCamera)
+    const intersects = this.state.raycaster.intersectObject(this.mesh, true)
+    if (intersects.length > 0) {
+      const intersect = intersects[0]
+      let point = intersect.point
+      let mouse = {
+        x: this.size * intersect.uv.x,
+        y: this.size * (1- intersect.uv.y)
+      }
+      this.setState({ distance: intersect.distance, mouse: mouse })
+      if (this.state.dragging) {
         if (this.state.initDrawing) {
           this.canvasRef.current.mouseDown(mouse)
           this.setState({ initDrawing: false })
         } else {
           this.canvasRef.current.mouseMove(mouse)
         }
+      } else {
+          this.canvasRef.current.mouseMove(mouse)
       }
     }
   }
