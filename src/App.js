@@ -117,7 +117,7 @@ class App extends Component {
           this.canvasRef.current.mouseDown(mouse)
           this.setState({ initDrawing: false })
         } else {
-          this.canvasRef.current.mouseMove(mouse)
+          this.canvasRef.current.mouseDrag(mouse)
         }
       } else {
           this.canvasRef.current.mouseMove(mouse)

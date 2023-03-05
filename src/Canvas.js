@@ -21,9 +21,14 @@ class Canvas extends Component {
     this.state = {
       event: {},
       paperImage: null,
-      selectMode: false,
-      currentSymbols: { h: 10, k: 10, r: 30 },
+      selectMode: true,
+      currentSymbols: { },
     }
+    if (debug) {
+      this.state.selectMode = false
+      this.state.currentSymbols = { h: 10, k: 10, r: 30 }
+    }
+
     this.drawingLineRef = React.createRef()
   }
 
@@ -40,7 +45,7 @@ class Canvas extends Component {
   updateValue(hash) {
     let currentSymbols = this.state.currentSymbols
     for (let key of Object.keys(hash)) {
-      currentSymbols[key] = hash[key]
+      currentSymbols[key] = _.round(hash[key], 1)
     }
     this.setState({ currentSymbols: currentSymbols })
   }
@@ -51,13 +56,18 @@ class Canvas extends Component {
   }
 
   mouseMove(pos) {
-    let event = new MouseEvent('mousedown' , { clientX: pos.x, clientY: pos.y, pageX: pos.x, pageY: pos.y })
+    let event = new MouseEvent('mousemove' , { clientX: pos.x, clientY: pos.y, pageX: pos.x, pageY: pos.y })
     this.stage._pointermove(event)
+  }
+
+  mouseDrag(pos) {
+    console.log(pos.x)
+    let event = new MouseEvent('mousemove' , { clientX: pos.x, clientY: pos.y, pageX: pos.x, pageY: pos.y })
     Konva.DD._drag(event)
   }
 
   mouseUp(pos) {
-    let event = new MouseEvent('mousedown' , { clientX: pos.x, clientY: pos.y, pageX: pos.x, pageY: pos.y })
+    let event = new MouseEvent('mouseup' , { clientX: pos.x, clientY: pos.y, pageX: pos.x, pageY: pos.y })
     Konva.DD._endDragBefore(event)
     this.stage._pointerup(event)
     Konva.DD._endDragAfter(event)
@@ -69,13 +79,11 @@ class Canvas extends Component {
   }
 
   stageMouseMove(event) {
-    // console.log(this.state)
     this.setState({ event: event })
     this.drawingLineRef.current.mouseMove()
   }
 
   stageMouseUp(event) {
-    // console.log(event)
     this.setState({ event: event })
     this.drawingLineRef.current.mouseUp()
   }

@@ -16,28 +16,22 @@ class MathCircle extends Component {
   }
 
   onDragMove(event) {
-    const x = event.evt.clientX
-    const y = event.evt.clientY
-    let h = x - this.origin.x
-    let k = this.origin.y - y
+    let pos = App.state.mouse
+    let h = pos.x - this.origin.x
+    let k = this.origin.y - pos.y
     Canvas.updateValue({ h: h, k: k })
   }
 
   onDragMoveRadius(event) {
-    const x = event.evt.clientX
-    const y = event.evt.clientY
+    let pos = App.state.mouse
     let currentSymbols = Canvas.state.currentSymbols
     let h = currentSymbols['h']
     let k = currentSymbols['k']
     let center = { x: this.origin.x + h, y: this.origin.y - k }
-    const dx = center.x - x
-    const dy = center.y - y
+    const dx = center.x - pos.x
+    const dy = center.y - pos.y
     const radius = Math.sqrt(dx**2 + dy**2)
     Canvas.updateValue({ r: radius })
-  }
-
-  dragBound(pos) {
-    return { x: pos.x, y: pos.y }
   }
 
   render() {

@@ -26,21 +26,12 @@ class Variable extends Component {
     const target = event.target
     target.x(this.props.x)
     target.y(this.props.y)
-    let x = event.evt.clientX
-    let y = event.evt.clientY
-    this.setState({ currentX: x, currentY: this.originY })
-    let dx = x - this.originX
+    let pos = App.state.mouse
+    this.setState({ currentX: pos.x, currentY: this.originY })
+    let dx = pos.x - this.props.x
     let hash = {}
     hash[this.props.word] = this.originValue + dx
     Canvas.updateValue(hash)
-    return false
-    // let newValue = this.originValue + dx
-    // if (this.props.symbol === 'x') newValue = newValue + 690
-    // if (this.props.symbol === 'y') newValue = - (newValue - 400)
-    // let newState = {}
-    // newState[this.props.symbol] = newValue
-    // console.log(this.props.parent)
-    // this.props.parent.setState(newState)
   }
 
   onDragEnd(event) {
