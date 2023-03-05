@@ -8,30 +8,32 @@ class MathCircle extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      x: 800,
-      y: 300,
-      radius: 50,
     }
+    this.origin = { x: 687, y: 400 }
   }
 
   componentDidMount() {
   }
 
-  handleDragMove = (event) => {
+  onDragMove(event) {
     const x = event.evt.clientX
     const y = event.evt.clientY
-    const dx = this.state.x - x
-    const dy = this.state.y - y
-    const radius = Math.sqrt(dx**2 + dy**2)
-    this.setState({ radius: radius })
+    let h = x - this.origin.x
+    let k = this.origin.y - y
+    Canvas.updateValue({ h: h, k: k })
   }
 
-  handleDragMove2 = (event) => {
-    let target = event.target.getClassName()
-    if (target !== 'Group') return
+  onDragMoveRadius(event) {
     const x = event.evt.clientX
     const y = event.evt.clientY
-    this.setState({ x: x, y: y })
+    let currentSymbols = Canvas.state.currentSymbols
+    let h = currentSymbols['h']
+    let k = currentSymbols['k']
+    let center = { x: this.origin.x + h, y: this.origin.y - k }
+    const dx = center.x - x
+    const dy = center.y - y
+    const radius = Math.sqrt(dx**2 + dy**2)
+    Canvas.updateValue({ r: radius })
   }
 
   dragBound(pos) {
@@ -43,11 +45,10 @@ class MathCircle extends Component {
     if (!_.has(currentSymbols, 'h') || !_.has(currentSymbols, 'k') || !_.has(currentSymbols, 'r')) {
       return <></>
     }
-    let origin = { x: 687, y: 400 }
     let radius = currentSymbols['r']
     let h = currentSymbols['h']
     let k = currentSymbols['k']
-    let center = { x: origin.x + h, y: origin.y - k }
+    let center = { x: this.origin.x + h, y: this.origin.y - k }
     return (
       <>
         <Circle
@@ -57,6 +58,8 @@ class MathCircle extends Component {
           strokeWidth={ App.strokeWidth }
           stroke={ App.strokeColor }
           fill={ App.fillColorAlpha }
+          draggable
+          onDragMove={this.onDragMove.bind(this) }
         />
         <Circle
           x={ center.x }
@@ -70,10 +73,7 @@ class MathCircle extends Component {
           radius={ 10 }
           fill={ App.highlightColor }
           draggable
-          onDragMove={this.handleDragMove.bind(this) }
-          onMouseEnter={ e => {
-            e.cancelBubble = true;
-          }}
+          onDragMove={this.onDragMoveRadius.bind(this) }
         />
       </>
     )

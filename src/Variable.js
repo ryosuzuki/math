@@ -30,7 +30,9 @@ class Variable extends Component {
     let y = event.evt.clientY
     this.setState({ currentX: x, currentY: this.originY })
     let dx = x - this.originX
-    Canvas.updateValue(this.props.word, this.originValue + dx)
+    let hash = {}
+    hash[this.props.word] = this.originValue + dx
+    Canvas.updateValue(hash)
     return false
     // let newValue = this.originValue + dx
     // if (this.props.symbol === 'x') newValue = newValue + 690

@@ -37,9 +37,11 @@ class Canvas extends Component {
     const text = rawtext.replace(/(\r\n|\n|\r)/gm, " ")
   }
 
-  updateValue(key, value) {
+  updateValue(hash) {
     let currentSymbols = this.state.currentSymbols
-    currentSymbols[key] = value
+    for (let key of Object.keys(hash)) {
+      currentSymbols[key] = hash[key]
+    }
     this.setState({ currentSymbols: currentSymbols })
   }
 
