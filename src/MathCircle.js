@@ -104,6 +104,7 @@ class MathCircle extends Component {
             return (
               <MathText
                 key={ `${i}-${j}` }
+                parent={ this }
                 symbol={ symbol }
                 value={ value }
                 x={ pos.x }

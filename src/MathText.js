@@ -5,15 +5,52 @@ class MathText extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      text: '2.3'
+      arrowVisible: false,
+      currentX: -1000,
+      currentY: -1000,
     }
   }
 
   componentDidMount() {
   }
 
-  handleDragMove = (event) => {
-    console.log(event.evt.clientX, event.evt.clientY)
+  onDragStart(event) {
+    const target = event.target
+    this.originValue = this.props.value
+    this.originX = event.evt.clientX
+    this.originY = event.evt.clientY
+  }
+
+  onDragMove(event) {
+    const group = event.target
+    let originX = this.props.x - 20
+    let originY = this.props.y - 50
+    let x = event.evt.clientX
+    let y = event.evt.clientY
+    this.setState({ currentX: x, currentY: this.originY })
+    let dx = x - originX
+    console.log(dx)
+    group.x(originX)
+    group.y(originY)
+    let newValue = this.originValue + dx
+    if (this.props.symbol === 'x') newValue = newValue + 690
+    if (this.props.symbol === 'y') newValue = - (newValue - 400)
+    let newState = {}
+    newState[this.props.symbol] = newValue
+    console.log(this.props.parent)
+    this.props.parent.setState(newState)
+  }
+
+  onDragEnd(event) {
+    this.setState({ arrowVisible: false })
+  }
+
+  onMouseEnter(event) {
+    this.setState({ arrowVisible: true })
+  }
+
+  onMouseLeave(event) {
+    this.setState({ arrowVisible: false })
   }
 
   render() {
@@ -23,7 +60,11 @@ class MathText extends Component {
           x={ this.props.x - 20 }
           y={ this.props.y - 50 }
           draggable
-          onDragMove={this.handleDragMove}
+          onDragStart={ this.onDragStart.bind(this)}
+          onDragMove={ this.onDragMove.bind(this) }
+          onDragEnd={ this.onDragEnd.bind(this) }
+          onMouseEnter={ this.onMouseEnter.bind(this) }
+          onMouseLeave={ this.onMouseLeave.bind(this) }
         >
           <Rect
             x={ 0 }
@@ -50,6 +91,19 @@ class MathText extends Component {
             fill='rgba(238, 0, 171, 0.3)'
           />
         </Group>
+        <Text
+          x={ this.state.currentX }
+          y={ this.state.currentY }
+          text={ '<->' }
+          fontSize={ 20 }
+          fill={ '#ee00ab' }
+          width={ 50 }
+          height={ 30 }
+          offsetX={ (50-30)/2 }
+          align='center'
+          verticalAlign='middle'
+          visible={ this.state.arrowVisible }
+        />
       </>
     )
   }
