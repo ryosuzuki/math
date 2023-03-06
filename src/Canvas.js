@@ -7,6 +7,7 @@ import MathSine from './MathSine.js'
 import Variable from './Variable.js'
 import DrawingLine from './DrawingLine.js'
 import Words from './Words.js'
+import Graph from './Graph.js'
 
 let debug = false
 
@@ -45,6 +46,7 @@ class Canvas extends Component {
   }
 
   mouseDown(pos) {
+    console.log(App.state.mouse)
     let event = new MouseEvent('mousedown' , { clientX: pos.x, clientY: pos.y, pageX: pos.x, pageY: pos.y })
     this.stage._pointerdown(event)
   }
@@ -111,6 +113,8 @@ class Canvas extends Component {
 
               {/* Circle */}
               <MathCircle />
+
+              <Graph />
 
               {/* Words */}
               <Words
