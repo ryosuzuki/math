@@ -12,6 +12,7 @@
     "konva": "^8.4.2",
     "lodash": "^4.17.21",
     "mafs": "^0.15.2",
+    "mathjs": "^11.6.0",
     "mind-ar": "^1.2.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -19,6 +20,7 @@
     "react-scripts": "5.0.0",
     "socket.io": "^4.4.1",
     "socket.io-client": "^4.4.1",
+    "tex-math-parser": "^2.0.4",
     "use-image": "^1.1.0"
   },
   "scripts": {
