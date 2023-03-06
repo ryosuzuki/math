@@ -17,7 +17,7 @@ class App extends Component {
     window.App = this
 
     this.sampleId = 1
-    this.domain = 'https://raw.githubusercontent.com/ryosuzuki/math/main'
+    this.domain = 'https://ryosuzuki.github.io/math'
 
     if (window.location.href.includes('localhost')) {
       this.socket = io('http://localhost:4000')
@@ -131,7 +131,7 @@ class App extends Component {
     return (
       <>
         <Canvas ref={this.canvasRef} />
-        <img id='paper' src={ `${App.domain}/public/sample/sample-${this.sampleId}.jpg` } crossOrigin='anonymous' style={{ display: 'none' }} />
+        <img id='paper' src={ `${this.domain}/public/sample/sample-${this.sampleId}.jpg` } crossOrigin='anonymous' style={{ display: 'none' }} />
         { isCameraOn ? '' :
           <a-scene>
             <a-camera id="camera" position="0 1.5 -0.4" look-controls="enabled: false" raycaster="objects: .cantap" cursor="fuse: false; rayOrigin: mouse;"></a-camera>
@@ -141,7 +141,7 @@ class App extends Component {
         }
         { !isCameraOn ? '' :
           <a-scene
-            mindar-image={ `imageTargetSrc: ${App.domain}/public/target.mind` }
+            mindar-image={ `imageTargetSrc: ${this.domain}/public/target.mind` }
             embedded color-space="sRGB"
             renderer="colorManagement: true, physicallyCorrectLights"
             vr-mode-ui="enabled: false"
