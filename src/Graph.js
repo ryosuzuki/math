@@ -24,17 +24,15 @@ class Graph extends Component {
   init() {
     let points = []
     for (let x = -3; x < 3; x += 0.01) {
-      // let y = x**2
-      // let str = "x^2+3x-10 \\sin \\left( 2x \\right)"
       let answer = evaluateTex(this.state.equation, { x: x });
       let y = answer.evaluated
-      points.push(x, y)
+      points.push({ x: x, y: y })
     }
     let origin = { x: 659, y: 947 }
     let graphBounding = { minX: 597, maxX: 723, minY: 790, maxY: 947 }
     let axisBounding = { minX: 538, maxX: 785, minY: 781, maxY: 986 }
-    let xs = points.filter((el, i) => i % 2 === 0)
-    let ys = points.filter((el, i) => i % 2 === 1)
+    let xs = points.map(point => point.x)
+    let ys = points.map(point => point.y)
     let bounding = { minX: _.min(xs), maxX: _.max(xs), minY: _.min(ys), maxY: _.max(ys) }
     let xRatio = (graphBounding.maxX - graphBounding.minX) / (bounding.maxX - bounding.minX)
     let yRatio = - (graphBounding.maxY - graphBounding.minY) / (bounding.maxY - bounding.minY)
@@ -45,10 +43,10 @@ class Graph extends Component {
   update(equation) {
     try {
       let points = []
-      for (let x = -3; x < 3; x += 0.01) {
+      for (let x = -10; x < 10; x += 0.01) {
         let answer = evaluateTex(equation, { x: x });
         let y = answer.evaluated
-        points.push(x, y)
+        points.push({ x: x, y: y })
       }
       this.setState({ equation: equation, points: points })
     } catch (err) {
@@ -57,15 +55,16 @@ class Graph extends Component {
   }
 
   convert(points) {
-    points = points.map((el, i) => {
-      if (i % 2 === 0) return el * this.state.ratio.x + this.state.origin.x
-      if (i % 2 === 1) return el * this.state.ratio.y + this.state.origin.y
-    })
-    return points
-    // let offset = 0
-    // if (x < xAxis.start - offset || xAxis.end + offset < x) return
-    // if (y < yAxis.end - offset || yAxis.start + offset < y) return
-    // return { x: x, y: y }
+    let offset = 50
+    let linePoints = []
+    for (let point of points) {
+      let x = point.x * this.state.ratio.x + this.state.origin.x
+      let y = point.y * this.state.ratio.y + this.state.origin.y
+      if (x < this.state.axisBounding.minX - offset || this.state.axisBounding.maxX + offset < x) continue
+      if (y < this.state.axisBounding.minY - offset || this.state.axisBounding.maxY + offset < y) continue
+      linePoints.push(x, y)
+    }
+    return linePoints
   }
 
 
