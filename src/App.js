@@ -17,7 +17,7 @@ class App extends Component {
     window.App = this
 
     this.sampleId = 1
-    this.domain = 'https://ryosuzuki.github.io/math'
+    this.domain = 'https://raw.githubusercontent.com/ryosuzuki/math/main'
 
     if (window.location.href.includes('localhost')) {
       this.socket = io('http://localhost:4000')
@@ -134,7 +134,7 @@ class App extends Component {
         <img id='paper' src={ `${this.domain}/public/sample/sample-${this.sampleId}.jpg` } crossOrigin='anonymous' style={{ display: 'none' }} />
         { isCameraOn ? '' :
           <a-scene>
-            <a-camera id="camera" position="0 1.5 -0.4" look-controls="enabled: false" raycaster="objects: .cantap" cursor="fuse: false; rayOrigin: mouse;"></a-camera>
+            <a-camera id="camera" position="0 1.5 -0.4" look-controls="enabled: true" raycaster="objects: .cantap" cursor="fuse: false; rayOrigin: mouse;"></a-camera>
             <a-plane drawing-plane id="drawing-plane" class="cantap" position="0 1.5 -1" width="1" height="1" color="#ccc" opacity="0">
             </a-plane>
           </a-scene>
