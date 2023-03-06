@@ -54,7 +54,6 @@ class App extends Component {
     let mesh = el.object3D.children[0]
     let konvaEl = document.querySelector('.konvajs-content canvas')
     // konvaEl.width = konvaEl.height = this.size
-    console.log(konvaEl)
     let texture = new THREE.CanvasTexture(konvaEl)
     let material = new THREE.MeshBasicMaterial({ map: texture, side: THREE.DoubleSide })
     mesh.material = material
