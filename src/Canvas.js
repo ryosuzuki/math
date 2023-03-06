@@ -29,6 +29,7 @@ class Canvas extends Component {
     }
 
     this.drawingLineRef = React.createRef()
+    this.graphRef = React.createRef()
   }
 
   componentDidMount() {
@@ -37,12 +38,13 @@ class Canvas extends Component {
     this.stage = Konva.stages[0]
   }
 
-  updateValue(hash) {
+  updateValue(hash, round=1) {
     let currentSymbols = this.state.currentSymbols
     for (let key of Object.keys(hash)) {
-      currentSymbols[key] = _.round(hash[key], 1)
+      currentSymbols[key] = _.round(hash[key], round)
     }
     this.setState({ currentSymbols: currentSymbols })
+    this.graphRef.current.updateValue()
   }
 
   mouseDown(pos) {
@@ -114,7 +116,7 @@ class Canvas extends Component {
               {/* Circle */}
               <MathCircle />
 
-              <Graph />
+              <Graph ref={this.graphRef} />
 
               {/* Words */}
               <Words

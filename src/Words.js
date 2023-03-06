@@ -35,9 +35,6 @@ class Words extends Component {
     }
   }
 
-
-
-
   onMouseDown(i) {
     if (!this.props.selectMode) return
     console.log(this.state.textAnnotations[i])
@@ -47,7 +44,9 @@ class Words extends Component {
     if (words.includes(word)) {
       delete symbols[word]
     } else {
-      symbols[word] = 0
+      let num = Number(word)
+      let defaultValue = isNaN(num) ? 0 : num
+      symbols[word] = defaultValue
     }
     Canvas.setState({ symbols: symbols })
   }

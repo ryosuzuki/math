@@ -14,7 +14,6 @@ class Graph extends Component {
       // graphBounding: { minX: 0, maxX: 0, minY: 0, maxY: 0 },
       axisBounding: { minX: 0, maxX: 0, minY: 0, maxY: 0 },
       variables: { a: -3, b: 1 }
-
     }
     let equation = 'y = x^2'
     let origin = { x: 659, y: 947 }
@@ -40,6 +39,7 @@ class Graph extends Component {
   onDragStart(event) {
     const target = event.target
     this.originPos = App.state.mouse
+    this.originSybmols = _.clone(Canvas.state.currentSymbols)
   }
 
   onDragMove(event) {
@@ -48,28 +48,29 @@ class Graph extends Component {
     target.y(0)
     let pos = App.state.mouse
     let delta = { x: pos.x - this.originPos.x, y: pos.y - this.originPos.y }
-    let a = this.state.variables['a']
-    let b = this.state.variables['b']
-    a = _.round(a + delta.x / this.state.ratio.x, 1)
-    b = _.round(b + delta.y / this.state.ratio.y, 1)
-    let str = `y = ( x - ${a})^{2} + ${b}`
-    console.log(str)
-    this.update(str)
+    let a = this.originSybmols['3']
+    let b = this.originSybmols['1']
+    let hash = {}
+    if (!isNaN(a)) {
+      hash['3'] = a - delta.x / this.state.ratio.x
+    }
+    if (!isNaN(b)) {
+      hash['1'] = b + delta.y / this.state.ratio.y
+    }
+    let round = 1
+    Canvas.updateValue(hash, round)
   }
 
   onDragEnd(event) {
-    let pos = App.state.mouse
-    let delta = { x: pos.x - this.originPos.x, y: pos.y - this.originPos.y }
-    let a = this.state.variables['a']
-    let b = this.state.variables['b']
-    a = _.round(a + delta.x / this.state.ratio.x, 1)
-    b = _.round(b + delta.y / this.state.ratio.y, 1)
-    let variables = {}
-    variables['a'] = a
-    variables['b'] = b
-    this.setState({ variables: variables })
-    console.log(this.state.points[0])
-    // this.setState({ arrowVisible: false })
+  }
+
+  updateValue() {
+    let symbols = Canvas.state.currentSymbols
+    let a = -symbols['3'] || -3
+    let b = symbols['1'] || 1
+    let c = symbols['²'] || 2
+    let str = `y = ( x - ${a})^{${c}} + ${b}`
+    this.update(str)
   }
 
   update(equation) {
@@ -134,6 +135,7 @@ class Graph extends Component {
           onDragMove={this.onDragMove.bind(this) }
           onDragEnd={this.onDragEnd.bind(this) }
         />
+        {/*
         <Text
           x={ 967 }
           y={ 1000 }
@@ -147,6 +149,7 @@ class Graph extends Component {
           align='center'
           verticalAlign='middle'
         />
+        */}
       </>
     )
   }

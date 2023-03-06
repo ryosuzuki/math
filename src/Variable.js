@@ -29,9 +29,13 @@ class Variable extends Component {
     let pos = App.state.mouse
     this.setState({ currentX: pos.x, currentY: this.originY })
     let dx = pos.x - this.props.x
+    dx = dx / 10
     let hash = {}
     hash[this.props.word] = this.originValue + dx
-    Canvas.updateValue(hash)
+
+    let round = this.props.word === '²' ? 0 : 1
+    // let round = 1
+    Canvas.updateValue(hash, round)
   }
 
   onDragEnd(event) {
