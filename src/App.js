@@ -21,7 +21,7 @@ class App extends Component {
     if (window.location.href.includes('localhost')) {
       this.socket = io('http://localhost:4000')
     }
-    this.size = 1024
+    this.size = 1200 // 1024
     this.state = {
       dragging: false,
       initDrawing: true,
