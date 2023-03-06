@@ -17,9 +17,11 @@ class App extends Component {
     window.App = this
 
     this.sampleId = 1
+    this.domain = 'https://raw.githubusercontent.com/ryosuzuki/math/main'
 
     if (window.location.href.includes('localhost')) {
       this.socket = io('http://localhost:4000')
+      this.domain = 'http://localhost:4000'
     }
     this.size = 1200 // 1024
     this.state = {
@@ -129,7 +131,7 @@ class App extends Component {
     return (
       <>
         <Canvas ref={this.canvasRef} />
-        <img id='paper' src={ `http://localhost:4000/public/sample/sample-${this.sampleId}.jpg` } crossOrigin='anonymous' style={{ display: 'none' }} />
+        <img id='paper' src={ `${App.domain}/public/sample/sample-${this.sampleId}.jpg` } crossOrigin='anonymous' style={{ display: 'none' }} />
         { isCameraOn ? '' :
           <a-scene>
             <a-camera id="camera" position="0 1.5 -0.4" look-controls="enabled: false" raycaster="objects: .cantap" cursor="fuse: false; rayOrigin: mouse;"></a-camera>
@@ -139,7 +141,7 @@ class App extends Component {
         }
         { !isCameraOn ? '' :
           <a-scene
-            mindar-image="imageTargetSrc: http://localhost:4000/public/target.mind"
+            mindar-image={ `imageTargetSrc: ${App.domain}/public/target.mind` }
             embedded color-space="sRGB"
             renderer="colorManagement: true, physicallyCorrectLights"
             vr-mode-ui="enabled: false"
@@ -149,7 +151,6 @@ class App extends Component {
             <a-entity mindar-image-target="targetIndex: 0">
               <a-plane drawing-plane id="drawing-plane" class="cantap" position="0 0 0" width="1" height="1" color="#ccc" opacity="0">
               </a-plane>
-              <a-image src="http://localhost:4000/public/sample.jpg" position="0 0 0"></a-image>
             </a-entity>
           </a-scene>
         }
