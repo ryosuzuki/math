@@ -112,7 +112,7 @@ class Canvas extends Component {
               />
 
               {/* Paper Image */}
-              {/*<Image image={ this.state.paperImage } />*/}
+              <Image image={ this.state.paperImage } />
 
               {/* Circle */}
               <MathCircle />
