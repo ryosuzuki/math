@@ -39,6 +39,14 @@ pip install trace_skeleton
 pip install svgwrite
 ```
 
+For CnSTD
+
+```
+pyenv install 3.10
+pyenv global 3.10
+pip install cnstd cnocr
+cnstd analyze -m mfd -i sample-1.jpg -o output-1.jpg
+```
 
 ## Prepare
 
