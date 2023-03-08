@@ -17,7 +17,7 @@ class App extends Component {
     window.App = this
 
     this.sampleId = 1
-    this.domain = 'https://ryosuzuki.github.io/math'
+    this.domain = 'https://raw.githubusercontent.com/ryosuzuki/math/main'
 
     if (window.location.href.includes('localhost')) {
       this.socket = io('http://localhost:4000')
