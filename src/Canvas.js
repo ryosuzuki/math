@@ -8,7 +8,7 @@ import Variable from './Variable.js'
 import DrawingLine from './DrawingLine.js'
 import Words from './Words.js'
 import Graph from './Graph.js'
-import Figure from './Figure.js'
+import Figures from './Figures.js'
 
 let debug = false
 
@@ -117,14 +117,14 @@ class Canvas extends Component {
               {/* Circle */}
               <MathCircle />
 
-              <Graph ref={this.graphRef} />
+              {/*<Graph ref={this.graphRef} />*/}
 
               {/* Words */}
               <Words
                 selectMode={ this.state.selectMode }
               />
 
-              <Figure
+              <Figures
                 selectMode={ this.state.selectMode }
               />
               {/* Drawing Line */}
