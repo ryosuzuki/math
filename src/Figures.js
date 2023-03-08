@@ -28,6 +28,19 @@ class Figures extends Component {
       'y = \\sin(x)',
       'y = \\sin(2x)',
     ]
+
+    this.ratios = [
+      { x: 25.66064861813475, y: 26.905709982731338 }, // 0
+      { x: 29.245847176079735, y: 29.669850016473006}, // 1
+      { x: 25.66064861813475, y: 26.905709982731338 }, // 2 x
+      { x: 29.245847176079735, y: 29.669850016473006}, // 3 x
+      { x: 25.66064861813475, y: 26.905709982731338 }, // 4 x
+      { x: 29.245847176079735, y: 29.669850016473006}, // 5 x
+      { x: 29.245847176079735, y: 29.669850016473006}, // 6 x
+      { x: 25.9444824525229, y: 28.036916408186016},   // 7
+      { x: 25.9444824525229, y: 28.036916408186016},   // 8 x
+      { x: 25.9444824525229, y: 28.036916408186016},   // 9 x
+    ]
   }
 
   componentDidMount() {
@@ -79,7 +92,7 @@ class Figures extends Component {
       if (figure) {
         figures.push(figure)
       }
-      break
+      // break
     }
     this.setState({ figures: figures })
   }
@@ -229,6 +242,7 @@ class Figures extends Component {
                 xAxis={ figure.xAxis }
                 yAxis={ figure.yAxis }
                 equation={ this.equations[i] }
+                ratio={ this.ratios[i] }
                 segments={ figure.segments }
                 graphs={ figure.graphs }
               />

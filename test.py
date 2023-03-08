@@ -1,40 +1,35 @@
+import sys
+import json
 import sympy as sp
 from latex2sympy2 import latex2sympy, latex2latex
 
-a, b = sp.symbols('a b')
-eq1 = sp.Eq(-48.5 * b, sp.sqrt(a) - 2)
-eq2 = sp.Eq(-1.5 * b, sp.sqrt(97 * a) - 2)
-sol = sp.solve((eq1, eq2), (1/a, 1/b))
-print(sol)
+# { "equation": "y = \\sqrt{x} - 2", "x1": 97, "y1": -1.5, "x2": 1, "y2": -48.5 }
+while True:
+  try:
+    print('{ "receive": "ok" }')
+    jsonData = input()
+    data = json.loads(jsonData)
 
-expr1 = latex2sympy('-48.5 b = \\sqrt{a} - 2')
+    equation = data['equation']
+    a, b = sp.symbols('a b')
+    x, y = sp.symbols('x y')
+    x1 = data['x1']/a
+    y1 = data['y1']/b
+    x2 = data['x2']/a
+    y2 = data['y2']/b
 
-print(latex2latex('-48.5 b = \\sqrt{a} - 2'))
-expr2 = latex2sympy('-1.5 b = \\sqrt{97 a} - 2')
-# expr = latex2sympy(r'2 * x - y - 3')
-print(expr1)
-# x, y = sp.symbols('x y')
-sol = sp.solve([expr1[0], expr2[1]], (1/a, 1/b))
+    exp = latex2sympy(equation)
+    exp = sp.Eq(y, exp)
 
-print(sol)
+    eq1 = exp.subs({'x': x1, 'y': y1})
+    eq2 = exp.subs({'x': x2, 'y': y2})
 
-# # a, b = sp.symbols('a b')
-
-
-# a, b = sp.symbols('a b')
-# eq1_str = '-48.5 (1/b) = \\sqrt{(1/a)} - 2'
-# eq2_str = '-1.5 (1/b) = \\sqrt{97(1/a)} - 2'
-# c = latex2sympy(eq1_str)
-# d = latex2sympy(eq2_str)
-
-# # c = latex2latex(eq1_str)
-
-
-# print(c[0])
-# print(d[0])
-
-
-# # eq1 = sp.Eq(c[0], c[1])
-# # eq2 = sp.Eq(d[0], d[1])
-# sol = sp.solve((c[0], d[0]), (a, b))
-# print(sol)
+    sol = sp.solve([eq1, eq2], (a, b))
+    print('{ "processing": "ok" }')
+    # res = { "x": str(sol[0][0]), "y": str(sol[0][1]) }
+    # y = json.dumps(res)
+    # print(y)
+    # num_sol = [(s[0].evalf(n=10), s[1].evalf(n=10)) for s in sol]
+    # print(num_sol)
+  except:
+    print('{ "error": "no" }')

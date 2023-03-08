@@ -1,28 +1,22 @@
-import * as math from 'mathjs';
+import { PythonShell } from 'python-shell'
+const pyshell = new PythonShell('test.py');
 
-const equation = 'y - sqrt(x) = 0';
+const data = {
+  equation: 'y = \\sqrt{x} - 2',
+  x1: 97,
+  y1: -1.5,
+  x2: 1,
+  y2: -48.5
+}
 
-math.evaluate(equation, { y: 2 })
-// const yValue = 2;
-// const tree = math.parse(equation);
+pyshell.send(JSON.stringify(data), { mode: 'json' })
 
-// const substitutedTree = tree.transform((node) => {
-//   if (node.isSymbolNode && node.name === 'y') {
-//     return math.parse(yValue.toString())
-//   }
-//   return node;
-// });
+pyshell.on('message', (result) => {
+  result = JSON.parse(result)
+  console.log(result);
+  // res.send(results);
+})
 
-// console.log(substitutedTree)
-// const solutions = math.solve(substitutedTree, 'x');
-// console.log(solutions)
-
-// // Simplify the substituted mathjs tree object to solve for x
-// const simplifiedTree = math.simplify(substitutedTree);
-// const compiledFunction = simplifiedTree.compile();
-
-// console.log(compiledFunction)
-
-// // // Evaluate the compiled function to solve for x
-// const xValue = compiledFunction.evaluate(0);
-// // console.log(xValue); // Output: 4
+pyshell.end((err) => {
+  // if (err) res.send("Error : ", err);
+})
