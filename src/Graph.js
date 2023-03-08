@@ -17,12 +17,12 @@ class Graph extends Component {
     }
     let equation = 'y = x^2'
     let origin = { x: 659, y: 947 }
-    let axisBounding = { minX: 538, maxX: 785, minY: 781, maxY: 986 }
+    // let axisBounding = { minX: 538, maxX: 785, minY: 781, maxY: 986 }
     origin = { x: 1029, y: 949 }
-    axisBounding = { minX: 849, maxX: 1085, minY: 781, maxY: 986 }
+    // axisBounding = { minX: 849, maxX: 1085, minY: 781, maxY: 986 }
 
     this.state.origin = origin
-    this.state.axisBounding = axisBounding
+    // this.state.axisBounding = axisBounding
     this.state.equation = equation
   }
 
