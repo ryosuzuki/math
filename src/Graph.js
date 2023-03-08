@@ -12,6 +12,7 @@ class Graph extends Component {
       ratio: { x: 0, y: 0 },
       variables: { a: -3, b: 1 }
     }
+    this.state.equation = this.props.equation
   }
 
   componentDidMount() {
@@ -24,7 +25,7 @@ class Graph extends Component {
     dy = 923 - 949
     let ratio = { x: dx / (-3) , y: dy / 1 }
     this.setState({ ratio: ratio })
-    this.update('y = (x+3)^{2}+1')
+    this.update(this.state.equation)
   }
 
   onDragStart(event) {

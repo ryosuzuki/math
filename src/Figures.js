@@ -14,6 +14,19 @@ class Figures extends Component {
       lines: [],
       figures: [],
     }
+    this.equations = [
+      'y = \\sqrt{x} - 2',
+      'y = \\sqrt{x - 2}',
+      'y = - \\sqrt{x}',
+      'y = \\sqrt{-x}',
+      'y = \\sqrt{x}',
+      'y = 2 \\sqrt{x}',
+      'y = x^2',
+      'y = (x + 3)^2 + 1',
+      'y = \\sin(x)',
+      'y = \\sin(2x)',
+    ]
+
   }
 
   componentDidMount() {
@@ -199,6 +212,7 @@ class Figures extends Component {
                 origin={ figure.origin }
                 xAxis={ figure.xAxis }
                 yAxis={ figure.yAxis }
+                equation={ this.equations[i] }
               />
 
               {/* graph */}
