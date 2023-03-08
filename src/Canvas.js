@@ -124,7 +124,9 @@ class Canvas extends Component {
                 selectMode={ this.state.selectMode }
               />
 
-              <Figure />
+              <Figure
+                selectMode={ this.state.selectMode }
+              />
               {/* Drawing Line */}
               <DrawingLine ref={this.drawingLineRef} />
             </Layer>

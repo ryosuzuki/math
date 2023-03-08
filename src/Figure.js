@@ -9,6 +9,7 @@ class Figure extends Component {
     super(props)
     window.Figure = this
     this.state = {
+      currentId: -1,
       paths: [],
       bboxes: [],
     }
@@ -55,6 +56,21 @@ class Figure extends Component {
     this.setState({ bboxes: bboxes })
   }
 
+  onMouseDown(i) {
+    if (!this.props.selectMode) return
+    console.log(i)
+  }
+
+  onMouseEnter(i) {
+    if (!this.props.selectMode) return
+    this.setState({ currentId: i })
+  }
+
+  onMouseLeave(i) {
+    if (!this.props.selectMode) return
+    this.setState({ currentId: -1 })
+  }
+
   render() {
     return (
       <>
@@ -71,6 +87,12 @@ class Figure extends Component {
         })}
 
         { this.state.bboxes.map((bbox, i) => {
+          let stroke = 'rgba(0, 0, 0, 0)'
+          let fill = 'rgba(0, 0, 0, 0)'
+          if (this.state.currentId === i) {
+            stroke = App.strokeColor
+            fill = App.fillColorAlpha
+          }
           return (
             <Rect
               key={ i }
@@ -79,8 +101,11 @@ class Figure extends Component {
               width={ bbox[2] - bbox[0] }
               height={ bbox[3] - bbox[1] }
               strokeWidth={ 3 }
-              stroke={ App.strokeColor }
-              fill={ App.fillColorAlpha }
+              stroke={ stroke }
+              fill={ fill }
+              onMouseDown={ this.onMouseDown.bind(this, i) }
+              onMouseEnter={ this.onMouseEnter.bind(this, i) }
+              onMouseLeave={ this.onMouseLeave.bind(this, i) }
             />
           )
         })}
