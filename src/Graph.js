@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { Line, Text } from 'react-konva'
 import { parseTex, evaluateTex } from 'tex-math-parser'
+import * as math from 'mathjs';
 
 class Graph extends Component {
   constructor(props) {
@@ -23,7 +24,99 @@ class Graph extends Component {
     let dy = p.y - this.props.origin.y // = 1
     dx = 953 - 1029
     dy = 923 - 949
-    let ratio = { x: dx / (-3) , y: dy / 1 }
+
+    window.math = math
+
+    const eq1 = 'b = \\frac{4}{97} - \\frac{2 \\sqrt{a}}{97}'
+    let answer = evaluateTex(this.state.equation, { a: 1 })
+
+
+
+    // const eq1 = '-48.5*b = sqrt(a) - 2';
+    // const eq2 = '-1.5*b = sqrt(97*a) - 2';
+    // const expr1 = math.parse(eq1);
+    // const expr2 = math.parse(eq2);
+    // const simplified1 = math.simplify(eq1);
+    // const simplified2 = math.simplify(eq2);
+
+
+
+    // const variables = ['a', 'b'];
+    // const expr2 = math.parse(eq2);
+    // const scope = { a: null, b: null };
+    //  const compiled1 = expr1.compile();
+    // const compiled2 = expr2.compile();
+    // const solveForA = (bValue) => {
+    //   scope.b = bValue;
+    //   return compiled1.evaluate(scope);
+    // }
+    // const solveForB = (aValue) => {
+    //   scope.a = aValue;
+    //   return compiled2.evaluate(scope);
+    // }
+
+
+
+
+
+
+
+
+
+    // const eq1 = '-48.5*b == sqrt(a) - 2';
+    // const eq2 = '-1.5*b == sqrt(97*a) - 2';
+    // const simplified1 = math.simplify(eq1);
+    // const simplified2 = math.simplify(eq2);
+    // const variables = ['a', 'b'];
+    // // const solutions = math.solve([simplified1, simplified2], variables);
+
+
+    // const parsed1 = math.parse(eq1);
+    // const parsed2 = math.parse(eq2);
+    // // const simplified1 = parsed1.simplify();
+    // // const simplified2 = parsed2.simplify();
+    // const solutions = math.evaluate(`solve([${simplified1}, ${simplified2}], ${JSON.stringify(variables)})`);
+
+
+
+
+    // let points = this.props.segments.map((segment) => { return { x: segment[1], y: segment[2] } })
+    // console.log(points)
+    // window.points = points
+
+    // let yRatios = []
+    // for (let point of points) {
+    //   let answer = evaluateTex(this.state.equation, { x: point.x })
+    //   let y = answer.evaluated
+    //   let yRatio = point.y / y
+    //   yRatios.push(yRatio)
+    // }
+
+
+    // let xRatios = []
+    // for (let point of points) {
+    //   let answer = evaluateTex('x = (y + 2)^2', { y: point.y });
+    //   let x = answer.evaluated
+    //   console.log(x)
+    //   let xRatio =  point.x / x
+    //   xRatios.push(xRatio)
+    // }
+
+    // console.log(points)
+    // let xRatios = []
+    // for (let point of points) {
+    //   let answer = evaluateTex(this.state.equation, { y: point.y })
+    //   let x = answer.evaluated
+    //   let xRatio = point.x / x
+    //   xRatios.push(xRatio)
+    // }
+    // console.log(xRatios)
+    // console.log(yRatios)
+    // let xRatio = _.mean(xRatios)
+    // let yRatio = _.mean(yRatios)
+    let xRatio = 25.66064861813471
+    let yRatio = 26.90570998273134
+    let ratio = { x: xRatio, y: -yRatio }
     this.setState({ ratio: ratio })
     this.update(this.state.equation)
   }

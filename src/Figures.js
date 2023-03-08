@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { Group, Rect, Path, Line, Circle } from 'react-konva'
 import { parseSync, stringify } from 'svgson'
+import { pathParse, serializePath } from 'svg-path-parse'
 import svgPathBbox from 'svg-path-bbox'
 
 import Graph from './Graph.js'
@@ -13,6 +14,7 @@ class Figures extends Component {
       currentId: -1,
       lines: [],
       figures: [],
+      segments: [],
     }
     this.equations = [
       'y = \\sqrt{x} - 2',
@@ -26,7 +28,6 @@ class Figures extends Component {
       'y = \\sin(x)',
       'y = \\sin(2x)',
     ]
-
   }
 
   componentDidMount() {
@@ -76,9 +77,9 @@ class Figures extends Component {
       let figure = { bbox: bbox}
       figure = this.getAxis(figure)
       if (figure) {
-        figure.visible = false
         figures.push(figure)
       }
+      break
     }
     this.setState({ figures: figures })
   }
@@ -108,11 +109,15 @@ class Figures extends Component {
     }
     let xAxis = this.getAxisPoints(horizontal, 'x')
     let yAxis = this.getAxisPoints(vertical, 'y')
-    figure.graphs = graphs
+    let segments = this.getSegments(graphs)
     if (xAxis && yAxis) {
       figure.xAxis = xAxis
       figure.yAxis = yAxis
       figure.origin = { x: yAxis[0], y: xAxis[1] }
+      figure.visible = false
+      figure.graphs = graphs
+      figure.segments = segments
+      figure.graphRef = React.createRef()
       return figure
     } else {
       return null
@@ -136,9 +141,20 @@ class Figures extends Component {
     }
   }
 
+  getSegments(graphs) {
+    let segments = []
+    for (let graph of graphs) {
+      let path = graph.attributes.d
+      let pathData = pathParse(path).getSegments()
+      segments.push(pathData.segments)
+    }
+    segments = _.flatten(segments)
+    return segments
+  }
+
   onMouseDown(i) {
     let figure = this.state.figures[i]
-    figure.visible = true
+    // figure.visible = true
   }
 
   onMouseEnter(i) {
@@ -208,14 +224,30 @@ class Figures extends Component {
               />
 
               <Graph
-                ref={ this.graphRef }
+                ref={ figure.graphRef }
                 origin={ figure.origin }
                 xAxis={ figure.xAxis }
                 yAxis={ figure.yAxis }
                 equation={ this.equations[i] }
+                segments={ figure.segments }
+                graphs={ figure.graphs }
               />
 
-              {/* graph */}
+              {/* segments for debugging */}
+              { figure.segments.map((segment, j) => {
+                return (
+                  <Circle
+                    key={ `segment-${i}-${j}` }
+                    x={ segment[1] }
+                    y={ segment[2] }
+                    radius={ 3 }
+                    fill={ 'red' }
+                    visible={ false }
+                  />
+                )
+              })}
+
+              {/* graph path for debugging */}
               { figure.graphs.map((graph, j) => {
                 return (
                   <Path
@@ -223,7 +255,7 @@ class Figures extends Component {
                     data={ graph.attributes.d }
                     strokeWidth={ 8 }
                     stroke={ 'green' }
-                    visible={ figure.visible }
+                    visible={ false }
                   />
                 )
               })}
