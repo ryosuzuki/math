@@ -10,7 +10,7 @@ class Figure extends Component {
     window.Figure = this
     this.state = {
       currentId: -1,
-      paths: [],
+      lines: [],
       bboxes: [],
     }
   }
@@ -33,19 +33,27 @@ class Figure extends Component {
     const url = `${App.domain}/public/sample/figure-line-${App.sampleId}.svg`
     let svgText = await this.fetchData(url)
     let svgJson = parseSync(svgText)
-    let paths = svgJson.children
-    paths = paths.filter((path) => path.attributes.d)
-    this.setState({ paths: paths })
+    let lines = svgJson.children
+    lines = lines.filter((line) => line.attributes.d)
+    for (let i = 0; i < lines.length; i++) {
+      let line = lines[i]
+      let bbox = svgPathBbox(line.attributes.d)
+      line.bbox = bbox
+      line.visible = false
+      lines[i] = line
+    }
+    this.setState({ lines: lines })
   }
 
   async processContour() {
     const url = `${App.domain}/public/sample/figure-contour-${App.sampleId}.svg`
     let svgText = await this.fetchData(url)
     let svgJson = parseSync(svgText)
-    let paths = svgJson.children
-    paths = paths.filter((path) => path.attributes.d)
+    let contours = svgJson.children
+    contours = contours.filter((contour) => contour.attributes.d)
     let bboxes = []
-    for (let path of paths) {
+    for (let i = 0; i < contours.length; i++) {
+      let path = contours[i]
       let bbox = svgPathBbox(path.attributes.d)
       let width = bbox[2] - bbox[0]
       let height = bbox[3] - bbox[1]
@@ -57,8 +65,16 @@ class Figure extends Component {
   }
 
   onMouseDown(i) {
-    if (!this.props.selectMode) return
-    console.log(i)
+    let bbox = this.state.bboxes[i]
+    let lines = this.state.lines
+    for (let i = 0; i < lines.length; i++) {
+      let line = lines[i]
+      if (line.bbox[0] < bbox[0] || line.bbox[1] < bbox[1] || line.bbox[2] > bbox[2] || line.bbox[3] > bbox[3]) {
+        line.visible = false
+      } else {
+        line.visible = true
+      }
+    }
   }
 
   onMouseEnter(i) {
@@ -74,14 +90,14 @@ class Figure extends Component {
   render() {
     return (
       <>
-        { this.state.paths.map((path, i) => {
+        { this.state.lines.map((line, i) => {
           return (
             <Path
               key={ i }
-              data={ path.attributes.d }
+              data={ line.attributes.d }
               stroke={ App.highlightColor }
               strokeWidth={ 3 }
-              visible={ true }
+              visible={ line.visible }
             />
           )
         })}
