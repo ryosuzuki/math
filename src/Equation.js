@@ -1,10 +1,6 @@
 import React, { Component } from 'react'
-import { Stage, Layer, Group, Rect, Text, Path } from 'react-konva'
-import katex from 'katex'
-import TeXToSVG from 'tex-to-svg'
-import { parseSync, stringify } from 'svgson'
-import { Html } from 'react-konva-utils';
-import { parse } from 'transform-parser'
+import { Rect } from 'react-konva'
+import Latex from './Latex.js'
 
 class Equation extends Component {
   constructor(props) {
@@ -12,37 +8,58 @@ class Equation extends Component {
     window.Equation = this
     this.state = {
       equations: [],
-      svgElements: [],
-      svgDefs: {},
     }
   }
 
   componentDidMount() {
     const url = `${App.domain}/public/sample/math-${App.sampleId}.json`
     this.fetchData(url)
-
-    window.TeXToSVG = TeXToSVG
-    let equation = 'y = x^2 + 6x + 10 = (x+3)^2 + 1'
-    const options = { width: 309 }
-    let svgText = TeXToSVG(equation, options)
-    let svgJson = parseSync(svgText)
-    let elements = svgJson.children[1]
-    let paths = svgJson.children[0].children
-    let defs = {}
-    for (let path of paths) {
-      defs[`#${path.attributes.id}`] = path.attributes.d
-    }
-    // svgJson.defs = defs
-    // elements.defs = defs
-    // const svg = { elements: elements, defs: defs }
-    this.setState({ svgElements: elements, svgDefs: defs  })
-
   }
 
   async fetchData(url) {
     try {
       const response = await fetch(url)
-      const equations = await response.json()
+      let equations = await response.json()
+      equations = equations.filter(e => e.score > 0.6)
+      equations = equations.map((equation) => {
+        equation.x = equation.bbox[0][0]
+        equation.y = equation.bbox[0][1]
+        equation.width = equation.bbox[2][0] - equation.x
+        equation.height = equation.bbox[2][1] - equation.y
+        return equation
+      })
+      // TODO: hard-coded equation from mathpix.md
+      for (let i = 0; i < equations.length; i++) {
+        let equation = equations[i]
+        if (equation.score === 0.8239156603813171) {
+          equation.latex = 'y=x^{2}+6 x+10=(x+3)^{2}+1'
+        }
+        if (equation.score === 0.8157801628112793) {
+          equation.latex = 'y=x^{2}'
+        }
+        if (equation.score === 0.8349450826644897) {
+          equation.latex = 'y=x^{2}'
+        }
+        if (equation.score === 0.728001058101654) {
+          equation.latex = 'y=\\sqrt{x}-2'
+        }
+        if (equation.score === 0.7760927677154541) {
+          equation.latex = 'f(x)=x^{2}+6 x+10'
+        }
+        if (equation.score === 0.665852427482605) {
+          equation.latex = 'y=\\sqrt{x}'
+        }
+        if (equation.score === 0.6306443810462952) {
+          equation.latex = 'y=\\sqrt{x-2}'
+        }
+        if (equation.score === 0.6169342994689941) {
+          equation.latex = 'y=(x+3)^{2}+1'
+        }
+        if (equation.score === 0.6046971082687378) {
+          equation.latex = 'y=1-\\sin x'
+        }
+        equations[i] = equation
+      }
       this.setState({ equations: equations })
     } catch (error) {
       console.error(error);
@@ -50,94 +67,30 @@ class Equation extends Component {
   }
 
   render() {
-    const katexHtml = { __html: katex.renderToString('c = \\pm\\sqrt{a^2 + b^2}') };
-
-    const getPathData = (element) => {
-      if (element.name === 'path') {
-        return element.attributes.d;
-      }
-      return ''
-    }
-
-    const getTransform = (transformStr) => {
-      let scale = { x: 1, y: 1 }
-      let translate = { x: 0, y: 0, }
-      if (!transformStr) return { scale: scale, translate: translate }
-      for (let value of transformStr.split(' ')) {
-        const [type, data] = value.split('(');
-        const values = data.substring(0, data.length - 1).split(',')
-        if (type === 'scale') {
-          if (values.length === 1) values.push(values[0])
-          scale = {
-            x: parseFloat(values[0]),
-            y: parseFloat(values[1])
-          }
-        } else if (type === 'translate') {
-          translate = {
-            x: parseFloat(values[0]),
-            y: parseFloat(values[1])
-          }
-        }
-      }
-      return { scale: scale, translate: translate }
-    }
-
-    const renderElement = (element) => {
-      if (element.type === 'element') {
-        switch (element.name) {
-          case 'g':
-            const node = element.attributes['data-mml-node']
-            const transformStr = element.attributes['transform']
-            const transform = getTransform(transformStr)
-            console.log(transform)
-            return (
-              <Group
-                x={ transform.translate.x }
-                y={ transform.translate.y }
-                scaleX={ transform.scale.x }
-                scaleY={ transform.scale.y }
-              >
-                { element.children.map(renderElement) }
-              </Group>
-            )
-          case 'use':
-            const id = element.attributes['xlink:href']
-            const data = this.state.svgDefs[id]
-            return (
-              <Path
-                x={ 0 }
-                y={ 0 }
-                data={ data }
-                fill={ 'black' }
-              />
-            )
-          default:
-            return null
-        }
-      }
-      return null
-    }
-
-
     return (
       <>
-        <Group x={ 300 } y={ 300 } scaleX={ 0.05 } scaleY={ 0.05 }>
-          { renderElement(this.state.svgElements) }
-        </Group>
-
         { this.state.equations.map((equation, i) => {
           if (equation.score < 0.3) return <></>
           return (
-            <Rect
-              key={ i }
-              x={ equation.bbox[0][0] }
-              y={ equation.bbox[0][1] }
-              width={ equation.bbox[2][0] - equation.bbox[0][0] }
-              height={ equation.bbox[2][1] - equation.bbox[0][1] }
-              fill={ equation.type === 'embedding' ? App.fillColorAlpha : App.highlightColorAlpha }
-              stroke={ App.strokeColor }
-              strokeWidth={ 3 }
-            />
+            <>
+              <Rect
+                key={ i }
+                x={ equation.x }
+                y={ equation.y }
+                width={ equation.width }
+                height={ equation.height }
+                fill={ equation.type === 'embedding' ? App.fillColorAlpha : App.highlightColorAlpha }
+                stroke={ App.strokeColor }
+                strokeWidth={ 3 }
+              />
+              <Latex
+                x={ equation.x }
+                y={ equation.y }
+                width={ equation.width }
+                height={ equation.height }
+                latex={ equation.latex }
+              />
+            </>
           )
         })}
       </>
