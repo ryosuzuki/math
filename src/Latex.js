@@ -56,12 +56,24 @@ class Latex extends Component {
   }
 
   onMouseDown(id) {
-    console.log(id)
     if (!Canvas.state.selectMode) return
+    let symbols = Canvas.state.currentSymbols
+    if (id.includes('mi')) {
+      id = 'mi-' + id.split('-mi-')[1]
+    }
+    let ids = Object.keys(symbols)
+    console.log(id, ids)
+    if (ids.includes(id)) {
+      // delete symbols[id]
+    } else {
+      symbols[id] = 0
+    }
+    Canvas.setState({ symbols: symbols })
   }
 
   onMouseEnter(id) {
     // console.log(id)
+    if (id.includes('mo')) return
     if (!Canvas.state.selectMode) return
     Equation.setState({ currentId: id })
   }
@@ -72,14 +84,16 @@ class Latex extends Component {
     Equation.setState({ currentId: null })
   }
 
-  renderElement(element, id='root') {
+  renderElement(element, id) {
     if (element.type === 'element') {
       const transformStr = element.attributes['transform']
       const transform = this.getTransform(transformStr)
       switch (element.name) {
         case 'g':
           const node = element.attributes['data-mml-node']
-          if (node) id = `${id}-${node}`
+          if (node && node !== 'TeXAtom') {
+            id = id ? `${id}-${node}` : node
+          }
           return (
             <Group
               x={ transform.translate.x }
@@ -102,14 +116,33 @@ class Latex extends Component {
           id = `${id}-${c}`
           let color = 'black'
           let fill = 'rgba(0, 0, 0, 0)'
-          if (Equation.state.currentId === c) {
+          /*
+            mi: [x, y], mo: [+, =, ()], mn: [1, 2, 3], msup: [^2]
+            1D466: y, 1D465: x, ...
+            30: 0, 31: 1, 32: 2, ...
+            - x^2 = msup-mi-1D465, msup-mn-32
+            - 10  = mn-31-30
+            - \sqrt{x} = msqrt-mo-221A, msqrt-mi-1D465
+          */
+          let highligh = false
+          const currentId = Equation.state.currentId
+          if (currentId === id) highligh = true
+          if (currentId && id.includes('mi') && id.split('-mi-')[1] === currentId.split('-mi-')[1]) highligh = true
+
+          let symbols = Canvas.state.currentSymbols
+          let sids = Object.keys(symbols)
+          // console.log(sid)
+          for (let sid of sids) {
+            if (id.includes(sid)) highligh = true
+          }
+          if (highligh) {
             color = App.highlightColor
             fill = App.highlightColorAlpha
           }
           return (
             <>
               <Path
-                key={ `path-${id}` }
+                key={ `path-${this.props.id}-${id}` }
                 x={ transform.translate.x }
                 y={ transform.translate.y }
                 className={ id }
@@ -117,15 +150,15 @@ class Latex extends Component {
                 fill={ color }
               />
               <Rect
-                key={ `bbox-${id}` }
+                key={ `bbox-${this.props.id}-${id}` }
                 x={ bbox[0] - offset/2 }
                 y={ bbox[1] - offset/2 }
                 width={ bbox[2] - bbox[0] + offset }
                 height={ bbox[3] - bbox[1] + offset }
                 fill={ fill }
-                onMouseDown={ this.onMouseDown.bind(this, c) }
-                onMouseEnter={ this.onMouseEnter.bind(this, c) }
-                onMouseLeave={ this.onMouseLeave.bind(this, c) }
+                onMouseDown={ this.onMouseDown.bind(this, id) }
+                onMouseEnter={ this.onMouseEnter.bind(this, id) }
+                onMouseLeave={ this.onMouseLeave.bind(this, id) }
               />
             </>
           )
@@ -157,7 +190,7 @@ class Latex extends Component {
           scaleX={ 0.02 }
           scaleY={ 0.02 }
         >
-          { this.renderElement(this.state.latexElements, this.props.id) }
+          { this.renderElement(this.state.latexElements) }
         </Group>
       </>
     )
