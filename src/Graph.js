@@ -14,7 +14,7 @@ class Graph extends Component {
       variables: { a: -3, b: 1 }
     }
     this.state.equation = this.props.equation
-    console.log(this.props.ratio)
+    // console.log(this.props.ratio)
     this.state.ratio = this.props.ratio
   }
 

@@ -9,17 +9,16 @@
     "aframe": "^1.2.0",
     "cors": "^2.8.5",
     "express": "^4.17.3",
-    "imagetracerjs": "^1.2.6",
-    "jpeg-js": "^0.4.4",
+    "katex": "^0.16.4",
     "konva": "^8.4.2",
     "lodash": "^4.17.21",
-    "mafs": "^0.15.2",
     "mathjs": "^11.6.0",
     "mind-ar": "^1.2.0",
     "python-shell": "^5.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-konva": "^18.2.0",
+    "react-konva-utils": "^0.3.2",
     "react-scripts": "5.0.0",
     "socket.io": "^4.4.1",
     "socket.io-client": "^4.4.1",
@@ -28,6 +27,8 @@
     "svg-path-properties": "^1.1.0",
     "svgson": "^5.2.1",
     "tex-math-parser": "^2.0.4",
+    "tex-to-svg": "^0.2.0",
+    "transform-parser": "^1.0.1",
     "use-image": "^1.1.0"
   },
   "scripts": {
@@ -53,6 +54,8 @@
   },
   "devDependencies": {
     "gh-pages": "^3.2.3",
+    "imagetracerjs": "^1.2.6",
+    "jpeg-js": "^0.4.4",
     "raw-loader": "^4.0.2"
   }
 }

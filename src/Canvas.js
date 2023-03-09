@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { Stage, Layer, Rect, Text, Line, Group, Circle, Path, Image, Shape} from 'react-konva'
 import Konva from 'konva'
+import { Html } from 'react-konva-utils';
 
 import MathCircle from './MathCircle.js'
 import MathSine from './MathSine.js'
@@ -118,8 +119,6 @@ class Canvas extends Component {
               {/* Circle */}
               <MathCircle />
 
-              <Equation />
-
               {/*<Graph ref={this.graphRef} />*/}
 
               {/* Words */}
@@ -132,6 +131,9 @@ class Canvas extends Component {
               />
               {/* Drawing Line */}
               <DrawingLine ref={this.drawingLineRef} />
+
+              <Equation />
+
             </Layer>
           </Stage>
         </div>
