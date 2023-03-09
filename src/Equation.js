@@ -8,6 +8,7 @@ class Equation extends Component {
     window.Equation = this
     this.state = {
       equations: [],
+      currentId: null,
     }
   }
 
@@ -74,7 +75,7 @@ class Equation extends Component {
           return (
             <>
               <Rect
-                key={ i }
+                key={ `equation-rect-${i}` }
                 x={ equation.x }
                 y={ equation.y }
                 width={ equation.width }
@@ -84,6 +85,8 @@ class Equation extends Component {
                 strokeWidth={ 3 }
               />
               <Latex
+                key={ `latex-${i}` }
+                id={ i }
                 x={ equation.x }
                 y={ equation.y }
                 width={ equation.width }
