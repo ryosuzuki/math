@@ -6,6 +6,7 @@ import { pathParse, serializePath } from 'svg-path-parse'
 import svgPathBbox from 'svg-path-bbox'
 
 import parse from 'parse-svg-path'
+import translate from 'translate-svg-path'
 import scale from 'scale-svg-path'
 import serialize from 'serialize-svg-path'
 
@@ -114,9 +115,13 @@ class Equation extends Component {
           x = x * scaleX
           y = y * scaleY
           let path = parse(pathData)
-          let xy = scale(path, scaleX, scaleY)
-          console.log(serialize(xy))
-          path = serialize(xy)
+          let a = translate(path, x, y)
+          path = serialize(a)
+
+          path = parse(path)
+          let b = scale(path, scaleX, scaleY)
+          console.log(serialize(b))
+          path = serialize(b)
 
           x = 300
           y = 300
