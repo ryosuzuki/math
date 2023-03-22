@@ -22,8 +22,9 @@ class Canvas extends Component {
       event: {},
       paperImage: null,
       selectMode: true,
-      currentSymbols: { },
+      currentSymbols: {},
     }
+    this.symbols = {}
     if (debug) {
       this.state.selectMode = false
       // this.state.currentSymbols = { 'math-mi-1D465': 0 }

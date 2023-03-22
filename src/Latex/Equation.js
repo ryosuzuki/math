@@ -2,7 +2,12 @@ import React, { Component } from 'react'
 import { Group, Rect, Path } from 'react-konva'
 import TeXToSVG from 'tex-to-svg'
 import { parseSync, stringify } from 'svgson'
+import { pathParse, serializePath } from 'svg-path-parse'
 import svgPathBbox from 'svg-path-bbox'
+
+import parse from 'parse-svg-path'
+import scale from 'scale-svg-path'
+import serialize from 'serialize-svg-path'
 
 import Symbol from './Symbol.js'
 
@@ -14,7 +19,8 @@ class Equation extends Component {
       latex: '',
       latexElements: [],
       latexDefs: {},
-      currentId: null
+      currentId: null,
+      symbols: []
     }
     this.id = 0
   }
@@ -32,6 +38,8 @@ class Equation extends Component {
       latexDefs[`#${path.attributes.id}`] = path.attributes.d
     }
     this.setState({ latexElements: latexElements, latexDefs: latexDefs  })
+    this.latexDefs = latexDefs
+    this.getElement(latexElements)
   }
 
   getTransform(transformStr) {
@@ -56,6 +64,83 @@ class Equation extends Component {
     }
     return { scale: scale, translate: translate }
   }
+
+  getElement(element, prev) {
+    if (element.type === 'element') {
+      const transformStr = element.attributes['transform']
+      const transform = this.getTransform(transformStr)
+      switch (element.name) {
+        case 'g':
+          const node = element.attributes['data-mml-node']
+          if (node && node !== 'TeXAtom') {
+            if (!prev) {
+              prev = { id: `${this.props.id}-${node}`, transform: [] }
+            } else {
+              prev.id = `${prev.id}-${node}`
+              prev.transform.push(transform)
+            }
+          }
+          for (let child of element.children) {
+            this.getElement.bind(this)(child, prev)
+          }
+          break
+        case 'use':
+          const c = element.attributes['data-c']
+          const href = element.attributes['xlink:href']
+          const pathData = this.latexDefs[href]
+          const symbolId = `${prev.id}-${c}`
+          const transforms = prev.transform
+          transforms.push(transform)
+          const box = svgPathBbox(pathData)
+          const offset = 500
+          const bbox = {
+            x: box[0] - offset/2,
+            y: box[1] - offset/2,
+            width: box[2] - box[0] + offset,
+            height: box[3] - box[1] + offset,
+          }
+
+          let x = this.props.x
+          let y = this.props.y
+          let scaleX = 0.2
+          let scaleY = -0.2
+          x = x * scaleX
+          for (let transform of transforms) {
+            x = x + transform.translate.x
+            y = y + transform.translate.y
+            scaleX = scaleX * transform.scale.x
+            scaleY = scaleY * transform.scale.y
+          }
+          x = x * scaleX
+          y = y * scaleY
+          let path = parse(pathData)
+          let xy = scale(path, scaleX, scaleY)
+          console.log(serialize(xy))
+          path = serialize(xy)
+
+          x = 300
+          y = 300
+          const symbol = {
+            id: symbolId,
+            pathData: path,
+            bbox: bbox,
+            x: x,
+            y: y,
+            width: this.props.width,
+            height: this.props.height,
+          }
+          const symbols = this.state.symbols
+          console.log(symbol)
+          symbols.push(symbol)
+          this.setState({ symbols: symbols })
+          break
+        default:
+          break
+      }
+    }
+  }
+
+
 
   renderElement(element, id) {
     if (element.type === 'element') {
@@ -98,6 +183,7 @@ class Equation extends Component {
           for (let sid of sids) {
             if (symbolId.includes(sid)) selected = true
           }
+
           return (
             <Symbol
               symbolId={ symbolId }
@@ -119,6 +205,19 @@ class Equation extends Component {
     const scale = 0.02
     return (
       <>
+        { this.state.symbols.map((symbol, i) => {
+          return (
+            <Path
+              data={ symbol.pathData }
+              x={ symbol.x }
+              y={ symbol.y }
+              width={ 30 }
+              height={ 50 }
+              fill={ App.highlightColorAlpha }
+            />
+          )
+        })}
+
         <Rect
           key={ `bbox-${this.props.id}` }
           x={ this.props.x }
