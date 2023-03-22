@@ -9,8 +9,9 @@ import Words from './Words.js'
 import Graph from './Graph.js'
 import Figure from './Figure.js'
 import Equation from './Equation.js'
+import Slider from './Slider.js'
 
-let debug = false
+let debug = true
 
 class Canvas extends Component {
   constructor(props) {
@@ -26,7 +27,7 @@ class Canvas extends Component {
     }
     if (debug) {
       this.state.selectMode = false
-      this.state.currentSymbols = { h: 10, k: 10, r: 30 }
+      this.state.currentSymbols = { 'math-mi-1D465': 0 }
     }
 
     this.drawingLineRef = React.createRef()
@@ -93,7 +94,7 @@ class Canvas extends Component {
           <button id="select" onClick={ () => this.setState({ selectMode: !this.state.selectMode }) }>{ `Select Mode: ${this.state.selectMode}` }</button>
         </div>
 
-        <div style={{ display: debug ? 'block' : 'none' }}>
+        <div style={{ display: 'none' }}>
           <Stage
             width={ App.size }
             height={ App.size }
@@ -129,6 +130,7 @@ class Canvas extends Component {
 
               <Equation />
 
+              <Slider />
             </Layer>
           </Stage>
         </div>

@@ -42,8 +42,6 @@ class Symbol extends Component {
     if (Canvas.state.selectMode) {
       Equation.setState({ currentId: id })
       this.setState({ highlight: true })
-    } else {
-      this.setState({ arrowVisible: true })
     }
   }
 
@@ -52,29 +50,29 @@ class Symbol extends Component {
     if (Canvas.state.selectMode) {
       Equation.setState({ currentId: null })
       this.setState({ highlight: false })
-    } else {
-      this.setState({ arrowVisible: false })
     }
   }
 
   onDragStart(event) {
-    console.log(event)
     if (Canvas.state.selectMode) return false
     const pos = App.state.mouse
     this.originValue = this.props.value
     this.originX = pos.x
     this.originY = pos.y
+    Slider.setState({ arrowVisible: true, originX: this.originX, originY: this.originY })
   }
 
   onDragMove(event) {
     if (Canvas.state.selectMode) return false
     const target = event.target
-    target.x(this.props.x)
-    target.y(this.props.y)
+    target.x(this.props.bbox.x)
+    target.y(this.props.bbox.y)
     const pos = App.state.mouse
-    this.setState({ currentX: pos.x, currentY: this.originY })
-    let dx = pos.x - this.props.x
+    Slider.setState({ currentX: pos.x, currentY: this.originY })
+
+    let dx = pos.x - this.originX
     dx = dx / 10
+    console.log(pos, dx)
 
     return false
     let hash = {}
@@ -85,7 +83,7 @@ class Symbol extends Component {
   }
 
   onDragEnd(event) {
-    this.setState({ arrowVisible: false })
+    Slider.setState({ arrowVisible: false })
   }
 
   render() {
@@ -106,6 +104,10 @@ class Symbol extends Component {
           width={ this.props.bbox.width }
           height={ this.props.bbox.height }
           fill={ fill }
+          draggable
+          onDragStart={ this.onDragStart.bind(this)}
+          onDragMove={ this.onDragMove.bind(this) }
+          onDragEnd={ this.onDragEnd.bind(this) }
           onMouseDown={ this.onMouseDown.bind(this) }
           onMouseEnter={ this.onMouseEnter.bind(this) }
           onMouseLeave={ this.onMouseLeave.bind(this) }

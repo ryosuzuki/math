@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import { Rect } from 'react-konva'
-import Latex from './Latex.js'
+import Equation from './Equation.js'
 
-class Equation extends Component {
+class Equations extends Component {
   constructor(props) {
     super(props)
     window.Equation = this
@@ -84,7 +84,7 @@ class Equation extends Component {
                 stroke={ App.strokeColor }
                 strokeWidth={ 3 }
               />
-              <Latex
+              <Equation
                 key={ `latex-${i}` }
                 id={ i }
                 x={ equation.x }
@@ -101,4 +101,4 @@ class Equation extends Component {
   }
 }
 
-export default Equation
+export default Equations

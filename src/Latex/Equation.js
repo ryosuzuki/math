@@ -6,10 +6,10 @@ import svgPathBbox from 'svg-path-bbox'
 
 import Symbol from './Symbol.js'
 
-class Latex extends Component {
+class Equation extends Component {
   constructor(props) {
     super(props)
-    window.Latex = this
+    window.Equation = this
     this.state = {
       latex: '',
       latexElements: [],
@@ -116,6 +116,7 @@ class Latex extends Component {
   }
 
   render() {
+    const scale = 0.02
     return (
       <>
         <Rect
@@ -132,8 +133,8 @@ class Latex extends Component {
           key={ `group-${this.props.id}` }
           x={ this.props.x + 10 }
           y={ this.props.y + 20 }
-          scaleX={ 0.02 }
-          scaleY={ 0.02 }
+          scaleX={ scale }
+          scaleY={ scale }
         >
           { this.renderElement(this.state.latexElements) }
         </Group>
@@ -142,4 +143,4 @@ class Latex extends Component {
   }
 }
 
-export default Latex
+export default Equation
