@@ -2,7 +2,8 @@ import React, { Component } from 'react'
 import { Group, Rect, Path } from 'react-konva'
 import TeXToSVG from 'tex-to-svg'
 import { parseSync, stringify } from 'svgson'
-import svgPathBbox from 'svg-path-bbox'
+
+import Symbol from './Symbol.js'
 
 class Latex extends Component {
   constructor(props) {
@@ -55,35 +56,6 @@ class Latex extends Component {
     return { scale: scale, translate: translate }
   }
 
-  onMouseDown(id) {
-    if (!Canvas.state.selectMode) return
-    let symbols = Canvas.state.currentSymbols
-    if (id.includes('mi')) {
-      id = 'mi-' + id.split('-mi-')[1]
-    }
-    let ids = Object.keys(symbols)
-    console.log(id, ids)
-    if (ids.includes(id)) {
-      // delete symbols[id]
-    } else {
-      symbols[id] = 0
-    }
-    Canvas.setState({ symbols: symbols })
-  }
-
-  onMouseEnter(id) {
-    // console.log(id)
-    if (id.includes('mo')) return
-    if (!Canvas.state.selectMode) return
-    Equation.setState({ currentId: id })
-  }
-
-  onMouseLeave(id) {
-    // console.log(id)
-    if (!Canvas.state.selectMode) return
-    Equation.setState({ currentId: null })
-  }
-
   renderElement(element, id) {
     if (element.type === 'element') {
       const transformStr = element.attributes['transform']
@@ -109,58 +81,19 @@ class Latex extends Component {
         case 'use':
           const c = element.attributes['data-c']
           const href = element.attributes['xlink:href']
-          const d = this.state.latexDefs[href]
-          const randomColor = `#${Math.floor(Math.random()*16777215).toString(16)}`
-          const bbox = svgPathBbox(d)
-          let offset = 500
-          id = `${id}-${c}`
-          let color = 'black'
-          let fill = 'rgba(0, 0, 0, 0)'
-          /*
-            mi: [x, y], mo: [+, =, ()], mn: [1, 2, 3], msup: [^2]
-            1D466: y, 1D465: x, ...
-            30: 0, 31: 1, 32: 2, ...
-            - x^2 = msup-mi-1D465, msup-mn-32
-            - 10  = mn-31-30
-            - \sqrt{x} = msqrt-mo-221A, msqrt-mi-1D465
-          */
-          let highligh = false
-          const currentId = Equation.state.currentId
-          if (currentId === id) highligh = true
-          if (currentId && id.includes('mi') && id.split('-mi-')[1] === currentId.split('-mi-')[1]) highligh = true
-
-          let symbols = Canvas.state.currentSymbols
-          let sids = Object.keys(symbols)
-          // console.log(sid)
-          for (let sid of sids) {
-            if (id.includes(sid)) highligh = true
-          }
-          if (highligh) {
-            color = App.highlightColor
-            fill = App.highlightColorAlpha
-          }
+          const pathData = this.state.latexDefs[href]
+          const symbolId = `${id}-${c}`
           return (
-            <>
-              <Path
-                key={ `path-${this.props.id}-${id}` }
-                x={ transform.translate.x }
-                y={ transform.translate.y }
-                className={ id }
-                data={ d }
-                fill={ color }
-              />
-              <Rect
-                key={ `bbox-${this.props.id}-${id}` }
-                x={ bbox[0] - offset/2 }
-                y={ bbox[1] - offset/2 }
-                width={ bbox[2] - bbox[0] + offset }
-                height={ bbox[3] - bbox[1] + offset }
-                fill={ fill }
-                onMouseDown={ this.onMouseDown.bind(this, id) }
-                onMouseEnter={ this.onMouseEnter.bind(this, id) }
-                onMouseLeave={ this.onMouseLeave.bind(this, id) }
-              />
-            </>
+            <Symbol
+              x={ transform.translate.x }
+              y={ transform.translate.y }
+              scaleX={ transform.scale.x }
+              scaleY={ transform.scale.y }
+              symbolId={ symbolId }
+              equationId={ Equation.state.currentId }
+              pathData={ pathData }
+              transform={ transform }
+            />
           )
         default:
           return null
@@ -168,7 +101,6 @@ class Latex extends Component {
     }
     return null
   }
-
 
   render() {
     return (

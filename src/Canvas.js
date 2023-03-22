@@ -3,8 +3,6 @@ import { Stage, Layer, Rect, Text, Line, Group, Circle, Path, Image, Shape} from
 import Konva from 'konva'
 import { Html } from 'react-konva-utils';
 
-import MathCircle from './MathCircle.js'
-import MathSine from './MathSine.js'
 import Variable from './Variable.js'
 import DrawingLine from './DrawingLine.js'
 import Words from './Words.js'
@@ -47,7 +45,7 @@ class Canvas extends Component {
       currentSymbols[key] = _.round(hash[key], round)
     }
     this.setState({ currentSymbols: currentSymbols })
-    this.graphRef.current.updateValue()
+    // this.graphRef.current.updateValue()
   }
 
   mouseDown(pos) {
@@ -115,9 +113,6 @@ class Canvas extends Component {
 
               {/* Paper Image */}
               <Image image={ this.state.paperImage } />
-
-              {/* Circle */}
-              <MathCircle />
 
               {/*<Graph ref={this.graphRef} />*/}
 
