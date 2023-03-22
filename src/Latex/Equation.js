@@ -101,7 +101,7 @@ class Equation extends Component {
           return (
             <Symbol
               symbolId={ symbolId }
-              equationId={ Equation.state.currentId }
+              equationId={ Equations.state.currentId }
               pathData={ pathData }
               bbox={ bbox }
               transform={ transform }
@@ -126,7 +126,7 @@ class Equation extends Component {
           width={ this.props.width }
           height={ this.props.height }
           fill={ 'white' }
-          stroke={ 'black' }
+          stroke={ 'white' }
           strokeWidth={ 3 }
         />
         <Group

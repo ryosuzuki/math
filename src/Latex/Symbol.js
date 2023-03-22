@@ -40,7 +40,7 @@ class Symbol extends Component {
     let id = this.props.symbolId
     if (id.includes('mo')) return
     if (Canvas.state.selectMode) {
-      Equation.setState({ currentId: id })
+      Equations.setState({ currentId: id })
       this.setState({ highlight: true })
     }
   }
@@ -48,7 +48,7 @@ class Symbol extends Component {
   onMouseLeave() {
     let id = this.props.symbolId
     if (Canvas.state.selectMode) {
-      Equation.setState({ currentId: null })
+      Equations.setState({ currentId: null })
       this.setState({ highlight: false })
     }
   }

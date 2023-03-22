@@ -22,7 +22,7 @@ class Slider extends Component {
     return (
       <>
         <Text
-          text={ 'feo' }
+          text={ 'text' }
           x={ this.state.originX }
           y={ this.state.originY }
           fontSize={ 20 }
@@ -30,7 +30,7 @@ class Slider extends Component {
           width={ 100 }
           height={ 30 }
           offsetX={ 100/2 }
-          offsetY={ 20 }
+          offsetY={ 40 }
           align='center'
           verticalAlign='middle'
         />

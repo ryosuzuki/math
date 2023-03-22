@@ -8,10 +8,9 @@ import DrawingLine from './DrawingLine.js'
 import Words from './Words.js'
 import Graph from './Graph.js'
 import Figure from './Figure.js'
-import Equation from './Equation.js'
-import Slider from './Slider.js'
+import Equations from './Latex/Equations.js'
 
-let debug = true
+let debug = false
 
 class Canvas extends Component {
   constructor(props) {
@@ -27,7 +26,7 @@ class Canvas extends Component {
     }
     if (debug) {
       this.state.selectMode = false
-      this.state.currentSymbols = { 'math-mi-1D465': 0 }
+      // this.state.currentSymbols = { 'math-mi-1D465': 0 }
     }
 
     this.drawingLineRef = React.createRef()
@@ -128,9 +127,7 @@ class Canvas extends Component {
               {/* Drawing Line */}
               <DrawingLine ref={this.drawingLineRef} />
 
-              <Equation />
-
-              <Slider />
+              <Equations />
             </Layer>
           </Stage>
         </div>

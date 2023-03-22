@@ -1,11 +1,12 @@
 import React, { Component } from 'react'
 import { Rect } from 'react-konva'
 import Equation from './Equation.js'
+import Slider from './Slider.js'
 
 class Equations extends Component {
   constructor(props) {
     super(props)
-    window.Equation = this
+    window.Equations = this
     this.state = {
       equations: [],
       currentId: null,
@@ -96,6 +97,7 @@ class Equations extends Component {
             </>
           )
         })}
+        <Slider />
       </>
     )
   }
