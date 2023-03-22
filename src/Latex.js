@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { Group, Rect, Path } from 'react-konva'
 import TeXToSVG from 'tex-to-svg'
 import { parseSync, stringify } from 'svgson'
+import svgPathBbox from 'svg-path-bbox'
 
 import Symbol from './Symbol.js'
 
@@ -83,16 +84,28 @@ class Latex extends Component {
           const href = element.attributes['xlink:href']
           const pathData = this.state.latexDefs[href]
           const symbolId = `${id}-${c}`
+          const box = svgPathBbox(pathData)
+          const offset = 500
+          const bbox = {
+            x: box[0] - offset/2,
+            y: box[1] - offset/2,
+            width: box[2] - box[0] + offset,
+            height: box[3] - box[1] + offset,
+          }
+          let symbols = Canvas.state.currentSymbols
+          let sids = Object.keys(symbols)
+          let selected = false
+          for (let sid of sids) {
+            if (symbolId.includes(sid)) selected = true
+          }
           return (
             <Symbol
-              x={ transform.translate.x }
-              y={ transform.translate.y }
-              scaleX={ transform.scale.x }
-              scaleY={ transform.scale.y }
               symbolId={ symbolId }
               equationId={ Equation.state.currentId }
               pathData={ pathData }
+              bbox={ bbox }
               transform={ transform }
+              selected={ selected }
             />
           )
         default:

@@ -57,4 +57,14 @@ cnstd analyze -m mfd -i sample-1.jpg -o output-1.jpg
 - Step 5. Perform math OCR with [MathPix Web Snip Tool](https://snip.mathpix.com/) and save it as a markdown file (e.g., `/public/sample/mathpix-1.md`)
 
 
+## TexToSVG
+
+```
+mi: [x, y], mo: [+, =, ()], mn: [1, 2, 3], msup: [^2]
+1D466: y, 1D465: x, ...
+30: 0, 31: 1, 32: 2, ...
+- x^2 = msup-mi-1D465, msup-mn-32
+- 10  = mn-31-30
+- \sqrt{x} = msqrt-mo-221A, msqrt-mi-1D465
+```
 

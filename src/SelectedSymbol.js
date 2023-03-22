@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Group, Path, Rect, Text } from 'react-konva'
 import svgPathBbox from 'svg-path-bbox'
 
-class Symbol extends Component {
+class SelectedSymbol extends Component {
   constructor(props) {
     super(props)
     window.Symbol = this
@@ -11,6 +11,10 @@ class Symbol extends Component {
       currentX: -1000,
       currentY: -1000,
       currentValue: 0,
+      x: 0,
+      y: 0,
+      width: 0,
+      height: 0,
       highlight: false,
     }
   }
@@ -22,9 +26,9 @@ class Symbol extends Component {
     if (!Canvas.state.selectMode) return
     let id = this.props.symbolId
     let symbols = Canvas.state.currentSymbols
-    // if (id.includes('mi')) {
-    //   id = 'mi-' + id.split('-mi-')[1]
-    // }
+    if (id.includes('mi')) {
+      id = 'mi-' + id.split('-mi-')[1]
+    }
     let ids = Object.keys(symbols)
     console.log(id, ids)
     if (ids.includes(id)) {
@@ -88,10 +92,22 @@ class Symbol extends Component {
     this.setState({ arrowVisible: false })
   }
 
+  checkHighlight() {
+    let highlight = false
+    let id = this.props.symbolId
+    let symbols = Canvas.state.currentSymbols
+    let sids = Object.keys(symbols)
+    for (let sid of sids) {
+      if (id.includes(sid)) highlight = true
+    }
+    // let id = this.props.symbolId
+    // if (this.props.equationId === id) highlight = true
+    // if (id.includes('mi') && id.split('-mi-')[1] === this.props.equationId.split('-mi-')[1]) highlight = true
+    this.setState({ highlight: highlight })
+  }
+
   render() {
-    let fill = 'rgba(0, 0, 0, 0)'
-    if (this.props.selected) fill = App.highlightColorAlpha
-    if (this.state.highlight) fill = App.fillColorAlpha
+    this.checkHighlight()
     return (
       <>
         <Path
@@ -101,18 +117,35 @@ class Symbol extends Component {
           fill={ 'black' }
         />
         <Rect
-          x={ this.props.bbox.x }
-          y={ this.props.bbox.y }
-          width={ this.props.bbox.width }
-          height={ this.props.bbox.height }
-          fill={ fill }
+          x={ this.state.x }
+          y={ this.state.y }
+          width={ this.state.width }
+          height={ this.state.width }
+          fill={ this.state.highlight ? App.highlightColorAlpha : 'rgba(0, 0, 0, 0)' }
+          draggable
+          onDragStart={ this.onDragStart.bind(this)}
+          onDragMove={ this.onDragMove.bind(this) }
+          onDragEnd={ this.onDragEnd.bind(this) }
           onMouseDown={ this.onMouseDown.bind(this) }
           onMouseEnter={ this.onMouseEnter.bind(this) }
           onMouseLeave={ this.onMouseLeave.bind(this) }
+        />
+        <Text
+          x={ this.state.currentX }
+          y={ this.state.currentY }
+          text={ '<->' }
+          fontSize={ 20 }
+          fill={ '#ee00ab' }
+          width={ 50 }
+          height={ 30 }
+          offsetX={ (50-30)/2 }
+          align='center'
+          verticalAlign='middle'
+          visible={ this.state.arrowVisible }
         />
       </>
     )
   }
 }
 
-export default Symbol
+export default SelectedSymbol
