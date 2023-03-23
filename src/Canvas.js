@@ -10,7 +10,7 @@ import Graph from './Graph.js'
 import Figure from './Figure.js'
 import Equations from './Latex/Equations.js'
 
-let debug = false
+let debug = true
 
 class Canvas extends Component {
   constructor(props) {
@@ -27,7 +27,7 @@ class Canvas extends Component {
     this.symbols = {}
     if (debug) {
       this.state.selectMode = false
-      // this.state.currentSymbols = { 'math-mi-1D465': 0 }
+      this.state.currentSymbols = { '31': 1, '33': 3 }
     }
 
     this.drawingLineRef = React.createRef()

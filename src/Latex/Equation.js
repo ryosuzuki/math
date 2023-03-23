@@ -90,6 +90,7 @@ class Equation extends Component {
       width: box[2] - box[0] + offset,
       height: box[3] - box[1] + offset,
     }
+    const center = { x: bbox.x + bbox.width/2, y: bbox.y + bbox.height/2 }
     const symbol = {
       id: symbolId,
       tag: tag,
@@ -97,6 +98,7 @@ class Equation extends Component {
       pathData: path,
       path: parseSvg(path),
       bbox: bbox,
+      center: center,
       color: App.highlightColor,
       transforms: _.clone(transforms),
     }
@@ -122,6 +124,8 @@ class Equation extends Component {
       height: box[3] - box[1] + offset,
     }
     combinedSymbol.bbox = bbox
+    const center = { x: bbox.x + bbox.width/2, y: bbox.y + bbox.height/2 }
+    combinedSymbol.center = center
     return combinedSymbol
   }
 
@@ -145,10 +149,6 @@ class Equation extends Component {
             transforms.push(transform)
           }
           prev = { id: id, transforms: transforms }
-          // for (let child of element.children) {
-          //   this.getElement.bind(this)(child, _.clone(prev))
-          // }
-          console.log(transform)
 
           if (['mi', 'mn', 'mo'].includes(node)) {
             const symbols = []
@@ -199,6 +199,7 @@ class Equation extends Component {
               pathData={ symbol.pathData }
               path={ symbol.path }
               bbox={ symbol.bbox }
+              center={ symbol.center }
               transforms={ symbol.transforms }
             />
           )

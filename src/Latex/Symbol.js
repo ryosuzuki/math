@@ -41,7 +41,6 @@ class Symbol extends Component {
     console.log(id)
     if (id.includes('mo')) return
     if (Canvas.state.selectMode) {
-      Equations.setState({ currentId: id })
       this.setState({ highlight: true })
     }
   }
@@ -49,7 +48,6 @@ class Symbol extends Component {
   onMouseLeave() {
     let id = this.props.id
     if (Canvas.state.selectMode) {
-      Equations.setState({ currentId: null })
       this.setState({ highlight: false })
     }
   }
@@ -57,9 +55,9 @@ class Symbol extends Component {
   onDragStart(event) {
     if (Canvas.state.selectMode) return false
     const pos = App.state.mouse
-    this.originValue = this.props.value
-    this.originX = pos.x
-    this.originY = pos.y
+    this.originValue = Canvas.state.currentSymbols[this.props.tag]
+    this.originX = this.props.center.x
+    this.originY = this.props.center.y
     Slider.setState({ arrowVisible: true, originX: this.originX, originY: this.originY })
   }
 
@@ -75,11 +73,10 @@ class Symbol extends Component {
     dx = dx / 10
     console.log(pos, dx)
 
-    return false
     let hash = {}
-    hash[this.props.word] = this.originValue + dx
-    let round = this.props.word === '²' ? 0 : 1
-    // let round = 1
+    hash[this.props.tag] = this.originValue + dx
+    // let round = this.props.word === '²' ? 0 : 1
+    let round = 1
     Canvas.updateValue(hash, round)
   }
 
@@ -91,8 +88,24 @@ class Symbol extends Component {
     let fill = 'rgba(0, 0, 0, 0)'
     if (Object.keys(Canvas.state.currentSymbols).includes(this.props.tag)) fill = App.highlightColorAlpha
     if (this.state.highlight) fill = App.highlightColorAlpha
+
     return (
       <Group key={ this.props.id}>
+        { Canvas.state.currentSymbols[this.props.tag] !== undefined &&
+          <Text
+            text={ Canvas.state.currentSymbols[this.props.tag] }
+            x={ this.props.center.x }
+            y={ this.props.center.y }
+            fontSize={ 20 }
+            fill={ '#ee00ab' }
+            width={ 100 }
+            height={ 30 }
+            offsetX={ 100/2 }
+            offsetY={ 40 }
+            align='center'
+            verticalAlign='middle'
+          />
+        }
         <Path
           data={ this.props.pathData}
           fill={ 'black' }

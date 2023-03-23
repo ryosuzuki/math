@@ -9,7 +9,6 @@ class Equations extends Component {
     window.Equations = this
     this.state = {
       equations: [],
-      currentId: null,
     }
   }
 
