@@ -14,7 +14,6 @@ class Graph extends Component {
   }
 
   componentDidMount() {
-    this.update(this.props.equation)
   }
 
   update(equation) {
@@ -72,6 +71,44 @@ class Graph extends Component {
     }
     return linePoints
   }
+
+  getRatio() {
+    window.math = math
+
+    try {
+      let points = this.props.segments.map((segment) => { return { x: segment[1], y: segment[2] } })
+      window.points = points
+
+      let p1 = points[0]
+      let p2 = _.last(points)
+
+      if (!p1 || !p2) return
+      let x1 = p1.x - this.props.origin.x
+      let y1 = this.props.origin.y - p1.y
+      let x2 = p2.x - this.props.origin.x
+      let y2 = this.props.origin.y - p2.y
+
+      const data = { x1: x1, y1: y1, x2: x2, y2: y2 }
+      console.log('emit sympy ' + JSON.stringify(data))
+      App.socket.emit('sympy', data)
+    } catch (err) {
+      console.error(err)
+    }
+
+    App.socket.on('sympy', (json) => {
+      console.log(json)
+      json = JSON.parse(json)
+      if (!json.x || !json.y) return
+
+      let xRatio = Number(json.x)
+      let yRatio = Number(json.y)
+      let ratio = { x: xRatio, y: -yRatio }
+      console.log(ratio)
+      this.setState({ ratio: ratio })
+      // this.update(this.state.equation)
+    })
+  }
+
 
   render() {
     return (

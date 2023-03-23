@@ -10,7 +10,7 @@ import Graph from './Graph.js'
 import Figures from './Figures.js'
 import Equations from './Equations.js'
 
-let debug = true
+let debug = false
 
 class Canvas extends Component {
   constructor(props) {
@@ -23,6 +23,7 @@ class Canvas extends Component {
       paperImage: null,
       selectMode: true,
       currentSymbols: {},
+      currentFigure: null
     }
     this.symbols = {}
     if (debug) {
@@ -50,7 +51,7 @@ class Canvas extends Component {
 
     const figures = this.figuresRef.current.state.figures
     let a = -currentSymbols['33']
-    let b = currentSymbols['31']
+    let b = currentSymbols['31'] || 1
     let equation = `y = (x - ${a})^{${2}} + ${b}`
     figures[7].graphRef.current.update(equation)
   }
@@ -124,13 +125,10 @@ class Canvas extends Component {
               {/*<Graph ref={this.graphRef} />*/}
 
               {/* Words */}
-              <Words
-                selectMode={ this.state.selectMode }
-              />
+              <Words />
 
               <Figures
                 ref={this.figuresRef}
-                selectMode={ this.state.selectMode }
               />
               {/* Drawing Line */}
               <DrawingLine ref={this.drawingLineRef} />

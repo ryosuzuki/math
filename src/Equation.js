@@ -17,7 +17,9 @@ class Equation extends Component {
     super(props)
     window.Equation = this
     this.state = {
-      symbols: []
+      symbols: [],
+      highlight: false,
+      graph: null
     }
   }
 
@@ -103,10 +105,6 @@ class Equation extends Component {
       transforms: _.clone(transforms),
     }
     return symbol
-    // const symbols = this.state.symbols
-    // console.log(symbol)
-    // symbols.push(symbol)
-    // this.setState({ symbols: symbols })
   }
 
   combineSymbols(symbols) {
@@ -176,7 +174,33 @@ class Equation extends Component {
     }
   }
 
+  onMouseDown() {
+    const selectId = Figures.state.selectId
+    const selectFigure = Figures.state.figures[selectId]
+    const graph = selectFigure.graphRef.current
+    console.log(graph)
+    graph.update(this.props.latex)
+    this.setState({ graph: graph })
+    this.setState({ highlight: false })
+    Figures.setState({ selectId: -1 })
+  }
+
+  onMouseEnter() {
+    if (!Canvas.state.selectMode) return
+    if (Figures.state.selectId === -1) return
+    this.setState({ highlight: true })
+  }
+
+  onMouseLeave() {
+    if (!Canvas.state.selectMode) return
+    if (Figures.state.selectId === -1) return
+    this.setState({ highlight: false })
+  }
+
   render() {
+    let stroke = '#eee'
+    if (this.state.highlight) stroke = App.highlightColor
+    if (this.state.graph) stroke = App.highlightColor
     return (
       <>
         <Rect
@@ -186,8 +210,11 @@ class Equation extends Component {
           width={ this.props.width }
           height={ this.props.height }
           fill={ 'white' }
-          stroke={ '#eee' }
+          stroke={ stroke }
           strokeWidth={ 3 }
+          onMouseDown={ this.onMouseDown.bind(this) }
+          onMouseEnter={ this.onMouseEnter.bind(this) }
+          onMouseLeave={ this.onMouseLeave.bind(this) }
         />
         { this.state.symbols.map((symbol, i) => {
           return (
