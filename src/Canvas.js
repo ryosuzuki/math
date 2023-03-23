@@ -47,11 +47,10 @@ class Canvas extends Component {
       currentSymbols[key] = _.round(hash[key], round)
     }
     this.setState({ currentSymbols: currentSymbols })
-    // this.graphRef.current.updateValue()
-    const figures = this.figuresRef.current.state.figures
 
-    let a = -currentSymbols['33'] || -3
-    let b = currentSymbols['31'] || 1
+    const figures = this.figuresRef.current.state.figures
+    let a = -currentSymbols['33']
+    let b = currentSymbols['31']
     let equation = `y = (x - ${a})^{${2}} + ${b}`
     figures[7].graphRef.current.update(equation)
   }
