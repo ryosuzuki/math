@@ -33,7 +33,6 @@ class Equation extends Component {
     for (let path of paths) {
       latexDefs[`#${path.attributes.id}`] = path.attributes.d
     }
-    this.setState({ latexElements: latexElements, latexDefs: latexDefs  })
     this.latexDefs = latexDefs
     this.getElement(latexElements)
   }
@@ -114,6 +113,7 @@ class Equation extends Component {
           }
           const symbol = {
             id: symbolId,
+            equationId: this.props.id,
             pathData: path,
             path: parseSvg(path),
             bbox: bbox,
@@ -146,21 +146,15 @@ class Equation extends Component {
         />
         { this.state.symbols.map((symbol, i) => {
           return (
-            <Group key={i}>
-              <Path
-                key={ `symbol-${i}` }
-                data={ symbol.pathData }
-                fill={ symbol.color }
-              />
-              <Rect
-                x={ symbol.bbox.x }
-                y={ symbol.bbox.y }
-                width={ symbol.bbox.width }
-                height={ symbol.bbox.height }
-                fill={ App.highlightColorAlpha }
-                visible={ false }
-              />
-            </Group>
+            <Symbol
+              key={ i }
+              id={ symbol.id }
+              equationId={ this.props.id }
+              pathData={ symbol.pathData }
+              path={ symbol.path }
+              bbox={ symbol.bbox }
+              transforms={ symbol.transforms }
+            />
           )
         })}
       </>

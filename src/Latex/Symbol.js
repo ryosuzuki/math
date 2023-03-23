@@ -20,7 +20,7 @@ class Symbol extends Component {
 
   onMouseDown() {
     if (!Canvas.state.selectMode) return
-    let id = this.props.symbolId
+    let id = this.props.id
     let symbols = Canvas.state.currentSymbols
     // if (id.includes('mi')) {
     //   id = 'mi-' + id.split('-mi-')[1]
@@ -37,7 +37,8 @@ class Symbol extends Component {
   }
 
   onMouseEnter() {
-    let id = this.props.symbolId
+    let id = this.props.id
+    console.log(id)
     if (id.includes('mo')) return
     if (Canvas.state.selectMode) {
       Equations.setState({ currentId: id })
@@ -46,7 +47,7 @@ class Symbol extends Component {
   }
 
   onMouseLeave() {
-    let id = this.props.symbolId
+    let id = this.props.id
     if (Canvas.state.selectMode) {
       Equations.setState({ currentId: null })
       this.setState({ highlight: false })
@@ -89,13 +90,11 @@ class Symbol extends Component {
   render() {
     let fill = 'rgba(0, 0, 0, 0)'
     if (this.props.selected) fill = App.highlightColorAlpha
-    if (this.state.highlight) fill = App.fillColorAlpha
+    if (this.state.highlight) fill = App.highlightColorAlpha
     return (
-      <>
+      <Group key={ this.props.id}>
         <Path
-          y={ this.props.transform.translate.y }
-          className={ this.props.symbolId }
-          data={ this.props.pathData }
+          data={ this.props.pathData}
           fill={ 'black' }
         />
         <Rect
@@ -112,7 +111,7 @@ class Symbol extends Component {
           onMouseEnter={ this.onMouseEnter.bind(this) }
           onMouseLeave={ this.onMouseLeave.bind(this) }
         />
-      </>
+      </Group>
     )
   }
 }
