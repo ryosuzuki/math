@@ -101,38 +101,22 @@ class Equation extends Component {
             height: box[3] - box[1] + offset,
           }
 
-          let x = this.props.x
-          let y = this.props.y
-          let scaleX = 0.2
-          let scaleY = -0.2
-          x = x * scaleX
-          for (let transform of transforms) {
-            x = x + transform.translate.x
-            y = y + transform.translate.y
-            scaleX = scaleX * transform.scale.x
-            scaleY = scaleY * transform.scale.y
-          }
-          x = x * scaleX
-          y = y * scaleY
           let path = parse(pathData)
-          let a = translate(path, x, y)
-          path = serialize(a)
-
-          path = parse(path)
-          let b = scale(path, scaleX, scaleY)
-          console.log(serialize(b))
-          path = serialize(b)
-
-          x = 300
-          y = 300
+          // path = parse(serialize(scale(path, s, -s)))
+          for (let transform of transforms) {
+            path = parse(serialize(translate(path, transform.translate.x, transform.translate.y)))
+            path = parse(serialize(scale(path, transform.scale.x, transform.scale.y)))
+          }
+          console.log(transforms)
+          path = parse(serialize(scale(path, 0.02, -0.02)))
+          path = parse(serialize(translate(path, this.props.x, this.props.y)))
+          path = serialize(path)
           const symbol = {
             id: symbolId,
             pathData: path,
+            path: parse(path),
             bbox: bbox,
-            x: x,
-            y: y,
-            width: this.props.width,
-            height: this.props.height,
+            color: App.highlightColor,
           }
           const symbols = this.state.symbols
           console.log(symbol)
@@ -214,11 +198,9 @@ class Equation extends Component {
           return (
             <Path
               data={ symbol.pathData }
-              x={ symbol.x }
-              y={ symbol.y }
-              width={ 30 }
-              height={ 50 }
-              fill={ App.highlightColorAlpha }
+              x={ 0 }
+              y={ 0 }
+              fill={ symbol.color }
             />
           )
         })}

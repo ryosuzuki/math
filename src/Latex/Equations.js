@@ -73,6 +73,7 @@ class Equations extends Component {
       <>
         { this.state.equations.map((equation, i) => {
           if (equation.score < 0.3) return <></>
+          if (i !== 4) return <></>
           return (
             <>
               <Rect
