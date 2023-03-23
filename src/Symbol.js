@@ -71,7 +71,7 @@ class Symbol extends Component {
 
     let dx = pos.x - this.originX
     dx = dx / 10
-    console.log(pos, dx)
+    // console.log(pos, dx)
 
     let hash = {}
     hash[this.props.tag] = this.originValue + dx

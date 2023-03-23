@@ -7,8 +7,8 @@ import Variable from './Variable.js'
 import DrawingLine from './DrawingLine.js'
 import Words from './Words.js'
 import Graph from './Graph.js'
-import Figure from './Figure.js'
-import Equations from './Latex/Equations.js'
+import Figures from './Figures.js'
+import Equations from './Equations.js'
 
 let debug = true
 
@@ -32,6 +32,7 @@ class Canvas extends Component {
 
     this.drawingLineRef = React.createRef()
     this.graphRef = React.createRef()
+    this.figuresRef = React.createRef()
   }
 
   componentDidMount() {
@@ -47,6 +48,12 @@ class Canvas extends Component {
     }
     this.setState({ currentSymbols: currentSymbols })
     // this.graphRef.current.updateValue()
+    const figures = this.figuresRef.current.state.figures
+
+    let a = -currentSymbols['33'] || -3
+    let b = currentSymbols['31'] || 1
+    let equation = `y = (x - ${a})^{${2}} + ${b}`
+    figures[7].graphRef.current.update(equation)
   }
 
   mouseDown(pos) {
@@ -122,7 +129,8 @@ class Canvas extends Component {
                 selectMode={ this.state.selectMode }
               />
 
-              <Figure
+              <Figures
+                ref={this.figuresRef}
                 selectMode={ this.state.selectMode }
               />
               {/* Drawing Line */}

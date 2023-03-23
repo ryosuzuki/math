@@ -9,14 +9,14 @@ import Graph from './Graph.js'
 class Figures extends Component {
   constructor(props) {
     super(props)
-    window.Figure = this
+    window.Figures = this
     this.state = {
       currentId: -1,
       lines: [],
       figures: [],
       segments: [],
     }
-    this.equations = [
+    this.state.equations = [
       'y = \\sqrt{x} - 2',
       'y = \\sqrt{x - 2}',
       'y = - \\sqrt{x}',
@@ -241,7 +241,7 @@ class Figures extends Component {
                 origin={ figure.origin }
                 xAxis={ figure.xAxis }
                 yAxis={ figure.yAxis }
-                equation={ this.equations[i] }
+                equation={ this.state.equations[i] }
                 ratio={ this.ratios[i] }
                 segments={ figure.segments }
                 graphs={ figure.graphs }
