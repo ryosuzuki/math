@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Rect } from 'react-konva'
+import { Group, Rect } from 'react-konva'
 import Equation from './Equation.js'
 import Slider from './Slider.js'
 
@@ -73,9 +73,9 @@ class Equations extends Component {
       <>
         { this.state.equations.map((equation, i) => {
           if (equation.score < 0.3) return <></>
-          if (i !== 4) return <></>
+          {/*if (i !== 4) return <></>*/}
           return (
-            <>
+            <Group key={i}>
               <Rect
                 key={ `equation-rect-${i}` }
                 x={ equation.x }
@@ -87,7 +87,7 @@ class Equations extends Component {
                 strokeWidth={ 3 }
               />
               <Equation
-                key={ `latex-${i}` }
+                key={ `equation-${i}` }
                 id={ i }
                 x={ equation.x }
                 y={ equation.y }
@@ -95,7 +95,7 @@ class Equations extends Component {
                 height={ equation.height }
                 latex={ equation.latex }
               />
-            </>
+            </Group>
           )
         })}
         <Slider />

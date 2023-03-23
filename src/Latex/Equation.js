@@ -5,10 +5,10 @@ import { parseSync, stringify } from 'svgson'
 import { pathParse, serializePath } from 'svg-path-parse'
 import svgPathBbox from 'svg-path-bbox'
 
-import parse from 'parse-svg-path'
-import translate from 'translate-svg-path'
-import scale from 'scale-svg-path'
-import serialize from 'serialize-svg-path'
+import parseSvg from 'parse-svg-path'
+import serializeSvg from 'serialize-svg-path'
+import translateSvg from 'translate-svg-path'
+import scaleSvg from 'scale-svg-path'
 
 import Symbol from './Symbol.js'
 
@@ -17,13 +17,8 @@ class Equation extends Component {
     super(props)
     window.Equation = this
     this.state = {
-      latex: '',
-      latexElements: [],
-      latexDefs: {},
-      currentId: null,
       symbols: []
     }
-    this.id = 0
   }
 
   componentDidMount() {
@@ -70,19 +65,24 @@ class Equation extends Component {
     if (element.type === 'element') {
       const transformStr = element.attributes['transform']
       const transform = this.getTransform(transformStr)
+      let transforms = []
       switch (element.name) {
         case 'g':
           const node = element.attributes['data-mml-node']
-          if (node && node !== 'TeXAtom') {
-            if (!prev) {
-              prev = { id: `${this.props.id}-${node}`, transform: [] }
-            } else {
-              prev.id = `${prev.id}-${node}`
-              prev.transform.push(transform)
-            }
+          let id = this.props.id
+          if (node) {
+            id = !prev ? `${this.props.id}-${node}` : `${prev.id}-${node}`
           }
+          if (node === 'TeXAtom') {
+            id = prev.id
+          }
+          if (prev) {
+            transforms = _.clone(prev.transforms)
+            transforms.push(transform)
+          }
+          prev = { id: id, transforms: transforms }
           for (let child of element.children) {
-            this.getElement.bind(this)(child, prev)
+            this.getElement.bind(this)(child, _.clone(prev))
           }
           break
         case 'use':
@@ -90,33 +90,35 @@ class Equation extends Component {
           const href = element.attributes['xlink:href']
           const pathData = this.latexDefs[href]
           const symbolId = `${prev.id}-${c}`
-          const transforms = prev.transform
+          transforms = prev.transforms
           transforms.push(transform)
-          const box = svgPathBbox(pathData)
-          const offset = 500
+
+          let path = parseSvg(pathData)
+          for (let transform of transforms) {
+            path = parseSvg(serializeSvg(scaleSvg(path, transform.scale.x, transform.scale.y)))
+          }
+          for (let transform of transforms) {
+            path = parseSvg(serializeSvg(translateSvg(path, transform.translate.x, transform.translate.y)))
+          }
+          path = parseSvg(serializeSvg(scaleSvg(path, 0.02, -0.02)))
+          path = parseSvg(serializeSvg(translateSvg(path, this.props.x + 10, this.props.y + 20 )))
+          path = serializeSvg(path)
+
+          const box = svgPathBbox(path)
+          const offset = 5
           const bbox = {
             x: box[0] - offset/2,
             y: box[1] - offset/2,
             width: box[2] - box[0] + offset,
             height: box[3] - box[1] + offset,
           }
-
-          let path = parse(pathData)
-          // path = parse(serialize(scale(path, s, -s)))
-          for (let transform of transforms) {
-            path = parse(serialize(translate(path, transform.translate.x, transform.translate.y)))
-            path = parse(serialize(scale(path, transform.scale.x, transform.scale.y)))
-          }
-          console.log(transforms)
-          path = parse(serialize(scale(path, 0.02, -0.02)))
-          path = parse(serialize(translate(path, this.props.x, this.props.y)))
-          path = serialize(path)
           const symbol = {
             id: symbolId,
             pathData: path,
-            path: parse(path),
+            path: parseSvg(path),
             bbox: bbox,
             color: App.highlightColor,
+            transforms: _.clone(transforms),
           }
           const symbols = this.state.symbols
           console.log(symbol)
@@ -129,82 +131,9 @@ class Equation extends Component {
     }
   }
 
-
-
-  renderElement(element, id) {
-    if (element.type === 'element') {
-      const transformStr = element.attributes['transform']
-      const transform = this.getTransform(transformStr)
-      switch (element.name) {
-        case 'g':
-          const node = element.attributes['data-mml-node']
-          if (node && node !== 'TeXAtom') {
-            id = id ? `${id}-${node}` : node
-          }
-          return (
-            <Group
-              x={ transform.translate.x }
-              y={ transform.translate.y }
-              scaleX={ transform.scale.x }
-              scaleY={ transform.scale.y }
-            >
-              { element.children.map((child) => {
-                return this.renderElement.bind(this)(child, id)
-              })}
-            </Group>
-          )
-        case 'use':
-          const c = element.attributes['data-c']
-          const href = element.attributes['xlink:href']
-          const pathData = this.state.latexDefs[href]
-          const symbolId = `${id}-${c}`
-          const box = svgPathBbox(pathData)
-          const offset = 500
-          const bbox = {
-            x: box[0] - offset/2,
-            y: box[1] - offset/2,
-            width: box[2] - box[0] + offset,
-            height: box[3] - box[1] + offset,
-          }
-          let symbols = Canvas.state.currentSymbols
-          let sids = Object.keys(symbols)
-          let selected = false
-          for (let sid of sids) {
-            if (symbolId.includes(sid)) selected = true
-          }
-
-          return (
-            <Symbol
-              symbolId={ symbolId }
-              equationId={ Equations.state.currentId }
-              pathData={ pathData }
-              bbox={ bbox }
-              transform={ transform }
-              selected={ selected }
-            />
-          )
-        default:
-          return null
-      }
-    }
-    return null
-  }
-
   render() {
-    const scale = 0.02
     return (
       <>
-        { this.state.symbols.map((symbol, i) => {
-          return (
-            <Path
-              data={ symbol.pathData }
-              x={ 0 }
-              y={ 0 }
-              fill={ symbol.color }
-            />
-          )
-        })}
-
         <Rect
           key={ `bbox-${this.props.id}` }
           x={ this.props.x }
@@ -212,18 +141,28 @@ class Equation extends Component {
           width={ this.props.width }
           height={ this.props.height }
           fill={ 'white' }
-          stroke={ 'white' }
+          stroke={ '#eee' }
           strokeWidth={ 3 }
         />
-        <Group
-          key={ `group-${this.props.id}` }
-          x={ this.props.x + 10 }
-          y={ this.props.y + 20 }
-          scaleX={ scale }
-          scaleY={ scale }
-        >
-          { this.renderElement(this.state.latexElements) }
-        </Group>
+        { this.state.symbols.map((symbol, i) => {
+          return (
+            <Group key={i}>
+              <Path
+                key={ `symbol-${i}` }
+                data={ symbol.pathData }
+                fill={ symbol.color }
+              />
+              <Rect
+                x={ symbol.bbox.x }
+                y={ symbol.bbox.y }
+                width={ symbol.bbox.width }
+                height={ symbol.bbox.height }
+                fill={ App.highlightColorAlpha }
+                visible={ false }
+              />
+            </Group>
+          )
+        })}
       </>
     )
   }
