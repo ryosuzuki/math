@@ -60,6 +60,71 @@ class Equation extends Component {
     return { scale: scale, translate: translate }
   }
 
+  getSymbol(element, prev) {
+    const transformStr = element.attributes['transform']
+    const transform = this.getTransform(transformStr)
+    const tag = element.attributes['data-c']
+    const href = element.attributes['xlink:href']
+    const pathData = this.latexDefs[href]
+    const symbolId = `${prev.id}-${tag}`
+    const transforms =  _.clone(prev.transforms)
+    transforms.push(transform)
+    // const tag = symbolId.split('math-')[1]
+
+    let path = parseSvg(pathData)
+    for (let transform of transforms) {
+      path = parseSvg(serializeSvg(scaleSvg(path, transform.scale.x, transform.scale.y)))
+    }
+    for (let transform of transforms) {
+      path = parseSvg(serializeSvg(translateSvg(path, transform.translate.x, transform.translate.y)))
+    }
+    path = parseSvg(serializeSvg(scaleSvg(path, 0.02, -0.02)))
+    path = parseSvg(serializeSvg(translateSvg(path, this.props.x + 10, this.props.y + 20 )))
+    path = serializeSvg(path)
+
+    const box = svgPathBbox(path)
+    const offset = 5
+    const bbox = {
+      x: box[0] - offset/2,
+      y: box[1] - offset/2,
+      width: box[2] - box[0] + offset,
+      height: box[3] - box[1] + offset,
+    }
+    const symbol = {
+      id: symbolId,
+      tag: tag,
+      equationId: this.props.id,
+      pathData: path,
+      path: parseSvg(path),
+      bbox: bbox,
+      color: App.highlightColor,
+      transforms: _.clone(transforms),
+    }
+    return symbol
+    // const symbols = this.state.symbols
+    // console.log(symbol)
+    // symbols.push(symbol)
+    // this.setState({ symbols: symbols })
+  }
+
+  combineSymbols(symbols) {
+    let combinedSymbol = _.clone(symbols[0])
+    combinedSymbol.id = combinedSymbol.id.split(`-${symbols[0].tag}`)[0] + '-' + symbols.map(symbol => symbol.tag).join('-')
+    combinedSymbol.tag = symbols.map(symbol => symbol.tag).join('-')
+    combinedSymbol.pathData = symbols.map(symbol => symbol.pathData).join(' ')
+    combinedSymbol.path = parseSvg(combinedSymbol.pathData)
+    const box = svgPathBbox(combinedSymbol.pathData)
+    const offset = 5
+    const bbox = {
+      x: box[0] - offset/2,
+      y: box[1] - offset/2,
+      width: box[2] - box[0] + offset,
+      height: box[3] - box[1] + offset,
+    }
+    combinedSymbol.bbox = bbox
+    return combinedSymbol
+  }
+
   getElement(element, prev) {
     if (element.type === 'element') {
       const transformStr = element.attributes['transform']
@@ -80,50 +145,30 @@ class Equation extends Component {
             transforms.push(transform)
           }
           prev = { id: id, transforms: transforms }
-          for (let child of element.children) {
-            this.getElement.bind(this)(child, _.clone(prev))
-          }
-          break
-        case 'use':
-          const c = element.attributes['data-c']
-          const href = element.attributes['xlink:href']
-          const pathData = this.latexDefs[href]
-          const symbolId = `${prev.id}-${c}`
-          transforms = prev.transforms
-          transforms.push(transform)
+          // for (let child of element.children) {
+          //   this.getElement.bind(this)(child, _.clone(prev))
+          // }
+          console.log(transform)
 
-          let path = parseSvg(pathData)
-          for (let transform of transforms) {
-            path = parseSvg(serializeSvg(scaleSvg(path, transform.scale.x, transform.scale.y)))
+          if (['mi', 'mn', 'mo'].includes(node)) {
+            const symbols = []
+            for (let child of element.children) {
+              const symbol = this.getSymbol.bind(this)(child, _.clone(prev))
+              symbols.push(symbol)
+            }
+            let symbol = symbols[0]
+            if (symbols.length > 1) {
+              symbol = this.combineSymbols(symbols)
+            }
+            // console.log(symbol)
+            const temp = this.state.symbols
+            temp.push(symbol)
+            this.setState({ symbols: temp })
+          } else {
+            for (let child of element.children) {
+              this.getElement.bind(this)(child, _.clone(prev))
+            }
           }
-          for (let transform of transforms) {
-            path = parseSvg(serializeSvg(translateSvg(path, transform.translate.x, transform.translate.y)))
-          }
-          path = parseSvg(serializeSvg(scaleSvg(path, 0.02, -0.02)))
-          path = parseSvg(serializeSvg(translateSvg(path, this.props.x + 10, this.props.y + 20 )))
-          path = serializeSvg(path)
-
-          const box = svgPathBbox(path)
-          const offset = 5
-          const bbox = {
-            x: box[0] - offset/2,
-            y: box[1] - offset/2,
-            width: box[2] - box[0] + offset,
-            height: box[3] - box[1] + offset,
-          }
-          const symbol = {
-            id: symbolId,
-            equationId: this.props.id,
-            pathData: path,
-            path: parseSvg(path),
-            bbox: bbox,
-            color: App.highlightColor,
-            transforms: _.clone(transforms),
-          }
-          const symbols = this.state.symbols
-          console.log(symbol)
-          symbols.push(symbol)
-          this.setState({ symbols: symbols })
           break
         default:
           break
@@ -149,6 +194,7 @@ class Equation extends Component {
             <Symbol
               key={ i }
               id={ symbol.id }
+              tag={ symbol.tag }
               equationId={ this.props.id }
               pathData={ symbol.pathData }
               path={ symbol.path }

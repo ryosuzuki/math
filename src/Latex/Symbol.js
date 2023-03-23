@@ -20,17 +20,17 @@ class Symbol extends Component {
 
   onMouseDown() {
     if (!Canvas.state.selectMode) return
-    let id = this.props.id
+    let tag = this.props.tag
     let symbols = Canvas.state.currentSymbols
     // if (id.includes('mi')) {
     //   id = 'mi-' + id.split('-mi-')[1]
     // }
-    let ids = Object.keys(symbols)
-    console.log(id, ids)
-    if (ids.includes(id)) {
-      // delete symbols[id]
+    let tags = Object.keys(symbols)
+    console.log(tag, tags)
+    if (tags.includes(tag)) {
+      delete symbols[tag]
     } else {
-      symbols[id] = 0
+      symbols[tag] = 0
     }
     Canvas.setState({ symbols: symbols })
     this.setState({ highlight: true })
@@ -89,7 +89,7 @@ class Symbol extends Component {
 
   render() {
     let fill = 'rgba(0, 0, 0, 0)'
-    if (this.props.selected) fill = App.highlightColorAlpha
+    if (Object.keys(Canvas.state.currentSymbols).includes(this.props.tag)) fill = App.highlightColorAlpha
     if (this.state.highlight) fill = App.highlightColorAlpha
     return (
       <Group key={ this.props.id}>
