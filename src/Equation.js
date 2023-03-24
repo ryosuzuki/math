@@ -1,8 +1,7 @@
 import React, { Component } from 'react'
 import { Group, Rect, Path } from 'react-konva'
 import TeXToSVG from 'tex-to-svg'
-import { parseSync, stringify } from 'svgson'
-import { pathParse, serializePath } from 'svg-path-parse'
+import { parseSync } from 'svgson'
 import svgPathBbox from 'svg-path-bbox'
 
 import parseSvg from 'parse-svg-path'

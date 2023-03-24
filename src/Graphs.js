@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Group, Rect, Path, Line, Circle } from 'react-konva'
-import { parseSync, stringify } from 'svgson'
-import { pathParse, serializePath } from 'svg-path-parse'
+import { parseSync } from 'svgson'
+import { pathParse } from 'svg-path-parse'
 import svgPathBbox from 'svg-path-bbox'
 
 import Graph from './Graph.js'

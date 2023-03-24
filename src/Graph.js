@@ -1,7 +1,6 @@
-
 import React, { Component } from 'react'
 import { Line, Text } from 'react-konva'
-import { parseTex, evaluateTex } from 'tex-math-parser'
+import { evaluateTex } from 'tex-math-parser'
 import * as math from 'mathjs';
 
 class Graph extends Component {

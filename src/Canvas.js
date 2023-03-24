@@ -1,9 +1,6 @@
 import React, { Component } from 'react'
 import { Stage, Layer, Rect, Text, Line, Group, Circle, Path, Image, Shape} from 'react-konva'
 import Konva from 'konva'
-import { Html } from 'react-konva-utils';
-import unidecode from 'unidecode'
-import tr from 'transliteration';
 
 import Variable from './Variable.js'
 import DrawingLine from './DrawingLine.js'
@@ -19,8 +16,6 @@ class Canvas extends Component {
     window.Canvas = this
     window.canvas = this
     window.Konva = Konva
-    window.unidecode = unidecode
-    window.transliterate = tr
     this.state = {
       event: {},
       paperImage: null,
