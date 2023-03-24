@@ -47,12 +47,12 @@ FIGURE 5
 (b) $y=(x+3)^{2}+1$
 
 EXAMPLE 3 Sketch the graphs of the following functions.
-(a) $y=\sin 2 x$
-(b) $y=1-\sin x$
+(a) $y=\sin (2 x)$
+(b) $y=1-\sin (x)$
 
 SOLUTION
 
-(a) We obtain the graph of $y=\sin 2 x$ from that of $y=\sin x$ by compressing horizontally by a factor of 2 (see Figures 6 and 7). Thus, whereas the period of $y=\sin x$ is $2 \pi$, the period of $y=\sin 2 x$ is $2 \pi / 2=\pi$.
+(a) We obtain the graph of $y=\sin (2 x)$ from that of $y=\sin (x)$ by compressing horizontally by a factor of 2 (see Figures 6 and 7). Thus, whereas the period of $y=\sin (x)$ is $2 \pi$, the period of $y=\sin (2 x)$ is $2 \pi / 2=\pi$.
 
 ![](https://cdn.mathpix.com/cropped/2023_03_05_049f094d450b314cf928g-1.jpg?height=312&width=841&top_left_y=2007&top_left_x=124)
 
