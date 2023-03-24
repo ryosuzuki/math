@@ -269,6 +269,7 @@ class Equation extends Component {
           onMouseEnter={ this.onMouseEnter.bind(this) }
           onMouseLeave={ this.onMouseLeave.bind(this) }
         />
+        {/* Symbols such as x, y, 1, 2, \sin */}
         { this.state.symbols.map((symbol, i) => {
           return (
             <Symbol
@@ -283,7 +284,8 @@ class Equation extends Component {
               transforms={ symbol.transforms }
             />
           )
-        })}
+        }) }
+        {/* Lines for \frac or \sqrt */}
         { this.state.rects.map((rect, i) => {
           return (
             <Rect
@@ -295,10 +297,7 @@ class Equation extends Component {
               fill={ 'black' }
             />
           )
-        })
-
-
-        }
+        }) }
       </>
     )
   }

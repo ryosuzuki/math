@@ -1,11 +1,8 @@
 import React, { Component } from 'react'
 import { Group, Rect } from 'react-konva'
 import Equation from './Equation.js'
-import Slider from './Slider.js'
 
 import stringSimilarity from 'string-similarity'
-
-import json from './equations.json'
 
 class Equations extends Component {
   constructor(props) {
@@ -119,7 +116,7 @@ class Equations extends Component {
     let bestIndex = -1
     latexArray.forEach((latex, i) => {
       let score = this.compareStrings(item.text, latex);
-      // if (item.text === 'f(a+h)-f(a)h(2a^{2}+4ah+2h^{2}5a-5h+1)(2a^{2}-5a+1)h2a^{2}+4ah+2h^{2}5a-5h+1-2a^{2}+5a-1h4ah2h^{2}5hh4a+2h-5') console.log(score, latex)
+      // if (item.text === 'f(a+h)-f(a)/h') console.log(score, latex)
       if (score > bestScore && score >= scoreThreshold) {
         bestScore = score;
         bestMatch = latex;
@@ -135,9 +132,6 @@ class Equations extends Component {
 
   extractEquations(text) {
     // $...$ or $$...$$
-    // text = text.replace(/\\begin{aligned}\n/g, '')
-    // text = text.replace(/\\end{aligned}\n/g, '')
-    // text = text.replace(/\\\\\n/g, '\\\\ ')
     text = text.replace(/\&/g, '')
     const regexs = [
      /\$\$\n([\s\S]*?)\n\$\$/g,
@@ -184,7 +178,6 @@ class Equations extends Component {
             </Group>
           )
         })}
-        <Slider />
       </>
     )
   }

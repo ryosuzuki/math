@@ -7,10 +7,6 @@ class Symbol extends Component {
     super(props)
     window.Symbol = this
     this.state = {
-      arrowVisible: false,
-      currentX: -1000,
-      currentY: -1000,
-      currentValue: 0,
       highlight: false,
     }
   }
@@ -58,7 +54,7 @@ class Symbol extends Component {
     this.originValue = Canvas.state.currentSymbols[this.props.tag]
     this.originX = this.props.center.x
     this.originY = this.props.center.y
-    Slider.setState({ arrowVisible: true, originX: this.originX, originY: this.originY })
+    Slider.setState({ arrowVisible: true })
   }
 
   onDragMove(event) {
@@ -91,6 +87,7 @@ class Symbol extends Component {
 
     return (
       <Group key={ this.props.id}>
+        {/* Text for current value */}
         { Canvas.state.currentSymbols[this.props.tag] !== undefined &&
           <Text
             text={ Canvas.state.currentSymbols[this.props.tag] }
@@ -106,10 +103,12 @@ class Symbol extends Component {
             verticalAlign='middle'
           />
         }
+        {/* SVG path for each symbol */}
         <Path
           data={ this.props.pathData}
           fill={ 'black' }
         />
+        {/* Bounding box for each symbol */}
         <Rect
           x={ this.props.bbox.x }
           y={ this.props.bbox.y }

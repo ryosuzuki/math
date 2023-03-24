@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Group, Path, Rect, Text } from 'react-konva'
+import { Text } from 'react-konva'
 
 class Slider extends Component {
   constructor(props) {
@@ -7,11 +7,8 @@ class Slider extends Component {
     window.Slider = this
     this.state = {
       arrowVisible: false,
-      originX: 0,
-      originY: 0,
-      currentX: -1000,
-      currentY: -1000,
-      currentValue: 0,
+      currentX: -10,
+      currentY: -10,
     }
   }
 

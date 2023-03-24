@@ -1,12 +1,12 @@
 import React, { Component } from 'react'
-import { Stage, Layer, Rect, Text, Line, Group, Circle, Path, Image, Shape} from 'react-konva'
+import { Stage, Layer, Rect, Image } from 'react-konva'
 import Konva from 'konva'
 
-import Variable from './Variable.js'
 import DrawingLine from './DrawingLine.js'
 import Words from './Words.js'
 import Graphs from './Graphs.js'
 import Equations from './Equations.js'
+import Slider from './Slider.js'
 
 let debug = false
 
@@ -21,9 +21,7 @@ class Canvas extends Component {
       paperImage: null,
       selectMode: true,
       currentSymbols: {},
-      currentGraph: null,
     }
-    this.symbols = {}
     this.symbolHash = {}
     if (debug) {
       this.state.selectMode = false
@@ -39,9 +37,7 @@ class Canvas extends Component {
 
     this.equationRefs = []
     this.graphRefs = []
-
     this.drawingLineRef = React.createRef()
-    this.graphsRef = React.createRef()
   }
 
   componentDidMount() {
@@ -138,16 +134,23 @@ class Canvas extends Component {
               {/* Paper Image */}
               <Image image={ this.state.paperImage } />
 
-              {/* Words */}
+              {/* Words > Variable */}
               <Words />
 
-              <Graphs
-                ref={this.graphsRef}
-              />
-              {/* Drawing Line */}
-              <DrawingLine ref={this.drawingLineRef} />
+              {/* Graphs > Graph + Axis */}
+              <Graphs />
 
+              {/* Equations > Equation > Symbol */}
               <Equations />
+
+              {/* Slider */}
+              <Slider />
+
+              {/* Drawing Line */}
+              <DrawingLine
+                ref={this.drawingLineRef}
+              />
+
             </Layer>
           </Stage>
         </div>

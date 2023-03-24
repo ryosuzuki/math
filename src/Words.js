@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Stage, Layer, Rect, Text, Line, Group, Circle, Path, Image, Shape} from 'react-konva'
+import { Rect, Text } from 'react-konva'
 import Konva from 'konva'
 import _ from 'lodash'
 import Variable from './Variable.js'
