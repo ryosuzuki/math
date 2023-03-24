@@ -62,19 +62,19 @@ class Canvas extends Component {
     }
     this.setState({ currentSymbols: currentSymbols })
 
-    const graph = this.graphRefs[7].current
-    const equation = graph.state.equation
-    console.log(equation)
-    let latex = _.clone(equation.props.latex)
+    for (let graphRef of this.graphRefs) {
+      const graph = graphRef.current
+      const equation = graph.state.equation
+      if (!equation) continue
 
-    for (let tag of Object.keys(currentSymbols)) {
-      const ascii = this.symbolHash[tag]
-      const value = currentSymbols[tag]
-      latex = latex.replace(new RegExp(ascii, 'g'), value)
+      let latex = _.clone(equation.props.latex)
+      console.log(latex) // latex = 'y=(x+3)^{2}+1'
+      const pattern = new RegExp(Object.keys(currentSymbols).map(s => '\\u{' + s + '}').join('|'), 'gu');
+      latex = latex.replace(pattern, match => currentSymbols[match.codePointAt(0).toString(16).toUpperCase()]);
+      console.log(latex) // latex = 'y=(x+{a})^{b}+{c}'
+      graph.update(latex)
     }
-    console.log(latex)
-    // let equation = `y = (x - ${a})^{${2}} + ${b}`
-    this.graphRefs[7].current.update(latex)
+
   }
 
   mouseDown(pos) {

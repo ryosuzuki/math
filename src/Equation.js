@@ -198,26 +198,22 @@ class Equation extends Component {
   onMouseDown() {
     if (Graphs.state.selectId === -1) return
     const selectId = Graphs.state.selectId
-    const selectFigure = Graphs.state.figures[selectId]
-    const graph = selectFigure.graphRef.current
-    // console.log(graph)
-    // graph.update(this.props.latex)
-    // this.setState({ graph: graph })
-
+    const graph = Canvas.graphRefs[selectId].current
     graph.setState({ equation: this })
+    graph.update(this.props.latex)
     this.setState({ highlight: false })
-    Figures.setState({ selectId: -1 })
+    Graphs.setState({ selectId: -1 })
   }
 
   onMouseEnter() {
     if (!Canvas.state.selectMode) return
-    if (Figures.state.selectId === -1) return
+    if (Graphs.state.selectId === -1) return
     this.setState({ highlight: true })
   }
 
   onMouseLeave() {
     if (!Canvas.state.selectMode) return
-    if (Figures.state.selectId === -1) return
+    if (Graphs.state.selectId === -1) return
     this.setState({ highlight: false })
   }
 
