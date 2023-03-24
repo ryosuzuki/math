@@ -3,7 +3,9 @@ import { Group, Rect } from 'react-konva'
 import Equation from './Equation.js'
 import Slider from './Slider.js'
 
-import mathPixEquations from './equations.json'
+import stringSimilarity from 'string-similarity'
+
+import json from './equations.json'
 
 class Equations extends Component {
   constructor(props) {
@@ -15,10 +17,20 @@ class Equations extends Component {
   }
 
   componentDidMount() {
-
-    // const url2 = `${App.domain}/public/sample/mathpix-${App.sampleId}.json`
-    // this.fetchData2(url2)
     this.init()
+  }
+
+  async fetchData(url) {
+    try {
+      const response = await fetch(url)
+      if (url.includes('json')) {
+        return await response.json()
+      } else {
+        return await response.text()
+      }
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   async init() {
@@ -38,67 +50,91 @@ class Equations extends Component {
       equation.height = equation.bbox[2][1] - equation.y
       return equation
     })
-    // TODO: hard-coded equation from mathpix.md
-    const scores = mathPixEquations.map(i => i.score)
+
+    let latexArray = this.extractEquations(mathpix)
+    console.log(latexArray)
+
+    let items = []
+    for (let eq of mathocr) {
+      let box = eq.bbox
+      let bbox = { minX: box[0][0], maxX: box[2][0], minY: box[0][1], maxY: box[2][1] }
+      let raw = ''
+      for (let textAnnotation of ocr.textAnnotations) {
+        let description = textAnnotation.description
+        let vertices = textAnnotation.boundingPoly.vertices
+        let bb = { minX: vertices[0].x, maxX: vertices[2].x, minY: vertices[0].y, maxY: vertices[2].y }
+        if ((bbox.minX <= bb.minX && bb.maxX <= bbox.maxX) && (bbox.minY <= bb.minY && bb.maxY <= bbox.maxY)) {
+          raw += description
+        } else {
+        }
+      }
+      let text = this.simpleConversion(raw)
+      items.push({ raw: raw, text: text, score: eq.score })
+    }
+    // console.log(items)
+    items = items.filter(item => item.score > 0.6)
+
+    items = items.map((item) => {
+      item.latex = this.closestLatex(item, latexArray)
+      return item
+    });
+    console.log(items)
+
+    const scores = items.map(item => item.score)
     for (let i = 0; i < equations.length; i++) {
       let equation = equations[i]
       let id = _.indexOf(scores, equation.score)
-      if (mathPixEquations[i]) {
-        equation.latex = mathPixEquations[i].latex
+      if (items[id]) {
+        equation.latex = items[id].latex
+        equation.text = items[id].text
+        equation.raw = items[id].raw
       }
       const equationRef = React.createRef()
       Canvas.equationRefs.push(equationRef)
       equations[i] = equation
     }
 
-    let mathpixEquations = this.extractEquations(mathpix)
-    console.log(mathpixEquations)
-
-    // let box = mathocr[0].bbox
-    let items = []
-    for (let eq of mathocr) {
-      let box = eq.bbox
-      let bbox = { minX: box[0][0], maxX: box[2][0], minY: box[0][1], maxY: box[2][1] }
-      let text = ''
-      for (let textAnnotation of ocr.textAnnotations) {
-        let description = textAnnotation.description
-        let vertices = textAnnotation.boundingPoly.vertices
-        let bb = { minX: vertices[0].x, maxX: vertices[2].x, minY: vertices[0].y, maxY: vertices[2].y }
-        if ((bbox.minX <= bb.minX && bb.maxX <= bbox.maxX) && (bbox.minY <= bb.minY && bb.maxY <= bbox.maxY)) {
-          text += description
-        } else {
-        }
-      }
-      items.push({ text: text, score: eq.score })
-    }
-    items = items.filter(item => item.score > 0.6)
-    console.log(items)
-
-
-
+    console.log(equations)
     this.setState({ equations: equations })
-    console.log('end 1')
   }
 
-  async fetchData(url) {
-    try {
-      const response = await fetch(url)
-      if (url.includes('json')) {
-        return await response.json()
-      } else {
-        return await response.text()
+  simpleConversion(text) {
+    text = text.replace(/√/g, "\\sqrt");
+    text = text.replace(/²/g, "^{2}");
+    text = text.replace(/sin/g, "\\sin");
+    return text
+  }
+
+  closestLatex(item, latexArray) {
+    const scoreThreshold = 0;
+    let bestMatch = null;
+    let bestScore = 0;
+    latexArray.forEach((latex) => {
+      let score = this.compareStrings(item.text, latex);
+      if (score > bestScore && score >= scoreThreshold) {
+        bestScore = score;
+        bestMatch = latex;
       }
-    } catch (error) {
-      console.error(error);
-    }
+    });
+    return bestMatch;
+  }
+
+  compareStrings(a, b) {
+    return stringSimilarity.compareTwoStrings(a, b)
   }
 
   extractEquations(text) {
-    const regex = /\$(.*?)\$/g;
+    // $...$ or $$...$$
+    const regexs = [
+     /\$(.*?)\$/g,
+     /\$\$\n(.*?)\n\$\$/g,
+    ]
     const equations = [];
     let match;
-    while ((match = regex.exec(text)) !== null) {
-      equations.push(match[1]);
+    for (let regex of regexs) {
+      while ((match = regex.exec(text)) !== null) {
+        equations.push(match[1]);
+      }
     }
     return equations;
   }
