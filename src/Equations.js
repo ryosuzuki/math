@@ -59,6 +59,8 @@ class Equations extends Component {
         if (equation.score === 0.6046971082687378) {
           equation.latex = 'y=1-\\sin x'
         }
+        const equationRef = React.createRef()
+        Canvas.equationRefs.push(equationRef)
         equations[i] = equation
       }
       this.setState({ equations: equations })
@@ -87,6 +89,7 @@ class Equations extends Component {
               />
               <Equation
                 key={ `equation-${i}` }
+                ref={ Canvas.equationRefs[i] }
                 id={ i }
                 x={ equation.x }
                 y={ equation.y }

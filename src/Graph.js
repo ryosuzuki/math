@@ -10,6 +10,7 @@ class Graph extends Component {
     window.Graph = this
     this.state = {
       points: [],
+      equation: null,
     }
   }
 
@@ -42,6 +43,7 @@ class Graph extends Component {
     target.y(0)
     let pos = App.state.mouse
     let delta = { x: pos.x - this.originPos.x, y: pos.y - this.originPos.y }
+    // TODO
     let a = this.originSymbols['33']
     let b = this.originSymbols['31']
     let hash = {}
@@ -105,7 +107,6 @@ class Graph extends Component {
       let ratio = { x: xRatio, y: -yRatio }
       console.log(ratio)
       this.setState({ ratio: ratio })
-      // this.update(this.state.equation)
     })
   }
 

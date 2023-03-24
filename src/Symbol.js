@@ -73,11 +73,11 @@ class Symbol extends Component {
     dx = dx / 10
     // console.log(pos, dx)
 
-    let hash = {}
-    hash[this.props.tag] = this.originValue + dx
+    let newSymbols = {}
+    newSymbols[this.props.tag] = this.originValue + dx
     // let round = this.props.word === '²' ? 0 : 1
     let round = 1
-    Canvas.updateValue(hash, round)
+    Canvas.updateValue(newSymbols, round)
   }
 
   onDragEnd(event) {

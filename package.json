@@ -15,6 +15,7 @@
     "mathjs": "^11.6.0",
     "mind-ar": "^1.2.0",
     "parse-svg-path": "^0.1.2",
+    "punycode": "^2.3.0",
     "python-shell": "^5.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -33,6 +34,8 @@
     "tex-to-svg": "^0.2.0",
     "transform-parser": "^1.0.1",
     "translate-svg-path": "^0.0.1",
+    "transliteration": "^2.3.5",
+    "unidecode": "^0.1.8",
     "use-image": "^1.1.0"
   },
   "scripts": {

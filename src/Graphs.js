@@ -6,15 +6,15 @@ import svgPathBbox from 'svg-path-bbox'
 
 import Graph from './Graph.js'
 
-class Figures extends Component {
+class Graphs extends Component {
   constructor(props) {
     super(props)
-    window.Figures = this
+    window.Graphs = this
     this.state = {
       currentId: -1,
       selectId: -1,
       lines: [],
-      figures: [],
+      graphs: [],
       segments: [],
     }
     this.ratio = { x: 26, y: 28 }
@@ -56,7 +56,7 @@ class Figures extends Component {
     let svgJson = parseSync(svgText)
     let contours = svgJson.children
     contours = contours.filter((contour) => contour.attributes.d)
-    let figures = []
+    let graphs = []
     for (let i = 0; i < contours.length; i++) {
       let path = contours[i]
       let bbox = svgPathBbox(path.attributes.d)
@@ -64,23 +64,25 @@ class Figures extends Component {
       let height = bbox[3] - bbox[1]
       if (width < 100 || height < 100) continue
       if (width > 1000 && height > 1000) continue
-      let figure = { bbox: bbox}
-      figure = this.getAxis(figure)
-      if (figure) {
-        figures.push(figure)
+      let graph = { bbox: bbox}
+      graph = this.getAxis(graph)
+      if (graph) {
+        const graphRef = React.createRef()
+        Canvas.graphRefs.push(graphRef)
+        graphs.push(graph)
       }
       // break
     }
-    this.setState({ figures: figures })
+    this.setState({ graphs: graphs })
   }
 
-  getAxis(figure) {
+  getAxis(graph) {
     let lines = this.state.lines
     let currentLines = lines.filter((line) => {
-      return (line.bbox[0] > figure.bbox[0]
-           && line.bbox[1] > figure.bbox[1]
-           && line.bbox[2] < figure.bbox[2]
-           && line.bbox[3] < figure.bbox[3])
+      return (line.bbox[0] > graph.bbox[0]
+           && line.bbox[1] > graph.bbox[1]
+           && line.bbox[2] < graph.bbox[2]
+           && line.bbox[3] < graph.bbox[3])
     })
     // currentLines.map((line) => line.visible = true )
     let horizontal = []
@@ -101,14 +103,13 @@ class Figures extends Component {
     let yAxis = this.getAxisPoints(vertical, 'y')
     let segments = this.getSegments(graphs)
     if (xAxis && yAxis) {
-      figure.xAxis = xAxis
-      figure.yAxis = yAxis
-      figure.origin = { x: yAxis[0], y: xAxis[1] }
-      figure.visible = false
-      figure.graphs = graphs
-      figure.segments = segments
-      figure.graphRef = React.createRef()
-      return figure
+      graph.xAxis = xAxis
+      graph.yAxis = yAxis
+      graph.origin = { x: yAxis[0], y: xAxis[1] }
+      graph.visible = false
+      graph.graphs = graphs
+      graph.segments = segments
+      return graph
     } else {
       return null
     }
@@ -165,7 +166,7 @@ class Figures extends Component {
   render() {
     return (
       <>
-        { this.state.figures.map((figure, i) => {
+        { this.state.graphs.map((graph, i) => {
           let stroke = 'rgba(0, 0, 0, 0)'
           let fill = 'rgba(0, 0, 0, 0)'
           if (this.state.currentId === i) {
@@ -180,10 +181,10 @@ class Figures extends Component {
             <Group key={i}>
               <Rect
                 key={ `bounding-box-${i}` }
-                x={ figure.bbox[0] }
-                y={ figure.bbox[1] }
-                width={ figure.bbox[2] - figure.bbox[0] }
-                height={ figure.bbox[3] - figure.bbox[1] }
+                x={ graph.bbox[0] }
+                y={ graph.bbox[1] }
+                width={ graph.bbox[2] - graph.bbox[0] }
+                height={ graph.bbox[3] - graph.bbox[1] }
                 strokeWidth={ 3 }
                 stroke={ stroke }
                 fill={ fill }
@@ -196,43 +197,44 @@ class Figures extends Component {
                 key={ `x-axis-${i}` }
                 x={ 0 }
                 y={ 0 }
-                points={ figure.xAxis }
+                points={ graph.xAxis }
                 strokeWidth={ 8 }
                 stroke={ 'red' }
-                visible={ figure.visible }
+                visible={ graph.visible }
               />
               {/* y-axis */}
               <Line
                 key={ `y-axis-${i}` }
                 x={ 0 }
                 y={ 0 }
-                points={ figure.yAxis }
+                points={ graph.yAxis }
                 strokeWidth={ 8 }
                 stroke={ 'red' }
-                visible={ figure.visible }
+                visible={ graph.visible }
               />
               {/* origin */}
               <Circle
                 key={ `origin-${i}` }
-                x={ figure.origin.x }
-                y={ figure.origin.y }
+                x={ graph.origin.x }
+                y={ graph.origin.y }
                 radius={ 10 }
                 fill={ 'red' }
-                visible={ figure.visible }
+                visible={ graph.visible }
               />
 
               <Graph
-                ref={ figure.graphRef }
-                origin={ figure.origin }
-                xAxis={ figure.xAxis }
-                yAxis={ figure.yAxis }
+                id={ i }
+                ref={ Canvas.graphRefs[i] }
+                origin={ graph.origin }
+                xAxis={ graph.xAxis }
+                yAxis={ graph.yAxis }
                 ratio={ this.ratio }
-                segments={ figure.segments }
-                graphs={ figure.graphs }
+                segments={ graph.segments }
+                graphs={ graph.graphs }
               />
 
               {/* segments for debugging */}
-              { figure.segments.map((segment, j) => {
+              { graph.segments.map((segment, j) => {
                 return (
                   <Circle
                     key={ `segment-${i}-${j}` }
@@ -246,7 +248,7 @@ class Figures extends Component {
               })}
 
               {/* graph path for debugging */}
-              { figure.graphs.map((graph, j) => {
+              { graph.graphs.map((graph, j) => {
                 return (
                   <Path
                     key={ `graph-${i}-${j}` }
@@ -265,4 +267,4 @@ class Figures extends Component {
   }
 }
 
-export default Figures
+export default Graphs

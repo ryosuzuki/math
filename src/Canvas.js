@@ -2,15 +2,16 @@ import React, { Component } from 'react'
 import { Stage, Layer, Rect, Text, Line, Group, Circle, Path, Image, Shape} from 'react-konva'
 import Konva from 'konva'
 import { Html } from 'react-konva-utils';
+import unidecode from 'unidecode'
+import tr from 'transliteration';
 
 import Variable from './Variable.js'
 import DrawingLine from './DrawingLine.js'
 import Words from './Words.js'
-import Graph from './Graph.js'
-import Figures from './Figures.js'
+import Graphs from './Graphs.js'
 import Equations from './Equations.js'
 
-let debug = false
+let debug = true
 
 class Canvas extends Component {
   constructor(props) {
@@ -18,22 +19,34 @@ class Canvas extends Component {
     window.Canvas = this
     window.canvas = this
     window.Konva = Konva
+    window.unidecode = unidecode
+    window.transliterate = tr
     this.state = {
       event: {},
       paperImage: null,
       selectMode: true,
       currentSymbols: {},
-      currentFigure: null
+      currentGraph: null,
     }
     this.symbols = {}
+    this.symbolHash = {}
     if (debug) {
       this.state.selectMode = false
       this.state.currentSymbols = { '31': 1, '33': 3 }
+
+      setTimeout(() => {
+        const graph = this.graphRefs[7].current
+        const equation = this.equationRefs[7].current
+        graph.setState({ equation: equation })
+        graph.update(equation.props.latex)
+      }, 300)
     }
 
+    this.equationRefs = []
+    this.graphRefs = []
+
     this.drawingLineRef = React.createRef()
-    this.graphRef = React.createRef()
-    this.figuresRef = React.createRef()
+    this.graphsRef = React.createRef()
   }
 
   componentDidMount() {
@@ -42,18 +55,26 @@ class Canvas extends Component {
     this.stage = Konva.stages[0]
   }
 
-  updateValue(hash, round=1) {
+  updateValue(newSymbols, round=1) {
     let currentSymbols = this.state.currentSymbols
-    for (let key of Object.keys(hash)) {
-      currentSymbols[key] = _.round(hash[key], round)
+    for (let tag of Object.keys(newSymbols)) {
+      currentSymbols[tag] = _.round(newSymbols[tag], round)
     }
     this.setState({ currentSymbols: currentSymbols })
 
-    const figures = this.figuresRef.current.state.figures
-    let a = -currentSymbols['33']
-    let b = currentSymbols['31'] || 1
-    let equation = `y = (x - ${a})^{${2}} + ${b}`
-    figures[7].graphRef.current.update(equation)
+    const graph = this.graphRefs[7].current
+    const equation = graph.state.equation
+    console.log(equation)
+    let latex = _.clone(equation.props.latex)
+
+    for (let tag of Object.keys(currentSymbols)) {
+      const ascii = this.symbolHash[tag]
+      const value = currentSymbols[tag]
+      latex = latex.replace(new RegExp(ascii, 'g'), value)
+    }
+    console.log(latex)
+    // let equation = `y = (x - ${a})^{${2}} + ${b}`
+    this.graphRefs[7].current.update(latex)
   }
 
   mouseDown(pos) {
@@ -122,13 +143,11 @@ class Canvas extends Component {
               {/* Paper Image */}
               <Image image={ this.state.paperImage } />
 
-              {/*<Graph ref={this.graphRef} />*/}
-
               {/* Words */}
               <Words />
 
-              <Figures
-                ref={this.figuresRef}
+              <Graphs
+                ref={this.graphsRef}
               />
               {/* Drawing Line */}
               <DrawingLine ref={this.drawingLineRef} />

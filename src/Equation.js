@@ -28,7 +28,9 @@ class Equation extends Component {
     let latex = this.props.latex // 'y=x^2+6x+10=(x+3)^2+1'
     const options = { width: 100 }
     let svgText = TeXToSVG(latex, options)
+    window.svgText = svgText
     let latexJson = parseSync(svgText)
+    window.latexJson = latexJson
     let latexElements = latexJson.children[1]
     let paths = latexJson.children[0].children
     let latexDefs = {}
@@ -159,6 +161,9 @@ class Equation extends Component {
               symbol = this.combineSymbols(symbols)
             }
             // console.log(symbol)
+            const ascii = this.convertAscii(symbol.tag)
+            Canvas.symbolHash[symbol.tag] = ascii
+
             const temp = this.state.symbols
             temp.push(symbol)
             this.setState({ symbols: temp })
@@ -174,13 +179,32 @@ class Equation extends Component {
     }
   }
 
+  convertAscii(tag) {
+    let codes = tag.split('-').map(a => parseInt(a, 16));
+    let ascii = codes.map(code => {
+      let offset = 0
+      if (119886 <= code && code <= 119911) {
+        offset = 119789 // math italic lower
+      }
+      if (119860 <= code && code <= 119885) {
+        offset = 119795 // math italic upper
+      }
+      code = code - offset
+      return String.fromCharCode(code);
+    }).join('')
+    return ascii
+  }
+
   onMouseDown() {
-    const selectId = Figures.state.selectId
-    const selectFigure = Figures.state.figures[selectId]
+    if (Graphs.state.selectId === -1) return
+    const selectId = Graphs.state.selectId
+    const selectFigure = Graphs.state.figures[selectId]
     const graph = selectFigure.graphRef.current
-    console.log(graph)
-    graph.update(this.props.latex)
-    this.setState({ graph: graph })
+    // console.log(graph)
+    // graph.update(this.props.latex)
+    // this.setState({ graph: graph })
+
+    graph.setState({ equation: this })
     this.setState({ highlight: false })
     Figures.setState({ selectId: -1 })
   }
