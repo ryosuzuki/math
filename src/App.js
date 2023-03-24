@@ -16,7 +16,7 @@ class App extends Component {
     window.app = this
     window.App = this
 
-    this.sampleId = 1
+    this.sampleId = 2
     this.domain = 'https://raw.githubusercontent.com/ryosuzuki/math/main'
 
     if (window.location.href.includes('localhost')) {

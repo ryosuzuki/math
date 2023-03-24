@@ -34,6 +34,8 @@ class Equations extends Component {
   }
 
   async init() {
+    const threshold = 0.5
+
     const url = `${App.domain}/public/sample/math-${App.sampleId}.json`
     let equations = await this.fetchData(url)
     window.mathocr = equations
@@ -42,7 +44,7 @@ class Equations extends Component {
     let mathpix = await this.fetchData(url2)
     window.mathpix = mathpix
 
-    equations = equations.filter(e => e.score > 0.6)
+    equations = equations.filter(e => e.score > threshold)
     equations = equations.map((equation) => {
       equation.x = equation.bbox[0][0]
       equation.y = equation.bbox[0][1]
@@ -63,7 +65,8 @@ class Equations extends Component {
         let description = textAnnotation.description
         let vertices = textAnnotation.boundingPoly.vertices
         let bb = { minX: vertices[0].x, maxX: vertices[2].x, minY: vertices[0].y, maxY: vertices[2].y }
-        if ((bbox.minX <= bb.minX && bb.maxX <= bbox.maxX) && (bbox.minY <= bb.minY && bb.maxY <= bbox.maxY)) {
+        const offset = 5
+        if ((bbox.minX - offset <= bb.minX && bb.maxX <= bbox.maxX + offset) && (bbox.minY - offset <= bb.minY && bb.maxY <= bbox.maxY + offset)) {
           raw += description
         } else {
         }
@@ -72,7 +75,7 @@ class Equations extends Component {
       items.push({ raw: raw, text: text, score: eq.score })
     }
     // console.log(items)
-    items = items.filter(item => item.score > 0.6)
+    items = items.filter(item => item.score > threshold)
 
     items = items.map((item) => {
       item.latex = this.closestLatex(item, latexArray)
@@ -125,9 +128,12 @@ class Equations extends Component {
 
   extractEquations(text) {
     // $...$ or $$...$$
+    text = text.replace(/\\begin{aligned}\n/g, '')
+    text = text.replace(/\\end{aligned}\n/g, '')
+    text = text.replace(/\\\\\n/g, '\n')
     const regexs = [
+     /\$\$\n([\s\S]*?)\n\$\$/g,
      /\$(.*?)\$/g,
-     /\$\$\n(.*?)\n\$\$/g,
     ]
     const equations = [];
     let match;

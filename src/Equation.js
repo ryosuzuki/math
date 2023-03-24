@@ -219,6 +219,7 @@ class Equation extends Component {
 
   render() {
     let stroke = '#eee'
+    stroke = 'black'
     if (this.state.highlight) stroke = App.highlightColor
     if (this.state.graph) stroke = App.highlightColor
     return (

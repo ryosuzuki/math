@@ -11,7 +11,7 @@ import Words from './Words.js'
 import Graphs from './Graphs.js'
 import Equations from './Equations.js'
 
-let debug = true
+let debug = false
 
 class Canvas extends Component {
   constructor(props) {
