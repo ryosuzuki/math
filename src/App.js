@@ -16,14 +16,15 @@ class App extends Component {
     window.app = this
     window.App = this
 
-    this.sampleId = 2
+    this.sampleId = 1
+    this.threshold = 0.3
     this.domain = 'https://raw.githubusercontent.com/ryosuzuki/math/main'
 
     if (window.location.href.includes('localhost')) {
       this.socket = io('http://localhost:4000')
       this.domain = 'http://localhost:4000'
     }
-    this.size = 1200 // 1024
+    this.size = 1500 // 1024
     this.state = {
       dragging: false,
       initDrawing: true,

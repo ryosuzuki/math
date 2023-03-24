@@ -18,6 +18,7 @@ class Equation extends Component {
     window.Equation = this
     this.state = {
       symbols: [],
+      rects: [],
       highlight: false,
       graph: null
     }
@@ -28,9 +29,9 @@ class Equation extends Component {
     let latex = this.props.latex // 'y=x^2+6x+10=(x+3)^2+1'
     const options = { width: 100 }
     let svgText = TeXToSVG(latex, options)
-    window.svgText = svgText
+    this.svgText = svgText
     let latexJson = parseSync(svgText)
-    window.latexJson = latexJson
+    this.latexJson = latexJson
     let latexElements = latexJson.children[1]
     let paths = latexJson.children[0].children
     let latexDefs = {}
@@ -46,7 +47,11 @@ class Equation extends Component {
     let translate = { x: 0, y: 0, }
     if (!transformStr) return { scale: scale, translate: translate }
     for (let value of transformStr.split(' ')) {
-      const [type, data] = value.split('(');
+      let [type, data] = value.split('(');
+      if (!data) {
+        [type, data] = transformStr.split('(')
+        // console.log(transformStr, type, data)
+      }
       const values = data.substring(0, data.length - 1).split(',')
       if (type === 'scale') {
         if (values.length === 1) values.push(values[0])
@@ -83,7 +88,8 @@ class Equation extends Component {
       path = parseSvg(serializeSvg(translateSvg(path, transform.translate.x, transform.translate.y)))
     }
     path = parseSvg(serializeSvg(scaleSvg(path, 0.02, -0.02)))
-    path = parseSvg(serializeSvg(translateSvg(path, this.props.x + 10, this.props.y + 20 )))
+    // path = parseSvg(serializeSvg(translateSvg(path, this.props.x + 10, this.props.y + 20 )))
+    path = parseSvg(serializeSvg(translateSvg(path, this.props.x + 5, this.props.y + this.props.height/2 )))
     path = serializeSvg(path)
 
     const box = svgPathBbox(path)
@@ -129,6 +135,27 @@ class Equation extends Component {
     return combinedSymbol
   }
 
+  getRect(element, prev) {
+    const transforms =  _.clone(prev.transforms)
+    const scale = 0.02
+    let x = Number(element.attributes['x'])
+    let y = -Number(element.attributes['y'])
+    let width = Number(element.attributes['width'])
+    let height = Number(element.attributes['height'])
+    for (let transform of transforms) {
+      x += transform.translate.x
+      y -= transform.translate.y
+    }
+    x *= scale
+    y *= scale
+    width *= scale
+    height *= scale
+    x += 5
+    y += this.props.height/2
+    const rect = { x: x, y: y, width: width, height: height }
+    return rect
+  }
+
   getElement(element, prev) {
     if (element.type === 'element') {
       const transformStr = element.attributes['transform']
@@ -172,6 +199,12 @@ class Equation extends Component {
               this.getElement.bind(this)(child, _.clone(prev))
             }
           }
+          break
+        case 'rect':
+          const temp = this.state.rects
+          const rect = this.getRect.bind(this)(element, _.clone(prev))
+          temp.push(rect)
+          this.setState({ rects: temp })
           break
         default:
           break
@@ -219,7 +252,7 @@ class Equation extends Component {
 
   render() {
     let stroke = '#eee'
-    stroke = 'black'
+    // stroke = 'black'
     if (this.state.highlight) stroke = App.highlightColor
     if (this.state.graph) stroke = App.highlightColor
     return (
@@ -252,6 +285,21 @@ class Equation extends Component {
             />
           )
         })}
+        { this.state.rects.map((rect, i) => {
+          return (
+            <Rect
+              key={ i }
+              x={ this.props.x + rect.x }
+              y={ this.props.y + rect.y }
+              width={ rect.width }
+              height={ rect.height }
+              fill={ 'black' }
+            />
+          )
+        })
+
+
+        }
       </>
     )
   }

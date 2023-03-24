@@ -18,6 +18,10 @@ class Graph extends Component {
   }
 
   update(equation) {
+    equation = equation.replace(/f\(x\)/g, 'y')
+    equation = equation.replace(/g\(x\)/g, 'y')
+    equation = equation.replace(/h\(x\)/g, 'y')
+
     try {
       let points = []
       for (let x = -10; x < 10; x += 0.05) {

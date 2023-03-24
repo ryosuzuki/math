@@ -34,8 +34,7 @@ class Equations extends Component {
   }
 
   async init() {
-    const threshold = 0.5
-
+    const threshold = App.threshold
     const url = `${App.domain}/public/sample/math-${App.sampleId}.json`
     let equations = await this.fetchData(url)
     window.mathocr = equations
@@ -54,7 +53,7 @@ class Equations extends Component {
     })
 
     let latexArray = this.extractEquations(mathpix)
-    console.log(latexArray)
+    console.log(_.clone(latexArray))
 
     let items = []
     for (let eq of mathocr) {
@@ -78,7 +77,9 @@ class Equations extends Component {
     items = items.filter(item => item.score > threshold)
 
     items = items.map((item) => {
-      item.latex = this.closestLatex(item, latexArray)
+      let [latex, i] = this.closestLatex(item, latexArray)
+      item.latex = latex
+      // _.pullAt(latexArray, [i])
       return item
     });
     console.log(items)
@@ -96,7 +97,7 @@ class Equations extends Component {
       Canvas.equationRefs.push(equationRef)
       equations[i] = equation
     }
-
+    equations = equations.filter(e => e.latex)
     console.log(equations)
     this.setState({ equations: equations })
   }
@@ -104,7 +105,10 @@ class Equations extends Component {
   simpleConversion(text) {
     text = text.replace(/√/g, "\\sqrt");
     text = text.replace(/²/g, "^{2}");
+    text = text.replace(/³/g, "^{3}");
     text = text.replace(/sin/g, "\\sin");
+    text = text.replace(/···/g, "\\cdots");
+    text = text.replace(/≤/g, "\\leqslant");
     return text
   }
 
@@ -112,14 +116,17 @@ class Equations extends Component {
     const scoreThreshold = 0;
     let bestMatch = null;
     let bestScore = 0;
-    latexArray.forEach((latex) => {
+    let bestIndex = -1
+    latexArray.forEach((latex, i) => {
       let score = this.compareStrings(item.text, latex);
+      // if (item.text === 'f(a+h)-f(a)h(2a^{2}+4ah+2h^{2}5a-5h+1)(2a^{2}-5a+1)h2a^{2}+4ah+2h^{2}5a-5h+1-2a^{2}+5a-1h4ah2h^{2}5hh4a+2h-5') console.log(score, latex)
       if (score > bestScore && score >= scoreThreshold) {
         bestScore = score;
         bestMatch = latex;
+        bestIndex = i
       }
     });
-    return bestMatch;
+    return [bestMatch, bestIndex];
   }
 
   compareStrings(a, b) {
@@ -128,9 +135,10 @@ class Equations extends Component {
 
   extractEquations(text) {
     // $...$ or $$...$$
-    text = text.replace(/\\begin{aligned}\n/g, '')
-    text = text.replace(/\\end{aligned}\n/g, '')
-    text = text.replace(/\\\\\n/g, '\n')
+    // text = text.replace(/\\begin{aligned}\n/g, '')
+    // text = text.replace(/\\end{aligned}\n/g, '')
+    // text = text.replace(/\\\\\n/g, '\\\\ ')
+    text = text.replace(/\&/g, '')
     const regexs = [
      /\$\$\n([\s\S]*?)\n\$\$/g,
      /\$(.*?)\$/g,
