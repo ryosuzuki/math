@@ -43,8 +43,8 @@ class Graph extends Component {
     equation = equation.replace(/g\(x\)/g, 'y')
     equation = equation.replace(/h\(x\)/g, 'y')
 
+    console.log(equation)
     if (App.sampleId === 2) {
-      console.log(equation)
       this.updateCircle(equation)
     } else {
       this.update1(equation)

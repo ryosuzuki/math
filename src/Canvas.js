@@ -78,6 +78,7 @@ class Canvas extends Component {
 
       latex = latex.replace(/\\SQRT/g, '\\sqrt')
 
+      // latex = `x = ${asciiSymbols['r']}`
       console.log(pattern)
       console.log(latex) // latex = 'y=(x+{a})^{b}+{c}'
       graph.update(latex)
