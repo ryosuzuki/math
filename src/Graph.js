@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Line, Text } from 'react-konva'
-import { evaluateTex } from 'tex-math-parser'
+import texMathParser from 'tex-math-parser'
 import * as math from 'mathjs';
 
 class Graph extends Component {
@@ -11,9 +11,14 @@ class Graph extends Component {
       points: [],
       equation: null,
     }
+    window.math = math
+    window.texMathParser = texMathParser
   }
 
   componentDidMount() {
+    const expression = math.parse('x^2 + y^2');
+    math.simplify(expression, {x: 3}).toString()
+    // 'y ^ 2 + 9'
   }
 
   update(equation) {
@@ -24,7 +29,7 @@ class Graph extends Component {
     try {
       let points = []
       for (let x = -10; x < 10; x += 0.05) {
-        let answer = evaluateTex(equation, { x: x });
+        let answer = texMathParser.evaluateTex(equation, { x: x });
         let y = answer.evaluated
         points.push({ x: x, y: y })
       }

@@ -12,6 +12,10 @@ class Symbol extends Component {
   }
 
   componentDidMount() {
+    if (this.props.bbox.x > 200000) {
+      console.log(this)
+      console.log(this.props.bbox)
+    }
   }
 
   onMouseDown() {

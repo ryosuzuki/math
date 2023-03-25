@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import { Group, Rect, Path, Line, Circle } from 'react-konva'
-import { parseSync } from 'svgson'
-import { pathParse } from 'svg-path-parse'
+import svgson from 'svgson'
 import svgPathBbox from 'svg-path-bbox'
+import parseSvg from 'parse-svg-path'
 
 import Graph from './Graph.js'
 
@@ -37,7 +37,7 @@ class Graphs extends Component {
   async processLine() {
     const url = `${App.domain}/public/sample/figure-line-${App.sampleId}.svg`
     let svgText = await this.fetchData(url)
-    let svgJson = parseSync(svgText)
+    let svgJson = svgson.parseSync(svgText)
     let lines = svgJson.children
     lines = lines.filter((line) => line.attributes.d)
     for (let i = 0; i < lines.length; i++) {
@@ -53,7 +53,7 @@ class Graphs extends Component {
   async processContour() {
     const url = `${App.domain}/public/sample/figure-contour-${App.sampleId}.svg`
     let svgText = await this.fetchData(url)
-    let svgJson = parseSync(svgText)
+    let svgJson = svgson.parseSync(svgText)
     let contours = svgJson.children
     contours = contours.filter((contour) => contour.attributes.d)
     let graphs = []
@@ -135,9 +135,11 @@ class Graphs extends Component {
   getSegments(graphs) {
     let segments = []
     for (let graph of graphs) {
-      let path = graph.attributes.d
-      let pathData = pathParse(path).getSegments()
-      segments.push(pathData.segments)
+      const path = graph.attributes.d
+      // let pathData = pathParse(path).getSegments()
+      // segments.push(pathData.segments)
+      const pathSegments = parseSvg(path)
+      segments.push(pathSegments)
     }
     segments = _.flatten(segments)
     return segments

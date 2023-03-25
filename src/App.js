@@ -16,8 +16,8 @@ class App extends Component {
     window.app = this
     window.App = this
 
-    this.sampleId = 1
-    this.threshold = 0.3
+    this.sampleId = 2
+    this.threshold = 0.5
     this.domain = 'https://raw.githubusercontent.com/ryosuzuki/math/main'
 
     if (window.location.href.includes('localhost')) {

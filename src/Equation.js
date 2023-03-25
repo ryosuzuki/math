@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Group, Rect, Path } from 'react-konva'
-import TeXToSVG from 'tex-to-svg'
-import { parseSync } from 'svgson'
+import texToSVG from 'tex-to-svg'
+import svgson from 'svgson'
 import svgPathBbox from 'svg-path-bbox'
 
 import parseSvg from 'parse-svg-path'
@@ -24,12 +24,12 @@ class Equation extends Component {
   }
 
   componentDidMount() {
-    window.TeXToSVG = TeXToSVG
+    window.texToSVG = texToSVG
     let latex = this.props.latex // 'y=x^2+6x+10=(x+3)^2+1'
     const options = { width: 100 }
-    let svgText = TeXToSVG(latex, options)
+    let svgText = texToSVG(latex, options)
     this.svgText = svgText
-    let latexJson = parseSync(svgText)
+    let latexJson = svgson.parseSync(svgText)
     this.latexJson = latexJson
     let latexElements = latexJson.children[1]
     let paths = latexJson.children[0].children
@@ -186,6 +186,8 @@ class Equation extends Component {
             if (symbols.length > 1) {
               symbol = this.combineSymbols(symbols)
             }
+            if (symbol.pathData === '') break
+
             // console.log(symbol)
             const ascii = this.convertAscii(symbol.tag)
             Canvas.symbolHash[symbol.tag] = ascii

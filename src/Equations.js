@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { Group, Rect } from 'react-konva'
 import Equation from './Equation.js'
-
 import stringSimilarity from 'string-similarity'
 
 class Equations extends Component {
@@ -50,7 +49,7 @@ class Equations extends Component {
     })
 
     let latexArray = this.extractEquations(mathpix)
-    console.log(_.clone(latexArray))
+    // console.log(_.clone(latexArray))
 
     let items = []
     for (let eq of mathocr) {
@@ -76,7 +75,9 @@ class Equations extends Component {
     items = items.map((item) => {
       let [latex, i] = this.closestLatex(item, latexArray)
       item.latex = latex
-      // _.pullAt(latexArray, [i])
+      if (App.sampleId === 2) {
+        _.pullAt(latexArray, [i])
+      }
       return item
     });
     console.log(items)
