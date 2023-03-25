@@ -42,9 +42,7 @@ class Graph extends Component {
     equation = equation.replace(/f\(x\)/g, 'y')
     equation = equation.replace(/g\(x\)/g, 'y')
     equation = equation.replace(/h\(x\)/g, 'y')
-    // console.log(equation)
-    // this.update1(equation)
-    this.update3(equation)
+    this.update1(equation)
   }
 
   update1(equation) {
@@ -53,6 +51,7 @@ class Graph extends Component {
       for (let x = -10; x < 10; x += 0.05) {
         let answer = texMathParser.evaluateTex(equation, { x: x });
         let y = answer.evaluated
+        if (isNaN(y)) y = y.re
         points.push({ x: x, y: y })
       }
       this.setState({ points: points })
