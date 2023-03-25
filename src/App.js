@@ -16,7 +16,7 @@ class App extends Component {
     window.app = this
     window.App = this
 
-    this.sampleId = 4
+    this.sampleId = 2
     this.threshold = 0.5
     this.domain = 'https://raw.githubusercontent.com/ryosuzuki/math/main'
 

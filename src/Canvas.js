@@ -26,6 +26,7 @@ class Canvas extends Component {
     if (debug) {
       this.state.selectMode = false
       // this.state.currentSymbols = { '31': 1, '33': 3 }
+      this.state.currentSymbols = {'210E': 0, '1D458': 0, '1D45F': 2}
 
       setTimeout(() => {
         // const graph = this.graphRefs[7].current
@@ -64,12 +65,40 @@ class Canvas extends Component {
 
       let latex = _.clone(equation.props.latex)
       console.log(latex) // latex = 'y=(x+3)^{2}+1'
-      const pattern = new RegExp(Object.keys(currentSymbols).map(s => '\\u{' + s + '}').join('|'), 'gu');
-      latex = latex.replace(pattern, match => currentSymbols[match.codePointAt(0).toString(16).toUpperCase()]);
+      latex = latex.replace(/\\sqrt/g, '\\SQRT')
+      // const pattern = new RegExp(Object.keys(currentSymbols).map(s => '\\u{' + s + '}').join('|'), 'gu');
+      // latex = latex.replace(pattern, match => currentSymbols[match.codePointAt(0).toString(16).toUpperCase()]);
+      const asciiSymbols = {}
+      for (let tag of Object.keys(currentSymbols)) {
+        const ascii = this.convertAscii(tag)
+        asciiSymbols[ascii] = currentSymbols[tag]
+      }
+      const pattern = new RegExp(Object.keys(asciiSymbols).join('|'), 'gu');
+      latex = latex.replace(pattern, match => asciiSymbols[match]);
+
+      latex = latex.replace(/\\SQRT/g, '\\sqrt')
+
+      console.log(pattern)
       console.log(latex) // latex = 'y=(x+{a})^{b}+{c}'
       graph.update(latex)
     }
+  }
 
+  convertAscii(tag) {
+    let codes = tag.split('-').map(a => parseInt(a, 16));
+    let ascii = codes.map(code => {
+      let offset = 0
+      if (119886 <= code && code <= 119911) {
+        offset = 119789 // math italic lower
+      }
+      if (119860 <= code && code <= 119885) {
+        offset = 119795 // math italic upper
+      }
+      code = code - offset
+      return String.fromCharCode(code);
+    }).join('')
+    if (ascii === 'ℎ') ascii = 'h'
+    return ascii
   }
 
   mouseDown(pos) {

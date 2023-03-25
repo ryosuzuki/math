@@ -42,7 +42,50 @@ class Graph extends Component {
     equation = equation.replace(/f\(x\)/g, 'y')
     equation = equation.replace(/g\(x\)/g, 'y')
     equation = equation.replace(/h\(x\)/g, 'y')
-    this.update1(equation)
+
+    if (App.sampleId === 2) {
+      console.log(equation)
+      this.updateCircle(equation)
+    } else {
+      this.update1(equation)
+    }
+  }
+
+  updateCircle(equation) {
+    const currentSymbols = Canvas.state.currentSymbols
+    const asciiSymbols = {}
+    for (let tag of Object.keys(currentSymbols)) {
+      const ascii = Canvas.convertAscii(tag)
+      asciiSymbols[ascii] = currentSymbols[tag]
+    }
+    let r = asciiSymbols['r']
+    let h = asciiSymbols['h']
+    let k = asciiSymbols['k']
+
+    const equation1 = 'y = \\sqrt{r^2 - (x - h)^2} + k'
+    const equation2 = 'y = -\\sqrt{r^2 - (x - h)^2} + k'
+    try {
+      let points = []
+      for (let x = -10; x <= 10; x += 0.05) {
+        let answer = texMathParser.evaluateTex(equation1, { x: x, r: r, h: h, k: k });
+        let y = answer.evaluated
+        if (isNaN(y) && h-r-0.1 <= x && h+r > x) {
+          y = y.re
+        }
+        points.push({ x: x, y: y })
+      }
+      for (let x = 10; x >= -10; x -= 0.05) {
+        let answer = texMathParser.evaluateTex(equation2, { x: x, r: r, h: h, k: k });
+        let y = answer.evaluated
+        if (isNaN(y) && h-r-0.1 <= x && h+r > x) {
+          y = y.re
+        }
+        points.push({ x: x, y: y })
+      }
+      this.setState({ points: points })
+    } catch (err) {
+      console.error(err)
+    }
   }
 
   update1(equation) {
