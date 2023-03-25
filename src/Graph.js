@@ -2,6 +2,10 @@ import React, { Component } from 'react'
 import { Line, Text } from 'react-konva'
 import texMathParser from 'tex-math-parser'
 import * as math from 'mathjs';
+import mathsteps from 'mathsteps'
+import algebra from 'algebra.js'
+import fractional from 'fractional'
+import nerdamer from 'nerdamer/all.min.js'
 
 class Graph extends Component {
   constructor(props) {
@@ -13,25 +17,85 @@ class Graph extends Component {
     }
     window.math = math
     window.texMathParser = texMathParser
+    window.mathsteps = mathsteps
+    window.algebra = algebra
+    window.fractional = fractional
+    window.nerdamer = nerdamer
   }
 
   componentDidMount() {
     const expression = math.parse('x^2 + y^2');
     math.simplify(expression, {x: 3}).toString()
     // 'y ^ 2 + 9'
+
+    let a = 'x^2 + y^2 = 16'
+    let b = new algebra.parse(a)
+    let c = b.eval({x: 1}).solveFor('y')
+    // [-3.872983346207417, 3.872983346207417]
+
+    a = '(x-h)^2 + (y - k)^2 = r^2'
+    b = new algebra.parse(a)
+    c = b.eval({x: 1, h: 1, k: 1, r: 1}).solveFor('y')
   }
 
   update(equation) {
     equation = equation.replace(/f\(x\)/g, 'y')
     equation = equation.replace(/g\(x\)/g, 'y')
     equation = equation.replace(/h\(x\)/g, 'y')
+    // console.log(equation)
+    // this.update1(equation)
+    this.update3(equation)
+  }
 
+  update1(equation) {
     try {
       let points = []
       for (let x = -10; x < 10; x += 0.05) {
         let answer = texMathParser.evaluateTex(equation, { x: x });
         let y = answer.evaluated
         points.push({ x: x, y: y })
+      }
+      this.setState({ points: points })
+    } catch (err) {
+      console.error(err)
+    }
+  }
+
+  update2(equation) {
+    try {
+      const points = []
+      equation = equation.replace(/\{/g, '')
+      equation = equation.replace(/\}/g, '')
+      let expressions = nerdamer.solveEquations(equation, 'y')
+      console.log(expressions[0].text(), equation)
+      for (let x = -10; x < 10; x += 0.5) {
+        for (let expression of expressions) {
+          let answer = nerdamer(expression.text(), { x: x }, 'numer')
+          let y = Number(answer.text())
+          points.push({ x: x, y: y })
+        }
+      }
+      this.setState({ points: points })
+    } catch (err) {
+      console.error(err)
+    }
+  }
+
+  update3(equation) {
+    try {
+      const points = []
+      // const eq = texMathParser.parseTex(equation).toString()
+      const expression = new algebra.parse(eq)
+      console.log(eq, expression)
+      // x: -10 to 10 with 0.05 step
+      for (let x = -200; x < 200; x += 1) {
+        let xa = new algebra.Fraction(x, 20)
+        let answers = expression.eval({ x: xa }).solveFor('y')
+        if (!answers.length) answers = [answers]
+        for (let answer of answers) {
+          let y = answer.numer / answer.denom
+          points.push({ x: x / 20, y: y })
+        }
       }
       this.setState({ points: points })
     } catch (err) {

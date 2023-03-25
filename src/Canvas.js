@@ -8,7 +8,7 @@ import Graphs from './Graphs.js'
 import Equations from './Equations.js'
 import Slider from './Slider.js'
 
-let debug = false
+let debug = true
 
 class Canvas extends Component {
   constructor(props) {
@@ -25,14 +25,18 @@ class Canvas extends Component {
     this.symbolHash = {}
     if (debug) {
       this.state.selectMode = false
-      this.state.currentSymbols = { '31': 1, '33': 3 }
+      // this.state.currentSymbols = { '31': 1, '33': 3 }
 
       setTimeout(() => {
-        const graph = this.graphRefs[7].current
-        const equation = this.equationRefs[7].current
+        // const graph = this.graphRefs[7].current
+        // const equation = this.equationRefs[10].current
+
+        const graph = this.graphRefs[0].current
+        const equation = this.equationRefs[2].current
+
         graph.setState({ equation: equation })
         graph.update(equation.props.latex)
-      }, 300)
+      }, 500)
     }
 
     this.equationRefs = []
