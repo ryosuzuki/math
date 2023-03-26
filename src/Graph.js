@@ -235,20 +235,18 @@ class Graph extends Component {
 
   render() {
     return (
-      <>
-        <Line
-          key={ this.props.id }
-          x={ 0 }
-          y={ 0 }
-          points={ this.convert(this.state.points) }
-          stroke={ App.strokeColor }
-          strokeWidth={ 4 }
-          draggable
-          onDragStart={this.onDragStart.bind(this) }
-          onDragMove={this.onDragMove.bind(this) }
-          onDragEnd={this.onDragEnd.bind(this) }
-        />
-      </>
+      <Line
+        key={ this.props.id }
+        x={ 0 }
+        y={ 0 }
+        points={ this.convert(this.state.points) }
+        stroke={ App.strokeColor }
+        strokeWidth={ 4 }
+        draggable
+        onDragStart={this.onDragStart.bind(this) }
+        onDragMove={this.onDragMove.bind(this) }
+        onDragEnd={this.onDragEnd.bind(this) }
+      />
     )
   }
 }

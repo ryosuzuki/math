@@ -230,6 +230,7 @@ class Canvas extends Component {
                 const equation = equations[equationId]
                 return (
                   <Graph
+                    key={ `graph-${i}` }
                     id={ i }
                     ref={ this.graphRefs[i] }
                     figureId={ figureId }
