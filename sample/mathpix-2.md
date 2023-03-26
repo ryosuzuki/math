@@ -1,7 +1,7 @@
 Equation of Circles Let $\mathcal{C}$ be the circle with center at $C(h, k)$ and radius $r$. Then an equation for $\mathcal{C}$ is
 
 $$
-(x-h)^{2}+(y-k)^{2}=r^{2} .
+(x-h)^{2}+(y-k)^{2}=r^{2}
 $$
 
 Proof Let $P(x, y)$ be any point on the circle. Since the distance from $P$ to the center $C$ is $r$, using the distance formula, we get
@@ -19,7 +19,7 @@ Figure 0.4
 Example Find the center and radius of the circle given by
 
 $$
-x^{2}-4 x+y^{2}+6 y-12=0 .
+x^{2}-4 x+y^{2}+6 y-12=0
 $$
 
 Solution Using the completing square method, the given equation can be written in the form (0.8.1).
