@@ -2,15 +2,15 @@ import React, { Component } from 'react'
 import { Stage, Layer, Group, Rect, Image } from 'react-konva'
 import Konva from 'konva'
 
-import DrawingLine from "./DrawingLine.js";
-import Words from "./Words.js";
-import Figures from "./Figures.js";
-import Equations from "./Equations.js";
-import Graph from "./Graph.js";
-import Slider from "./Slider.js";
-import Triangle from "./Triangle.js";
-import Summation from "./Summation.js";
-import StepByStep from "./StepByStep.js";
+import DrawingLine from './DrawingLine.js';
+import Words from './Words.js';
+import Figures from './Figures.js';
+import Equations from './Equations.js';
+import Graph from './Graph.js';
+import Slider from './Slider.js';
+import Triangle from './Triangle.js';
+import Summation from './Summation.js';
+import StepByStep from './StepByStep.js';
 
 let debug = false;
 
@@ -33,7 +33,7 @@ class Canvas extends Component {
     if (debug) {
       this.state.selectMode = false;
       // this.state.currentSymbols = { '31': 1, '33': 3 }
-      this.state.currentSymbols = { "210E": 0, "1D458": 0, "1D45F": 2 };
+      this.state.currentSymbols = { '210E': 0, '1D458': 0, '1D45F': 2 };
 
       setTimeout(() => {
         // const graph = this.graphRefs[7].current
@@ -55,7 +55,7 @@ class Canvas extends Component {
   }
 
   componentDidMount() {
-    let paperImage = document.getElementById("paper");
+    let paperImage = document.getElementById('paper');
     this.setState({ paperImage: paperImage });
     this.stage = Konva.stages[0];
   }
@@ -148,7 +148,7 @@ class Canvas extends Component {
   }
 
   convertAscii(tag) {
-    let codes = tag.split("-").map((a) => parseInt(a, 16));
+    let codes = tag.split('-').map((a) => parseInt(a, 16));
     let ascii = codes
       .map((code) => {
         let offset = 0;
@@ -161,14 +161,14 @@ class Canvas extends Component {
         code = code - offset;
         return String.fromCharCode(code);
       })
-      .join("");
-    if (ascii === "ℎ") ascii = "h";
+      .join('');
+    if (ascii === 'ℎ') ascii = 'h';
     return ascii;
   }
 
   mouseDown(pos) {
     console.log(App.state.mouse);
-    let event = new MouseEvent("mousedown", {
+    let event = new MouseEvent('mousedown', {
       clientX: pos.x,
       clientY: pos.y,
       pageX: pos.x,
@@ -178,7 +178,7 @@ class Canvas extends Component {
   }
 
   mouseMove(pos) {
-    let event = new MouseEvent("mousemove", {
+    let event = new MouseEvent('mousemove', {
       clientX: pos.x,
       clientY: pos.y,
       pageX: pos.x,
@@ -188,7 +188,7 @@ class Canvas extends Component {
   }
 
   mouseDrag(pos) {
-    let event = new MouseEvent("mousemove", {
+    let event = new MouseEvent('mousemove', {
       clientX: pos.x,
       clientY: pos.y,
       pageX: pos.x,
@@ -198,7 +198,7 @@ class Canvas extends Component {
   }
 
   mouseUp(pos) {
-    let event = new MouseEvent("mouseup", {
+    let event = new MouseEvent('mouseup', {
       clientX: pos.x,
       clientY: pos.y,
       pageX: pos.x,
@@ -231,16 +231,16 @@ class Canvas extends Component {
   render() {
     return (
       <>
-        <div id="buttons">
+        <div id='buttons'>
           <button
-            id="select"
+            id='select'
             onClick={() =>
               this.setState({ selectMode: !this.state.selectMode })
             }
           >{`Select Mode: ${this.state.selectMode}`}</button>
         </div>
 
-        <div style={{ display: "none" }}>
+        <div style={{ display: 'none' }}>
           <Stage
             width={App.size}
             height={App.size}
@@ -255,7 +255,7 @@ class Canvas extends Component {
                 y={0}
                 width={App.size}
                 height={App.size}
-                fill={"rgba(255, 255, 0, 0.1)"}
+                fill={'rgba(255, 255, 0, 0.1)'}
               />
 
               {/* Paper Image */}
@@ -292,7 +292,7 @@ class Canvas extends Component {
               {/* Step by Step component, works for any pdf as long as it has a math.json and ocr.json */}
               <StepByStep selectMode={this.state.selectMode} />
 
-              {/* Summation component, works for any pdf with summation that has "n", the pdf needs an ocr.json */}
+              {/* Summation component, works for any pdf with summation that has 'n', the pdf needs an ocr.json */}
               { App.sampleId === 9 &&
                 <Summation currentSymbols={this.state.currentSymbols} />
               }
