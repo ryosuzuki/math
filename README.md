@@ -48,7 +48,7 @@ pip install cnstd cnocr
 cnstd analyze -m mfd -i sample-1.jpg -o output-1.jpg
 ```
 
-## Prepare
+## Preparation Pipeline
 
 - Step 1. Get a sample PDF page (e.g., `/public/sample/sample-1.pdf`)
 - Step 2. Convert PDF to JPG with [Ezgif](https://ezgif.com/pdf-to-jpg)

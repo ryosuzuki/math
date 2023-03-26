@@ -38,7 +38,7 @@ class App extends Component {
     - (f(a+h) - f(a))/h = 4a + 2h - 5
     */
 
-    this.sampleId = 10;
+    this.sampleId = 1;
     this.threshold = 0.5;
     if (this.sampleId === 6) this.threshold = 0.4;
     if (this.sampleId === 7) this.threshold = 0.3;
