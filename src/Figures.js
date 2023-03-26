@@ -177,7 +177,7 @@ class Figures extends Component {
             fill = App.highlightColorAlpha
           }
           return (
-            <Group key={i}>
+            <Group key={ `figure-${i}` }>
               <Rect
                 key={ `bounding-box-${i}` }
                 x={ figure.bbox[0] }
@@ -221,16 +221,6 @@ class Figures extends Component {
                 visible={ this.axisVisible }
               />
 
-              <Graph
-                id={ i }
-                ref={ Canvas.graphRefs[i] }
-                origin={ figure.origin }
-                xAxis={ figure.xAxis }
-                yAxis={ figure.yAxis }
-                originalSegments={ figure.originalSegments }
-                originalPaths={ figure.originalPaths }
-              />
-
               {/* segments for debugging */}
               { figure.originalSegments.map((originalSegment, j) => {
                 return (
@@ -249,7 +239,7 @@ class Figures extends Component {
               { figure.originalPaths.map((path, j) => {
                 return (
                   <Path
-                    key={ `original-graph-${i}-${j}` }
+                    key={ `original-path-${i}-${j}` }
                     data={ path.attributes.d }
                     strokeWidth={ 8 }
                     stroke={ 'green' }
@@ -264,15 +254,16 @@ class Figures extends Component {
         {/* figure line path for debugging */}
         { this.state.extractedLines.map((extractedLine, i) => {
           return (
-            <>
+            <Group key={ `extracted-line-${i}` }>
               <Path
-                key={ `extracted-line-${i}` }
+                key={ `extracted-line-path-${i}` }
                 data={ extractedLine.attributes.d }
                 strokeWidth={ 3 }
                 stroke={ 'blue' }
                 visible={ false }
               />
               <Rect
+                key={ `extracted-line-bbox-${i}` }
                 x={ extractedLine.bbox[0] }
                 y={ extractedLine.bbox[1] }
                 width={ extractedLine.bbox[2] - extractedLine.bbox[0] }
@@ -280,7 +271,7 @@ class Figures extends Component {
                 stroke={ 'purple' }
                 visible={ false }
               />
-            </>
+            </Group>
           )
         })}
       </>

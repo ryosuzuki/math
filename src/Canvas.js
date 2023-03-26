@@ -238,6 +238,7 @@ class Canvas extends Component {
                     xAxis={ figure.xAxis }
                     yAxis={ figure.yAxis }
                     originalSegments={ figure.originalSegments }
+                    originalPaths={ figure.originalPaths }
                     latex={ equation.latex }
                   />
                 )
