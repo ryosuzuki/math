@@ -63,10 +63,15 @@ class Words extends Component {
 
   render() {
     let currentSymbols = Canvas.state.currentSymbols
+    let asciiSymbols = {}
+    for (let tag of Object.keys(currentSymbols)) {
+      const ascii = Canvas.convertAscii(tag)
+      asciiSymbols[ascii] = currentSymbols[tag]
+    }
     return (
       <>
         <Text
-          text={ `Selected Variables: ${ JSON.stringify(currentSymbols) }` }
+          text={ `Selected Variables: ${ JSON.stringify(asciiSymbols) }` }
           x={ 50 }
           y={ 50 }
           fontSize={ 20 }

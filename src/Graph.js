@@ -4,7 +4,6 @@ import texMathParser from 'tex-math-parser'
 import * as math from 'mathjs';
 import mathsteps from 'mathsteps'
 import algebra from 'algebra.js'
-import fractional from 'fractional'
 import nerdamer from 'nerdamer/all.min.js'
 
 class Graph extends Component {
@@ -19,7 +18,6 @@ class Graph extends Component {
     window.texMathParser = texMathParser
     window.mathsteps = mathsteps
     window.algebra = algebra
-    window.fractional = fractional
     window.nerdamer = nerdamer
 
     this.state.ratio = { x: 26, y: 28 }
@@ -35,23 +33,9 @@ class Graph extends Component {
     if (App.sampleId === 6) {
       this.state.ratio = { x: 38, y: 38 }
     }
-
-
   }
 
   componentDidMount() {
-    const expression = math.parse('x^2 + y^2');
-    math.simplify(expression, {x: 3}).toString()
-    // 'y ^ 2 + 9'
-
-    let a = 'x^2 + y^2 = 16'
-    let b = new algebra.parse(a)
-    let c = b.eval({x: 1}).solveFor('y')
-    // [-3.872983346207417, 3.872983346207417]
-
-    a = '(x-h)^2 + (y - k)^2 = r^2'
-    b = new algebra.parse(a)
-    c = b.eval({x: 1, h: 1, k: 1, r: 1}).solveFor('y')
   }
 
   update(equation) {
@@ -63,11 +47,11 @@ class Graph extends Component {
     if (App.sampleId === 2) {
       this.updateCircle(equation)
     } else {
-      this.update1(equation)
+      this.updateGraph(equation)
     }
   }
 
-  update1(equation) {
+  updateGraph(equation) {
     try {
       let points = []
       for (let x = -10; x < 10; x += 0.05) {
@@ -89,12 +73,19 @@ class Graph extends Component {
       const ascii = Canvas.convertAscii(tag)
       asciiSymbols[ascii] = currentSymbols[tag]
     }
-    let r = asciiSymbols['r']
-    let h = asciiSymbols['h']
-    let k = asciiSymbols['k']
+    let h = asciiSymbols['h'] || 0
+    let k = asciiSymbols['k'] || 0
+    let r = asciiSymbols['r'] || 0
 
+    let latex = Canvas.graphRefs[0].current.state.equation.props.latex
+    if (!latex.includes('(x-h)^{2}+(y-k)^{2}')) {
+      h = asciiSymbols['2'] || 2
+      k = -asciiSymbols['3'] || -3
+      r = asciiSymbols['5'] || 5
+    }
     const equation1 = 'y = \\sqrt{r^2 - (x - h)^2} + k'
     const equation2 = 'y = -\\sqrt{r^2 - (x - h)^2} + k'
+
     try {
       let points = []
       for (let x = -10; x <= 10; x += 0.05) {
@@ -241,7 +232,6 @@ class Graph extends Component {
       this.setState({ ratio: ratio })
     })
   }
-
 
   render() {
     return (

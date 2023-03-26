@@ -37,7 +37,7 @@ class App extends Component {
     - f(a+h) = 2(a+h)^2 - 5(a+h) + 1 = 2a^2 + 4ah + 2h^2 - 5a - 5h + 1
     - (f(a+h) - f(a))/h = 4a + 2h - 5
     */
-    this.sampleId = 1
+    this.sampleId = 2
     this.threshold = 0.5
     if (this.sampleId === 6) this.threshold = 0.4
     if (this.sampleId === 7) this.threshold = 0.3

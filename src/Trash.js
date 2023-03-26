@@ -933,3 +933,17 @@ this.state.equations = [
     "latex": "y=1-\\\\sin x"
   }
 ]
+
+
+const expression = math.parse('x^2 + y^2');
+math.simplify(expression, {x: 3}).toString()
+// 'y ^ 2 + 9'
+
+let a = 'x^2 + y^2 = 16'
+let b = new algebra.parse(a)
+let c = b.eval({x: 1}).solveFor('y')
+// [-3.872983346207417, 3.872983346207417]
+
+a = '(x-h)^2 + (y - k)^2 = r^2'
+b = new algebra.parse(a)
+c = b.eval({x: 1, h: 1, k: 1, r: 1}).solveFor('y')
