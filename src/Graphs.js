@@ -17,7 +17,6 @@ class Graphs extends Component {
       graphs: [],
       segments: [],
     }
-    this.ratio = { x: 26, y: 28 }
   }
 
   componentDidMount() {
@@ -88,7 +87,7 @@ class Graphs extends Component {
     let horizontal = []
     let vertical = []
     let graphs = []
-    let threshold = 5
+    let threshold = 10 // Important to get correct axis (5-10)
     for (let line of currentLines) {
       let bbox = line.bbox
       if (Math.abs(bbox[1] - bbox[3]) < threshold) {
@@ -230,7 +229,6 @@ class Graphs extends Component {
                 origin={ graph.origin }
                 xAxis={ graph.xAxis }
                 yAxis={ graph.yAxis }
-                ratio={ this.ratio }
                 segments={ graph.segments }
                 graphs={ graph.graphs }
               />
@@ -262,6 +260,19 @@ class Graphs extends Component {
                 )
               })}
             </Group>
+          )
+        })}
+
+        {/* figure contour path for debugging */}
+        { this.state.lines.map((line, i) => {
+          return (
+            <Path
+              key={ `contour-${i}` }
+              data={ line.attributes.d }
+              strokeWidth={ 3 }
+              stroke={ 'blue' }
+              visible={ false }
+            />
           )
         })}
       </>

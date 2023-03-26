@@ -21,6 +21,13 @@ class Graph extends Component {
     window.algebra = algebra
     window.fractional = fractional
     window.nerdamer = nerdamer
+
+    this.state.ratio = { x: 26, y: 28 }
+    if (App.sampleId === 1) {
+      if (this.props.id === 8) this.state.ratio = { x: 37, y: 37 }
+      if (this.props.id === 9) this.state.ratio = { x: 37, y: 37 }
+    }
+
   }
 
   componentDidMount() {
@@ -43,7 +50,6 @@ class Graph extends Component {
     equation = equation.replace(/g\(x\)/g, 'y')
     equation = equation.replace(/h\(x\)/g, 'y')
 
-    console.log(equation)
     if (App.sampleId === 2) {
       this.updateCircle(equation)
     } else {
@@ -162,10 +168,10 @@ class Graph extends Component {
     let b = this.originSymbols['31']
     let hash = {}
     if (!isNaN(a)) {
-      hash['33'] = a - delta.x / this.props.ratio.x
+      hash['33'] = a - delta.x / this.state.ratio.x
     }
     if (!isNaN(b)) {
-      hash['31'] = b - delta.y / this.props.ratio.y
+      hash['31'] = b - delta.y / this.state.ratio.y
     }
     let round = 1
     Canvas.updateValue(hash, round)
@@ -178,8 +184,8 @@ class Graph extends Component {
     let offset = 50
     let linePoints = []
     for (let point of points) {
-      let x = point.x * this.props.ratio.x + this.props.origin.x
-      let y = point.y * -this.props.ratio.y + this.props.origin.y
+      let x = point.x * this.state.ratio.x + this.props.origin.x
+      let y = point.y * -this.state.ratio.y + this.props.origin.y
       if (isNaN(x) || isNaN(y)) continue
       if (x < this.props.xAxis[0] - offset || this.props.xAxis[2] + offset < x) continue
       if (y < this.props.yAxis[1] - offset || this.props.xAxis[3] + offset < y) continue

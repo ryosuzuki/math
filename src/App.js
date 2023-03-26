@@ -16,7 +16,7 @@ class App extends Component {
     window.app = this
     window.App = this
 
-    this.sampleId = 2
+    this.sampleId = 1
     this.threshold = 0.5
     this.domain = 'https://raw.githubusercontent.com/ryosuzuki/math/main'
 
@@ -25,9 +25,9 @@ class App extends Component {
       this.domain = 'http://localhost:4000'
     }
     this.size = 1500 // 1024
+    this.dragging = false
+    this.initDrawing = true
     this.state = {
-      dragging: false,
-      initDrawing: true,
       distance: 0,
       mouse2D: { x: 0, y: 0 },
       mouse: { x: 0, y: 0 },
@@ -70,7 +70,7 @@ class App extends Component {
   }
 
   mouseDown(event) {
-    this.setState({ dragging: true })
+    this.dragging = true
   }
 
   mouseMove(event) {
@@ -79,12 +79,14 @@ class App extends Component {
   }
 
   mouseUp(event) {
-    this.setState({ dragging: false, initDrawing: true })
+    this.dragging = false
+    this.initDrawing = true
     this.canvasRef.current.mouseUp(this.state.mouse)
   }
 
   touchStart(event) {
-    this.setState({ dragging: true, mouse2D: { x: 0, y: 0 } })
+    this.dragging = true
+    this.setState({ mouse2D: { x: 0, y: 0 } })
   }
 
   touchMove(event) {
@@ -93,7 +95,8 @@ class App extends Component {
   }
 
   touchEnd(event) {
-    this.setState({ dragging: false, initDrawing: true })
+    this.dragging = false
+    this.initDrawing = true
     this.canvasRef.current.mouseUp()
   }
 
@@ -115,10 +118,11 @@ class App extends Component {
         y: this.size * (1- intersect.uv.y)
       }
       this.setState({ distance: intersect.distance, mouse: mouse })
-      if (this.state.dragging) {
-        if (this.state.initDrawing) {
+      if (this.dragging) {
+        if (this.initDrawing) {
           this.canvasRef.current.mouseDown(mouse)
-          this.setState({ initDrawing: false })
+          this.initDrawing = false
+          console.log(this.initDrawing)
         } else {
           this.canvasRef.current.mouseDrag(mouse)
         }

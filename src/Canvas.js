@@ -8,7 +8,7 @@ import Graphs from './Graphs.js'
 import Equations from './Equations.js'
 import Slider from './Slider.js'
 
-let debug = true
+let debug = false
 
 class Canvas extends Component {
   constructor(props) {
@@ -64,7 +64,7 @@ class Canvas extends Component {
       if (!equation) continue
 
       let latex = _.clone(equation.props.latex)
-      console.log(latex) // latex = 'y=(x+3)^{2}+1'
+      // console.log(latex) // latex = 'y=(x+3)^{2}+1'
       latex = latex.replace(/\\sqrt/g, '\\SQRT')
       // const pattern = new RegExp(Object.keys(currentSymbols).map(s => '\\u{' + s + '}').join('|'), 'gu');
       // latex = latex.replace(pattern, match => currentSymbols[match.codePointAt(0).toString(16).toUpperCase()]);
@@ -79,8 +79,8 @@ class Canvas extends Component {
       latex = latex.replace(/\\SQRT/g, '\\sqrt')
 
       // latex = `x = ${asciiSymbols['r']}`
-      console.log(pattern)
-      console.log(latex) // latex = 'y=(x+{a})^{b}+{c}'
+      // console.log(pattern)
+      // console.log(latex) // latex = 'y=(x+{a})^{b}+{c}'
       graph.update(latex)
     }
   }
