@@ -10,6 +10,7 @@ import Graph from "./Graph.js";
 import Slider from "./Slider.js";
 import Triangle from "./Triangle.js";
 import Summation from "./Summation.js";
+import StepByStep from "./StepByStep.js";
 
 let debug = false;
 
@@ -287,9 +288,14 @@ class Canvas extends Component {
               {/* Drawing Line */}
               <DrawingLine ref={this.drawingLineRef} />
 
-              <Summation currentSymbols={this.state.currentSymbols} />
+              {/* Step by Step component, works for any pdf as long as it has a math.json and ocr.json */}
+              <StepByStep selectMode={this.state.selectMode} />
 
-              {/*
+              {/* Summation component, works for any pdf with summation that has "n", the pdf needs an ocr.json
+                <Summation currentSymbols={this.state.currentSymbols} />
+              */}
+
+              {/* Triangle component, only works for sample-10.pdf.
               <Triangle
                 onTriangleChange={this.updateSymbols}
                 currentSymbols={this.state.currentSymbols}

@@ -35,7 +35,6 @@ export default function Triangle(props) {
         new_symbols["c²"] = Math.floor(
           ((cb.x - ac.x) ** 2 + (cb.y - ac.y) ** 2) / factor
         );
-        //onTriangleChange(new_symbols);
       }
     }
   }, [a, b]);
