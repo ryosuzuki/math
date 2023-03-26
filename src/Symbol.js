@@ -69,6 +69,12 @@ class Symbol extends Component {
     this.originX = this.props.center.x
     this.originY = this.props.center.y
     Slider.setState({ arrowVisible: true })
+    if (ascii === 'x') {
+      Figures.setState({ xGraphVisible: true })
+    }
+    if (ascii === 'y') {
+      Figures.setState({ yGraphVisible: true })
+    }
   }
 
   onDragMove(event) {
@@ -92,6 +98,7 @@ class Symbol extends Component {
 
   onDragEnd(event) {
     Slider.setState({ arrowVisible: false })
+    Figures.setState({ xGraphVisible: false, yGraphVisible: false })
   }
 
   render() {

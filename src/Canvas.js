@@ -48,9 +48,6 @@ class Canvas extends Component {
     this.graphRefs = []
     this.xGraphRefs = []
     this.yGraphRefs = []
-
-    this.figuresRef = React.createRef()
-    this.equationsRef = React.createRef()
     this.drawingLineRef = React.createRef()
   }
 
@@ -126,7 +123,7 @@ class Canvas extends Component {
     }
     for (let graphRef of this.graphRefs) {
       const graph = graphRef.current
-      let latex = _.clone(graph.props.latex)
+      let latex = _.clone(graph.latex)
       delete asciiSymbols['x']
       delete asciiSymbols['y']
       latex = latex.replace(/\\sqrt/g, '\\SQRT')
@@ -227,24 +224,20 @@ class Canvas extends Component {
               <Words />
 
               {/* Figures > Axis + [Graph1, Graph2, ...] */}
-              <Figures
-                ref={ this.figuresRef }
-              />
+              <Figures />
 
               {/* Equations > Equation > Symbol */}
-              <Equations
-                ref={ this.equationsRef }
-              />
+              <Equations />
 
               { this.state.currentGraphs.map((graph, i) => {
                 const equationId = graph.equationId
-                const equation = this.equationsRef.current.state.equations[equationId]
+                const equation = window.Equations.state.equations[equationId]
                 return (
                   <Graph
                     key={ `graph-${i}` }
                     ref={ this.graphRefs[i] }
                     figureId={ graph.figureId }
-                    latex={ equation.latex }
+                    equationId={ graph.equationId }
                   />
                 )
               })}

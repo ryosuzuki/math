@@ -4,6 +4,7 @@ import { Line } from 'react-konva'
 class DrawingLine extends Component {
   constructor(props) {
     super(props)
+    window.DrawingLine = this
     this.state = {
       isPaint: false,
       currentPoints: [],

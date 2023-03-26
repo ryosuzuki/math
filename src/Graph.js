@@ -21,12 +21,18 @@ class Graph extends Component {
     window.nerdamer = nerdamer
 
     const figureId = this.props.figureId
-    const figure = Canvas.figuresRef.current.state.figures[figureId]
+    const figure = Figures.state.figures[figureId]
     this.origin = figure.origin
     this.xAxis = figure.xAxis
     this.yAxis = figure.yAxis
     this.originalSegments = figure.originalSegments
     this.originalPaths = figure.originalPaths
+
+    const equationId = this.props.equationId
+    if (equationId) {
+      const equation = Equations.state.equations[equationId]
+      this.latex = equation.latex
+    }
 
     this.state.ratio = { x: 26, y: 28 }
     if (App.sampleId === 1) {
@@ -91,7 +97,7 @@ class Graph extends Component {
     let k = asciiSymbols['k'] || 0
     let r = asciiSymbols['r'] || 0
 
-    let latex = this.props.latex
+    let latex = this.latex
     if (!latex.includes('(x-h)^{2}+(y-k)^{2}')) {
       h = asciiSymbols['2'] || 2
       k = -asciiSymbols['3'] || -3
@@ -260,6 +266,7 @@ class Graph extends Component {
         onDragStart={this.onDragStart.bind(this) }
         onDragMove={this.onDragMove.bind(this) }
         onDragEnd={this.onDragEnd.bind(this) }
+        visible={ this.props.visible === false ? false : true }
       />
     )
   }

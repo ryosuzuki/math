@@ -14,6 +14,8 @@ class Figures extends Component {
       highlightId: -1,
       figures: [],
       extractedLines: [],
+      xGraphVisible: false,
+      yGraphVisible: false,
     }
 
     this.axisVisible = false
@@ -201,12 +203,14 @@ class Figures extends Component {
                 ref={ Canvas.xGraphRefs[i] }
                 figureId={ i }
                 latex={ 'x' }
+                visible={ this.state.xGraphVisible }
               />
               <Graph
                 ref={ Canvas.yGraphRefs[i] }
                 key={ `figure-${i}-y` }
                 figureId={ i }
                 latex={ 'y' }
+                visible={ this.state.yGraphVisible }
               />
 
               {/* x-axis */}
