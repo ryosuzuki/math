@@ -27,6 +27,15 @@ class Graph extends Component {
       if (this.props.id === 8) this.state.ratio = { x: 37, y: 37 }
       if (this.props.id === 9) this.state.ratio = { x: 37, y: 37 }
     }
+    if (App.sampleId === 4) {
+      if (this.props.id === 2) this.state.ratio = { x: 65, y: 34 }
+      if (this.props.id === 3) this.state.ratio = { x: 32, y: 16 }
+      if (this.props.id === 4) this.state.ratio = { x: 32, y: 1.6 }
+    }
+    if (App.sampleId === 6) {
+      this.state.ratio = { x: 38, y: 38 }
+    }
+
 
   }
 
@@ -49,11 +58,27 @@ class Graph extends Component {
     equation = equation.replace(/f\(x\)/g, 'y')
     equation = equation.replace(/g\(x\)/g, 'y')
     equation = equation.replace(/h\(x\)/g, 'y')
+    equation = equation.replace(/P\(x\)/g, 'y')
 
     if (App.sampleId === 2) {
       this.updateCircle(equation)
     } else {
       this.update1(equation)
+    }
+  }
+
+  update1(equation) {
+    try {
+      let points = []
+      for (let x = -10; x < 10; x += 0.05) {
+        let answer = texMathParser.evaluateTex(equation, { x: x });
+        let y = answer.evaluated
+        if (isNaN(y)) y = y.re
+        points.push({ x: x, y: y })
+      }
+      this.setState({ points: points })
+    } catch (err) {
+      console.error(err)
     }
   }
 
@@ -86,21 +111,6 @@ class Graph extends Component {
         if (isNaN(y) && h-r-0.1 <= x && h+r > x) {
           y = y.re
         }
-        points.push({ x: x, y: y })
-      }
-      this.setState({ points: points })
-    } catch (err) {
-      console.error(err)
-    }
-  }
-
-  update1(equation) {
-    try {
-      let points = []
-      for (let x = -10; x < 10; x += 0.05) {
-        let answer = texMathParser.evaluateTex(equation, { x: x });
-        let y = answer.evaluated
-        if (isNaN(y)) y = y.re
         points.push({ x: x, y: y })
       }
       this.setState({ points: points })
@@ -181,14 +191,16 @@ class Graph extends Component {
   }
 
   convert(points) {
-    let offset = 50
+    let offset = this.state.ratio.y * 2.5
+    if (App.sampleId === 2) offset = 150
+    if (App.sampleId === 4) offset = 50
     let linePoints = []
     for (let point of points) {
       let x = point.x * this.state.ratio.x + this.props.origin.x
       let y = point.y * -this.state.ratio.y + this.props.origin.y
       if (isNaN(x) || isNaN(y)) continue
       if (x < this.props.xAxis[0] - offset || this.props.xAxis[2] + offset < x) continue
-      if (y < this.props.yAxis[1] - offset || this.props.xAxis[3] + offset < y) continue
+      if (y < this.props.yAxis[1] - offset || this.props.yAxis[3] + offset < y) continue
       linePoints.push(x, y)
     }
     return linePoints

@@ -16,8 +16,31 @@ class App extends Component {
     window.app = this
     window.App = this
 
-    this.sampleId = 1
-    this.threshold = 0.5
+    /*
+    Demo-1:
+    - y = (x + 3)^2 + 1
+    - y = \sin(2x)
+    - y = x^2 + 6x + 10
+    Demo-2:
+    - (x-h)^2 + (y-k)^2 = r^2
+    - x^2 - 4x + y^2 + 6y - 12 = 0
+    Demo-4:
+    - P(x) = ax^2 + bx + c
+    - P(x) = 2x^6 - x^4 + 2/5x^3 + \sqrt(2)
+    - y = x^3 - x + 1
+    - y = x^4 - 3x^2 + x
+    - y = 3x^5 - 25x^3 + 60x
+    Demo-6:
+    - f(x) = 2x - 1
+    - g(x) = x^2
+    - f(x) = 2x^2 - 5x + 1
+    - f(a+h) = 2(a+h)^2 - 5(a+h) + 1 = 2a^2 + 4ah + 2h^2 - 5a - 5h + 1
+    - (f(a+h) - f(a))/h = 4a + 2h - 5
+    */
+    this.sampleId = 6
+    this.threshold = 0.3
+    if (this.sampleId === 6) this.threshold = 0.4
+    if (this.sampleId === 7) this.threshold = 0.3
     this.domain = 'https://raw.githubusercontent.com/ryosuzuki/math/main'
 
     if (window.location.href.includes('localhost')) {

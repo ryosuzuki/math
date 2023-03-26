@@ -87,12 +87,17 @@ class Graphs extends Component {
     let horizontal = []
     let vertical = []
     let graphs = []
-    let threshold = 10 // Important to get correct axis (5-10)
+    let threshold = 5 // Important to get correct axis (5-10)
+    // if (App.sampleId === 1) threshold = 10 // for sine curve
     for (let line of currentLines) {
       let bbox = line.bbox
-      if (Math.abs(bbox[1] - bbox[3]) < threshold) {
+      const diffX = Math.abs(bbox[2] - bbox[0])
+      const diffY = Math.abs(bbox[3] - bbox[1])
+      const distance = Math.sqrt(diffX + diffY)
+      if (distance < 5) continue
+      if (diffY < threshold) {
         horizontal.push(bbox)
-      } else if (Math.abs(bbox[0] - bbox[2]) < threshold) {
+      } else if (diffX < threshold) {
         vertical.push(bbox)
       } else {
         graphs.push(line)
@@ -263,16 +268,26 @@ class Graphs extends Component {
           )
         })}
 
-        {/* figure contour path for debugging */}
+        {/* figure line path for debugging */}
         { this.state.lines.map((line, i) => {
           return (
-            <Path
-              key={ `contour-${i}` }
-              data={ line.attributes.d }
-              strokeWidth={ 3 }
-              stroke={ 'blue' }
-              visible={ false }
-            />
+            <>
+              <Path
+                key={ `figure-line-${i}` }
+                data={ line.attributes.d }
+                strokeWidth={ 3 }
+                stroke={ 'blue' }
+                visible={ false }
+              />
+              <Rect
+                x={ line.bbox[0] }
+                y={ line.bbox[1] }
+                width={ line.bbox[2] - line.bbox[0] }
+                height={ line.bbox[3] - line.bbox[1] }
+                stroke={ 'purple' }
+                visible={ false }
+              />
+            </>
           )
         })}
       </>
