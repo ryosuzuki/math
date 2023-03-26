@@ -2,7 +2,7 @@ import json
 from cnstd import LayoutAnalyzer
 
 sample_ids = ['1', '2', '3', '4', '5', '6', '7']
-path = 'public/sample'
+path = '../public/sample'
 
 for sample_id in sample_ids:
   img = path + '/sample-' + sample_id + '.jpg'
