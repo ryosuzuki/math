@@ -189,7 +189,7 @@ class Equation extends Component {
             if (symbol.pathData === '') break
 
             // console.log(symbol)
-            const ascii = this.convertAscii(symbol.tag)
+            const ascii = Canvas.convertAscii(symbol.tag)
             Canvas.symbolHash[symbol.tag] = ascii
 
             const temp = this.state.symbols
@@ -211,22 +211,6 @@ class Equation extends Component {
           break
       }
     }
-  }
-
-  convertAscii(tag) {
-    let codes = tag.split('-').map(a => parseInt(a, 16));
-    let ascii = codes.map(code => {
-      let offset = 0
-      if (119886 <= code && code <= 119911) {
-        offset = 119789 // math italic lower
-      }
-      if (119860 <= code && code <= 119885) {
-        offset = 119795 // math italic upper
-      }
-      code = code - offset
-      return String.fromCharCode(code);
-    }).join('')
-    return ascii
   }
 
   onMouseDown() {

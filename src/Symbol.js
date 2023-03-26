@@ -26,11 +26,13 @@ class Symbol extends Component {
     //   id = 'mi-' + id.split('-mi-')[1]
     // }
     let tags = Object.keys(symbols)
-    console.log(tag, tags)
+    let ascii = Canvas.convertAscii(tag)
+    console.log(tag, ascii, tags)
+    let num = Number(ascii)
     if (tags.includes(tag)) {
       delete symbols[tag]
     } else {
-      symbols[tag] = 0
+      symbols[tag] = isNaN(num) ? 0 : num
     }
     Canvas.setState({ symbols: symbols })
     this.setState({ highlight: true })
