@@ -1,22 +1,25 @@
-import React, { Component } from 'react'
-import { Stage, Layer, Rect, Image } from 'react-konva'
-import Konva from 'konva'
+import React, { Component } from "react";
+import { Stage, Layer, Rect, Image } from "react-konva";
+import Konva from "konva";
 
-import DrawingLine from './DrawingLine.js'
-import Words from './Words.js'
-import Figures from './Figures.js'
-import Equations from './Equations.js'
-import Graph from './Graph.js'
-import Slider from './Slider.js'
+import DrawingLine from "./DrawingLine.js";
+import Words from "./Words.js";
+import Figures from "./Figures.js";
+import Equations from "./Equations.js";
+import Graph from "./Graph.js";
+import Slider from "./Slider.js";
+import Triangle from "./Triangle.js";
+import Summation from "./Summation.js";
+import StepByStep from "./StepByStep.js";
 
-let debug = false
+let debug = false;
 
 class Canvas extends Component {
   constructor(props) {
-    super(props)
-    window.Canvas = this
-    window.canvas = this
-    window.Konva = Konva
+    super(props);
+    window.Canvas = this;
+    window.canvas = this;
+    window.Konva = Konva;
     this.state = {
       event: {},
       paperImage: null,
@@ -25,240 +28,285 @@ class Canvas extends Component {
       currentGraphs: [],
       clickedFigureId: -1,
       clickedEquationId: -1,
-    }
-    this.symbolHash = {}
+    };
+    this.symbolHash = {};
     if (debug) {
-      this.state.selectMode = false
+      this.state.selectMode = false;
       // this.state.currentSymbols = { '31': 1, '33': 3 }
-      this.state.currentSymbols = {'210E': 0, '1D458': 0, '1D45F': 2}
+      this.state.currentSymbols = { "210E": 0, "1D458": 0, "1D45F": 2 };
 
       setTimeout(() => {
         // const graph = this.graphRefs[7].current
         // const equation = this.equationRefs[10].current
 
-        const graph = this.graphRefs[0].current
-        const equation = this.equationRefs[2].current
+        const graph = this.graphRefs[0].current;
+        const equation = this.equationRefs[2].current;
 
-        graph.setState({ equation: equation })
-        graph.update(equation.props.latex)
-      }, 500)
+        graph.setState({ equation: equation });
+        graph.update(equation.props.latex);
+      }, 500);
     }
 
-    this.equationRefs = []
-    this.graphRefs = []
+    this.equationRefs = [];
+    this.graphRefs = [];
 
-    this.figuresRef = React.createRef()
-    this.equationsRef = React.createRef()
-    this.drawingLineRef = React.createRef()
+    this.figuresRef = React.createRef();
+    this.equationsRef = React.createRef();
+    this.drawingLineRef = React.createRef();
   }
 
   componentDidMount() {
-    let paperImage = document.getElementById('paper')
-    this.setState({ paperImage: paperImage })
-    this.stage = Konva.stages[0]
+    let paperImage = document.getElementById("paper");
+    this.setState({ paperImage: paperImage });
+    this.stage = Konva.stages[0];
   }
 
   addGraph(hash) {
     if (this.state.clickedEquationId === hash.clickedEquationId) {
-      this.setState({ clickedEquationId: - 1})
-      return
+      this.setState({ clickedEquationId: -1 });
+      return;
     }
     if (this.state.clickedFigureId === hash.clickedFigureId) {
-      this.setState({ clickedFigureId: - 1})
-      return
+      this.setState({ clickedFigureId: -1 });
+      return;
     }
-    let equationId = this.state.clickedEquationId
-    let figureId = this.state.clickedFigureId
-    if (hash.clickedEquationId >= 0) equationId = hash.clickedEquationId
-    if (hash.clickedFigureId >= 0) figureId = hash.clickedFigureId
+    let equationId = this.state.clickedEquationId;
+    let figureId = this.state.clickedFigureId;
+    if (hash.clickedEquationId >= 0) equationId = hash.clickedEquationId;
+    if (hash.clickedFigureId >= 0) figureId = hash.clickedFigureId;
 
     this.setState({ clickedEquationId: equationId }, () => {
       this.setState({ clickedFigureId: figureId }, () => {
-        const equationId = this.state.clickedEquationId
-        const figureId = this.state.clickedFigureId
-        console.log(equationId, figureId)
+        const equationId = this.state.clickedEquationId;
+        const figureId = this.state.clickedFigureId;
+        console.log(equationId, figureId);
         if (equationId >= 0 && figureId >= 0) {
-          let currentGraphs = this.state.currentGraphs
-          const graph = { figureId: figureId, equationId: equationId }
-          currentGraphs.push(graph)
-          const graphRef = React.createRef()
-          this.graphRefs.push(graphRef)
-          console.log(this.graphRefs)
-          currentGraphs = _.uniqWith(currentGraphs, _.isEqual)
-          console.log({ currentGraphs: currentGraphs })
-          this.setState({ currentGraphs: currentGraphs, clickedEquationId: -1, clickedFigureId: -1 }, () => {
-            this.updateValue({})
-          })
+          let currentGraphs = this.state.currentGraphs;
+          const graph = { figureId: figureId, equationId: equationId };
+          currentGraphs.push(graph);
+          const graphRef = React.createRef();
+          this.graphRefs.push(graphRef);
+          console.log(this.graphRefs);
+          currentGraphs = _.uniqWith(currentGraphs, _.isEqual);
+          console.log({ currentGraphs: currentGraphs });
+          this.setState(
+            {
+              currentGraphs: currentGraphs,
+              clickedEquationId: -1,
+              clickedFigureId: -1,
+            },
+            () => {
+              this.updateValue({});
+            }
+          );
         }
-      })
-    })
+      });
+    });
   }
 
-  updateValue(newSymbols, round=1) {
-    let currentSymbols = this.state.currentSymbols
+  updateValue(newSymbols, round = 1) {
+    let currentSymbols = this.state.currentSymbols;
     for (let tag of Object.keys(newSymbols)) {
-      currentSymbols[tag] = _.round(newSymbols[tag], round)
+      currentSymbols[tag] = _.round(newSymbols[tag], round);
     }
-    this.setState({ currentSymbols: currentSymbols })
+    this.setState({ currentSymbols: currentSymbols });
 
     for (let graphRef of this.graphRefs) {
-      const graph = graphRef.current
-      let latex = _.clone(graph.props.latex)
-      latex = latex.replace(/\\sqrt/g, '\\SQRT')
-      const asciiSymbols = {}
+      const graph = graphRef.current;
+      let latex = _.clone(graph.props.latex);
+      latex = latex.replace(/\\sqrt/g, "\\SQRT");
+      const asciiSymbols = {};
       for (let tag of Object.keys(currentSymbols)) {
-        const ascii = this.convertAscii(tag)
-        asciiSymbols[ascii] = currentSymbols[tag]
+        const ascii = this.convertAscii(tag);
+        asciiSymbols[ascii] = currentSymbols[tag];
       }
-      console.log(asciiSymbols)
+      console.log(asciiSymbols);
       if (Object.keys(asciiSymbols).length > 0) {
-        const pattern = new RegExp(Object.keys(asciiSymbols).join('|'), 'gu');
-        latex = latex.replace(pattern, match => asciiSymbols[match]);
+        const pattern = new RegExp(Object.keys(asciiSymbols).join("|"), "gu");
+        latex = latex.replace(pattern, (match) => asciiSymbols[match]);
       }
-      latex = latex.replace(/\\SQRT/g, '\\sqrt')
-      console.log(latex)
+      latex = latex.replace(/\\SQRT/g, "\\sqrt");
+      console.log(latex);
 
       // latex = `x = ${asciiSymbols['r']}`
       // console.log(pattern)
       // console.log(latex) // latex = 'y=(x+{a})^{b}+{c}'
-      graph.update(latex)
+      graph.update(latex);
     }
   }
 
   convertAscii(tag) {
-    let codes = tag.split('-').map(a => parseInt(a, 16));
-    let ascii = codes.map(code => {
-      let offset = 0
-      if (119886 <= code && code <= 119911) {
-        offset = 119789 // math italic lower
-      }
-      if (119860 <= code && code <= 119885) {
-        offset = 119795 // math italic upper
-      }
-      code = code - offset
-      return String.fromCharCode(code);
-    }).join('')
-    if (ascii === 'ℎ') ascii = 'h'
-    return ascii
+    let codes = tag.split("-").map((a) => parseInt(a, 16));
+    let ascii = codes
+      .map((code) => {
+        let offset = 0;
+        if (119886 <= code && code <= 119911) {
+          offset = 119789; // math italic lower
+        }
+        if (119860 <= code && code <= 119885) {
+          offset = 119795; // math italic upper
+        }
+        code = code - offset;
+        return String.fromCharCode(code);
+      })
+      .join("");
+    if (ascii === "ℎ") ascii = "h";
+    return ascii;
   }
 
   mouseDown(pos) {
-    console.log(App.state.mouse)
-    let event = new MouseEvent('mousedown' , { clientX: pos.x, clientY: pos.y, pageX: pos.x, pageY: pos.y })
-    this.stage._pointerdown(event)
+    console.log(App.state.mouse);
+    let event = new MouseEvent("mousedown", {
+      clientX: pos.x,
+      clientY: pos.y,
+      pageX: pos.x,
+      pageY: pos.y,
+    });
+    this.stage._pointerdown(event);
   }
 
   mouseMove(pos) {
-    let event = new MouseEvent('mousemove' , { clientX: pos.x, clientY: pos.y, pageX: pos.x, pageY: pos.y })
-    this.stage._pointermove(event)
+    let event = new MouseEvent("mousemove", {
+      clientX: pos.x,
+      clientY: pos.y,
+      pageX: pos.x,
+      pageY: pos.y,
+    });
+    this.stage._pointermove(event);
   }
 
   mouseDrag(pos) {
-    let event = new MouseEvent('mousemove' , { clientX: pos.x, clientY: pos.y, pageX: pos.x, pageY: pos.y })
-    Konva.DD._drag(event)
+    let event = new MouseEvent("mousemove", {
+      clientX: pos.x,
+      clientY: pos.y,
+      pageX: pos.x,
+      pageY: pos.y,
+    });
+    Konva.DD._drag(event);
   }
 
   mouseUp(pos) {
-    let event = new MouseEvent('mouseup' , { clientX: pos.x, clientY: pos.y, pageX: pos.x, pageY: pos.y })
-    Konva.DD._endDragBefore(event)
-    this.stage._pointerup(event)
-    Konva.DD._endDragAfter(event)
+    let event = new MouseEvent("mouseup", {
+      clientX: pos.x,
+      clientY: pos.y,
+      pageX: pos.x,
+      pageY: pos.y,
+    });
+    Konva.DD._endDragBefore(event);
+    this.stage._pointerup(event);
+    Konva.DD._endDragAfter(event);
   }
 
   stageMouseDown(event) {
-    this.setState({ event: event })
-    this.drawingLineRef.current.mouseDown()
+    this.setState({ event: event });
+    this.drawingLineRef.current.mouseDown();
   }
 
   stageMouseMove(event) {
-    this.setState({ event: event })
-    this.drawingLineRef.current.mouseMove()
+    this.setState({ event: event });
+    this.drawingLineRef.current.mouseMove();
   }
 
   stageMouseUp(event) {
-    this.setState({ event: event })
-    this.drawingLineRef.current.mouseUp()
+    this.setState({ event: event });
+    this.drawingLineRef.current.mouseUp();
   }
+
+  updateSymbols = (new_symbols) => {
+    this.setState({ currentSymbols: new_symbols });
+  };
 
   render() {
     return (
       <>
         <div id="buttons">
-          <button id="select" onClick={ () => this.setState({ selectMode: !this.state.selectMode }) }>{ `Select Mode: ${this.state.selectMode}` }</button>
+          <button
+            id="select"
+            onClick={() =>
+              this.setState({ selectMode: !this.state.selectMode })
+            }
+          >{`Select Mode: ${this.state.selectMode}`}</button>
         </div>
 
-        <div style={{ display: 'none' }}>
+        <div style={{ display: "none" }}>
           <Stage
-            width={ App.size }
-            height={ App.size }
-            onMouseDown={ this.stageMouseDown.bind(this) }
-            onMouseMove={ this.stageMouseMove.bind(this) }
-            onMouseUp={ this.stageMouseUp.bind(this) }
+            width={App.size}
+            height={App.size}
+            onMouseDown={this.stageMouseDown.bind(this)}
+            onMouseMove={this.stageMouseMove.bind(this)}
+            onMouseUp={this.stageMouseUp.bind(this)}
           >
-            <Layer ref={ ref => (this.layer = ref) }>
+            <Layer ref={(ref) => (this.layer = ref)}>
               {/* Canvas Background */}
               <Rect
-                x={ 0 }
-                y={ 0 }
-                width={ App.size }
-                height={ App.size }
-                fill={ 'rgba(255, 255, 0, 0.1)' }
+                x={0}
+                y={0}
+                width={App.size}
+                height={App.size}
+                fill={"rgba(255, 255, 0, 0.1)"}
               />
 
               {/* Paper Image */}
-              <Image image={ this.state.paperImage } />
+              <Image image={this.state.paperImage} />
 
               {/* Words > Variable */}
               <Words />
 
               {/* Figures > Axis + [Graph1, Graph2, ...] */}
-              <Figures
-                ref={ this.figuresRef }
-              />
+              <Figures ref={this.figuresRef} />
 
               {/* Equations > Equation > Symbol */}
-              <Equations
-                ref={ this.equationsRef }
-              />
+              <Equations ref={this.equationsRef} />
 
-              { this.state.currentGraphs.map((graph, i) => {
-                const figureId = graph.figureId
-                const equationId = graph.equationId
-                const figures = this.figuresRef.current.state.figures
-                const equations = this.equationsRef.current.state.equations
-                const figure = figures[figureId]
-                const equation = equations[equationId]
+              {this.state.currentGraphs.map((graph, i) => {
+                const figureId = graph.figureId;
+                const equationId = graph.equationId;
+                const figures = this.figuresRef.current.state.figures;
+                const equations = this.equationsRef.current.state.equations;
+                const figure = figures[figureId];
+                const equation = equations[equationId];
                 return (
                   <Graph
-                    key={ `graph-${i}` }
-                    id={ i }
-                    ref={ this.graphRefs[i] }
-                    figureId={ figureId }
-                    equationId={ equationId }
-                    origin={ figure.origin }
-                    xAxis={ figure.xAxis }
-                    yAxis={ figure.yAxis }
-                    originalSegments={ figure.originalSegments }
-                    originalPaths={ figure.originalPaths }
-                    latex={ equation.latex }
+                    key={`graph-${i}`}
+                    id={i}
+                    ref={this.graphRefs[i]}
+                    figureId={figureId}
+                    equationId={equationId}
+                    origin={figure.origin}
+                    xAxis={figure.xAxis}
+                    yAxis={figure.yAxis}
+                    originalSegments={figure.originalSegments}
+                    originalPaths={figure.originalPaths}
+                    latex={equation.latex}
                   />
-                )
+                );
               })}
 
               {/* Slider */}
               <Slider />
 
               {/* Drawing Line */}
-              <DrawingLine
-                ref={ this.drawingLineRef }
-              />
+              <DrawingLine ref={this.drawingLineRef} />
 
+              {/* Step by Step component, works for any pdf as long as it has a math.json and ocr.json */}
+              <StepByStep selectMode={this.state.selectMode} />
+
+              {/* Summation component, works for any pdf with summation that has "n", the pdf needs an ocr.json
+                <Summation currentSymbols={this.state.currentSymbols} />
+              */}
+
+              {/* Triangle component, only works for sample-10.pdf.
+              <Triangle
+                onTriangleChange={this.updateSymbols}
+                currentSymbols={this.state.currentSymbols}
+              />
+            */}
             </Layer>
           </Stage>
         </div>
       </>
-    )
+    );
   }
 }
 
-export default Canvas
+export default Canvas;
