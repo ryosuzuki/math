@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Stage, Layer, Rect, Image } from 'react-konva'
+import { Stage, Layer, Group, Rect, Image } from 'react-konva'
 import Konva from 'konva'
 
 import DrawingLine from './DrawingLine.js'
@@ -46,6 +46,8 @@ class Canvas extends Component {
 
     this.equationRefs = []
     this.graphRefs = []
+    this.xGraphRefs = []
+    this.yGraphRefs = []
 
     this.figuresRef = React.createRef()
     this.equationsRef = React.createRef()
@@ -100,27 +102,40 @@ class Canvas extends Component {
       currentSymbols[tag] = _.round(newSymbols[tag], round)
     }
     this.setState({ currentSymbols: currentSymbols })
+    const asciiSymbols = {}
+    for (let tag of Object.keys(currentSymbols)) {
+      let ascii = this.convertAscii(tag)
+      asciiSymbols[ascii] = currentSymbols[tag]
+    }
+    console.log(asciiSymbols)
+    const figureIds = _.uniq(this.state.currentGraphs.map(g => g.figureId))
 
+    for (let i = 0; i < this.xGraphRefs.length; i++) {
+      if (!figureIds.includes(i)) continue
+      if (!asciiSymbols['x']) continue
+      const graph = this.xGraphRefs[i].current
+      let latex = `x = ${asciiSymbols['x']}`
+      graph.update(latex)
+    }
+    for (let i = 0; i < this.xGraphRefs.length; i++) {
+      if (!figureIds.includes(i)) continue
+      if (!asciiSymbols['y']) continue
+      const graph = this.yGraphRefs[i].current
+      let latex = `y = ${asciiSymbols['y']}`
+      graph.update(latex)
+    }
     for (let graphRef of this.graphRefs) {
       const graph = graphRef.current
       let latex = _.clone(graph.props.latex)
+      delete asciiSymbols['x']
+      delete asciiSymbols['y']
       latex = latex.replace(/\\sqrt/g, '\\SQRT')
-      const asciiSymbols = {}
-      for (let tag of Object.keys(currentSymbols)) {
-        const ascii = this.convertAscii(tag)
-        asciiSymbols[ascii] = currentSymbols[tag]
-      }
-      console.log(asciiSymbols)
       if (Object.keys(asciiSymbols).length > 0) {
-        const pattern = new RegExp(Object.keys(asciiSymbols).join('|'), 'gu');
+        const pattern = new RegExp(Object.keys(asciiSymbols).join('|'), 'g');
+        console.log(pattern)
         latex = latex.replace(pattern, match => asciiSymbols[match]);
       }
       latex = latex.replace(/\\SQRT/g, '\\sqrt')
-      console.log(latex)
-
-      // latex = `x = ${asciiSymbols['r']}`
-      // console.log(pattern)
-      // console.log(latex) // latex = 'y=(x+{a})^{b}+{c}'
       graph.update(latex)
     }
   }
@@ -222,24 +237,13 @@ class Canvas extends Component {
               />
 
               { this.state.currentGraphs.map((graph, i) => {
-                const figureId = graph.figureId
                 const equationId = graph.equationId
-                const figures = this.figuresRef.current.state.figures
-                const equations = this.equationsRef.current.state.equations
-                const figure = figures[figureId]
-                const equation = equations[equationId]
+                const equation = this.equationsRef.current.state.equations[equationId]
                 return (
                   <Graph
                     key={ `graph-${i}` }
-                    id={ i }
                     ref={ this.graphRefs[i] }
-                    figureId={ figureId }
-                    equationId={ equationId }
-                    origin={ figure.origin }
-                    xAxis={ figure.xAxis }
-                    yAxis={ figure.yAxis }
-                    originalSegments={ figure.originalSegments }
-                    originalPaths={ figure.originalPaths }
+                    figureId={ graph.figureId }
                     latex={ equation.latex }
                   />
                 )

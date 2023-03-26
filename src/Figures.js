@@ -67,6 +67,10 @@ class Figures extends Component {
       figure = this.getAxis(figure)
       if (figure) {
         figures.push(figure)
+        const xGraphRef = React.createRef()
+        const yGraphRef = React.createRef()
+        Canvas.xGraphRefs.push(xGraphRef)
+        Canvas.yGraphRefs.push(yGraphRef)
       }
       // break
     }
@@ -191,6 +195,20 @@ class Figures extends Component {
                 onMouseEnter={ this.onMouseEnter.bind(this, i) }
                 onMouseLeave={ this.onMouseLeave.bind(this, i) }
               />
+
+              <Graph
+                key={ `figure-${i}-x` }
+                ref={ Canvas.xGraphRefs[i] }
+                figureId={ i }
+                latex={ 'x' }
+              />
+              <Graph
+                ref={ Canvas.yGraphRefs[i] }
+                key={ `figure-${i}-y` }
+                figureId={ i }
+                latex={ 'y' }
+              />
+
               {/* x-axis */}
               <Line
                 key={ `x-axis-${i}` }

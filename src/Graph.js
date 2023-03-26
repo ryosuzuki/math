@@ -20,6 +20,14 @@ class Graph extends Component {
     window.algebra = algebra
     window.nerdamer = nerdamer
 
+    const figureId = this.props.figureId
+    const figure = Canvas.figuresRef.current.state.figures[figureId]
+    this.origin = figure.origin
+    this.xAxis = figure.xAxis
+    this.yAxis = figure.yAxis
+    this.originalSegments = figure.originalSegments
+    this.originalPaths = figure.originalPaths
+
     this.state.ratio = { x: 26, y: 28 }
     if (App.sampleId === 1) {
       if (this.props.figureId === 8) this.state.ratio = { x: 37, y: 37 }
@@ -52,13 +60,19 @@ class Graph extends Component {
   }
 
   updateGraph(equation) {
+    const solveFor = equation.split('=')[0].trim()
     try {
       let points = []
       for (let x = -10; x < 10; x += 0.05) {
         let answer = texMathParser.evaluateTex(equation, { x: x });
         let y = answer.evaluated
         if (isNaN(y)) y = y.re
-        points.push({ x: x, y: y })
+
+        if (solveFor === 'x') {
+          points.push({ x: y, y: x })
+        } else {
+          points.push({ x: x, y: y })
+        }
       }
       this.setState({ points: points })
     } catch (err) {
@@ -187,11 +201,11 @@ class Graph extends Component {
     if (App.sampleId === 4) offset = 50
     let linePoints = []
     for (let point of points) {
-      let x = point.x * this.state.ratio.x + this.props.origin.x
-      let y = point.y * -this.state.ratio.y + this.props.origin.y
+      let x = point.x * this.state.ratio.x + this.origin.x
+      let y = point.y * -this.state.ratio.y + this.origin.y
       if (isNaN(x) || isNaN(y)) continue
-      if (x < this.props.xAxis[0] - offset || this.props.xAxis[2] + offset < x) continue
-      if (y < this.props.yAxis[1] - offset || this.props.yAxis[3] + offset < y) continue
+      if (x < this.xAxis[0] - offset || this.xAxis[2] + offset < x) continue
+      if (y < this.yAxis[1] - offset || this.yAxis[3] + offset < y) continue
       linePoints.push(x, y)
     }
     return linePoints
@@ -201,17 +215,17 @@ class Graph extends Component {
     window.math = math
 
     try {
-      let points = this.props.originalSegments.map((segment) => { return { x: segment[1], y: segment[2] } })
+      let points = this.originalSegments.map((segment) => { return { x: segment[1], y: segment[2] } })
       window.points = points
 
       let p1 = points[0]
       let p2 = _.last(points)
 
       if (!p1 || !p2) return
-      let x1 = p1.x - this.props.origin.x
-      let y1 = this.props.origin.y - p1.y
-      let x2 = p2.x - this.props.origin.x
-      let y2 = this.props.origin.y - p2.y
+      let x1 = p1.x - this.origin.x
+      let y1 = this.origin.y - p1.y
+      let x2 = p2.x - this.origin.x
+      let y2 = this.origin.y - p2.y
 
       const data = { x1: x1, y1: y1, x2: x2, y2: y2 }
       console.log('emit sympy ' + JSON.stringify(data))
@@ -236,7 +250,7 @@ class Graph extends Component {
   render() {
     return (
       <Line
-        key={ this.props.id }
+        key={ this.props.key }
         x={ 0 }
         y={ 0 }
         points={ this.convert(this.state.points) }

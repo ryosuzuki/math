@@ -19,23 +19,18 @@ class Symbol extends Component {
   }
 
   onMouseDown() {
-    if (!Canvas.state.selectMode) return
-    let tag = this.props.tag
-    let symbols = Canvas.state.currentSymbols
-    // if (id.includes('mi')) {
-    //   id = 'mi-' + id.split('-mi-')[1]
-    // }
-    let tags = Object.keys(symbols)
-    let ascii = Canvas.convertAscii(tag)
-    console.log(tag, ascii, tags)
-    let num = Number(ascii)
-    if (tags.includes(tag)) {
-      delete symbols[tag]
+    // if (!Canvas.state.selectMode) return
+    const tag = this.props.tag
+    const currentSymbols = Canvas.state.currentSymbols
+    const ascii = Canvas.convertAscii(tag)
+    const num = Number(ascii)
+    if (Object.keys(currentSymbols).includes(tag)) {
+      // delete symbols[tag]
     } else {
-      symbols[tag] = isNaN(num) ? 0 : num
+      currentSymbols[tag] = isNaN(num) ? 0 : num
     }
-    Canvas.setState({ symbols: symbols })
-    this.setState({ highlight: true })
+    Canvas.setState({ currentSymbols: currentSymbols })
+    // this.setState({ highlight: true })
   }
 
   onMouseEnter() {
@@ -55,16 +50,29 @@ class Symbol extends Component {
   }
 
   onDragStart(event) {
-    if (Canvas.state.selectMode) return false
+    let tag = this.props.tag
+    let currentSymbols = Canvas.state.currentSymbols
+    let ascii = Canvas.convertAscii(tag)
+    console.log(tag, ascii)
+    let num = Number(ascii)
+    if (Object.keys(currentSymbols).includes(tag)) {
+      // delete symbols[tag]
+    } else {
+      currentSymbols[tag] = isNaN(num) ? 0 : num
+    }
+    Canvas.setState({ currentSymbols: currentSymbols })
+    // this.setState({ highlight: true })
+
+    // if (Canvas.state.selectMode) return false
     const pos = App.state.mouse
-    this.originValue = Canvas.state.currentSymbols[this.props.tag]
+    this.originValue = currentSymbols[tag]
     this.originX = this.props.center.x
     this.originY = this.props.center.y
     Slider.setState({ arrowVisible: true })
   }
 
   onDragMove(event) {
-    if (Canvas.state.selectMode) return false
+    // if (Canvas.state.selectMode) return false
     const target = event.target
     target.x(this.props.bbox.x)
     target.y(this.props.bbox.y)
