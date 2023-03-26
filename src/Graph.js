@@ -201,7 +201,7 @@ class Graph extends Component {
     window.math = math
 
     try {
-      let points = this.props.segments.map((segment) => { return { x: segment[1], y: segment[2] } })
+      let points = this.props.originalSegments.map((segment) => { return { x: segment[1], y: segment[2] } })
       window.points = points
 
       let p1 = points[0]

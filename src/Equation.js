@@ -18,8 +18,6 @@ class Equation extends Component {
     this.state = {
       symbols: [],
       rects: [],
-      highlight: false,
-      graph: null
     }
   }
 
@@ -213,55 +211,9 @@ class Equation extends Component {
     }
   }
 
-  onMouseDown() {
-    if (Graphs.state.selectId === -1) return
-    const selectId = Graphs.state.selectId
-    const graph = Canvas.graphRefs[selectId].current
-    graph.setState({ equation: this })
-    graph.update(this.props.latex)
-    this.setState({ highlight: false, graph: graph })
-    Graphs.setState({ selectId: -1 })
-  }
-
-  onMouseEnter() {
-    if (!Canvas.state.selectMode) return
-    if (Graphs.state.selectId === -1) return
-    this.setState({ highlight: true })
-  }
-
-  onMouseLeave() {
-    if (!Canvas.state.selectMode) return
-    if (Graphs.state.selectId === -1) return
-    this.setState({ highlight: false })
-  }
-
   render() {
-    let stroke = '#eee'
-    // stroke = 'black'
-    let fill = 'white'
-    if (this.state.highlight) {
-      stroke = App.fillColor
-      fill = App.fillColorBackground
-    }
-    if (this.state.graph) {
-      stroke = App.highlightColor
-      fill = App.highlightColorBackground
-    }
     return (
-      <>
-        <Rect
-          key={ `bbox-${this.props.id}` }
-          x={ this.props.x }
-          y={ this.props.y }
-          width={ this.props.width }
-          height={ this.props.height }
-          fill={ fill }
-          stroke={ stroke }
-          strokeWidth={ 3 }
-          onMouseDown={ this.onMouseDown.bind(this) }
-          onMouseEnter={ this.onMouseEnter.bind(this) }
-          onMouseLeave={ this.onMouseLeave.bind(this) }
-        />
+      <Group>
         {/* Symbols such as x, y, 1, 2, \sin */}
         { this.state.symbols.map((symbol, i) => {
           return (
@@ -291,7 +243,7 @@ class Equation extends Component {
             />
           )
         }) }
-      </>
+      </Group>
     )
   }
 }

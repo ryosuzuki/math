@@ -9,6 +9,8 @@ class Equations extends Component {
     window.Equations = this
     this.state = {
       equations: [],
+      currentId: -1,
+      selectId: -1,
     }
   }
 
@@ -148,24 +150,59 @@ class Equations extends Component {
     return equations;
   }
 
+  onMouseDown(i) {
+    if (!Canvas.state.selectMode) return
+    if (this.state.selectId === i) {
+      this.setState({ selectId: -1 })
+    } else {
+      this.setState({ selectId: i })
+    }
+  }
+
+  onMouseEnter(i) {
+    console.log(i)
+    if (!Canvas.state.selectMode) return
+    this.setState({ currentId: i })
+  }
+
+  onMouseLeave(i) {
+    if (!Canvas.state.selectMode) return
+    this.setState({ currentId: -1 })
+  }
+
   render() {
     return (
       <>
         { this.state.equations.map((equation, i) => {
           if (equation.score < 0.3) return <></>
           {/*if (i !== 4) return <></>*/}
+          let stroke = '#eee'
+          let fill = 'white'
+          if (this.state.currentId === i) {
+            stroke = App.strokeColor
+            fill = App.fillColorBackground
+          }
+          if (this.state.selectId === i) {
+            stroke = App.highlightColor
+            fill = App.highlightColorBackground
+          }
           return (
             <Group key={i}>
+              {/* Bounding Box for Each Equation */}
               <Rect
-                key={ `equation-rect-${i}` }
+                key={ `bbox-${i}` }
                 x={ equation.x }
                 y={ equation.y }
                 width={ equation.width }
                 height={ equation.height }
-                fill={ equation.type === 'embedding' ? App.fillColorAlpha : App.highlightColorAlpha }
-                stroke={ App.strokeColor }
+                fill={ fill }
+                stroke={ stroke }
                 strokeWidth={ 3 }
+                onMouseDown={ this.onMouseDown.bind(this, i) }
+                onMouseEnter={ this.onMouseEnter.bind(this, i) }
+                onMouseLeave={ this.onMouseLeave.bind(this, i) }
               />
+              {/* Each Equation */}
               <Equation
                 key={ `equation-${i}` }
                 ref={ Canvas.equationRefs[i] }

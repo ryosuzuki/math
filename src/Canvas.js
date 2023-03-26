@@ -6,6 +6,7 @@ import DrawingLine from './DrawingLine.js'
 import Words from './Words.js'
 import Figures from './Figures.js'
 import Equations from './Equations.js'
+import Graph from './Graph.js'
 import Slider from './Slider.js'
 
 let debug = false
@@ -21,6 +22,7 @@ class Canvas extends Component {
       paperImage: null,
       selectMode: true,
       currentSymbols: {},
+      currentGraphs: [],
     }
     this.symbolHash = {}
     if (debug) {
@@ -50,6 +52,14 @@ class Canvas extends Component {
     let paperImage = document.getElementById('paper')
     this.setState({ paperImage: paperImage })
     this.stage = Konva.stages[0]
+  }
+
+  addGraph(figureId, equationId) {
+    const currentGraphs = this.state.currentGraphs
+    const graph = { figureId: figureId, equationId: equationId }
+    currentGraphs.push(graph)
+    currentGraphs = _.uniqWith(currentGraphs, _.isEqual)
+    this.setState({ currentGraphs: currentGraphs })
   }
 
   updateValue(newSymbols, round=1) {
@@ -177,6 +187,16 @@ class Canvas extends Component {
 
               {/* Equations > Equation > Symbol */}
               <Equations />
+
+              { this.state.currentGraphs.map((graph, i) => {
+                return (
+                  <Graph
+                    id={ i }
+                    figureId={ graph.figureId }
+                    equationId={ graph.equationId }
+                  />
+                )
+              })}
 
               {/* Slider */}
               <Slider />
