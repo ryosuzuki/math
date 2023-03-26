@@ -83,9 +83,12 @@ class Canvas extends Component {
           currentGraphs.push(graph)
           const graphRef = React.createRef()
           this.graphRefs.push(graphRef)
+          console.log(this.graphRefs)
           currentGraphs = _.uniqWith(currentGraphs, _.isEqual)
           console.log({ currentGraphs: currentGraphs })
-          this.setState({ currentGraphs: currentGraphs, clickedEquationId: -1, clickedFigureId: -1 })
+          this.setState({ currentGraphs: currentGraphs, clickedEquationId: -1, clickedFigureId: -1 }, () => {
+            this.updateValue({})
+          })
         }
       })
     })
@@ -100,22 +103,20 @@ class Canvas extends Component {
 
     for (let graphRef of this.graphRefs) {
       const graph = graphRef.current
-      // const equation = graph.props.latex
-      // if (!equation) continue
       let latex = _.clone(graph.props.latex)
-      console.log(latex)
-      // console.log(latex) // latex = 'y=(x+3)^{2}+1'
       latex = latex.replace(/\\sqrt/g, '\\SQRT')
-      // const pattern = new RegExp(Object.keys(currentSymbols).map(s => '\\u{' + s + '}').join('|'), 'gu');
-      // latex = latex.replace(pattern, match => currentSymbols[match.codePointAt(0).toString(16).toUpperCase()]);
       const asciiSymbols = {}
       for (let tag of Object.keys(currentSymbols)) {
         const ascii = this.convertAscii(tag)
         asciiSymbols[ascii] = currentSymbols[tag]
       }
-      const pattern = new RegExp(Object.keys(asciiSymbols).join('|'), 'gu');
-      latex = latex.replace(pattern, match => asciiSymbols[match]);
+      console.log(asciiSymbols)
+      if (Object.keys(asciiSymbols).length > 0) {
+        const pattern = new RegExp(Object.keys(asciiSymbols).join('|'), 'gu');
+        latex = latex.replace(pattern, match => asciiSymbols[match]);
+      }
       latex = latex.replace(/\\SQRT/g, '\\sqrt')
+      console.log(latex)
 
       // latex = `x = ${asciiSymbols['r']}`
       // console.log(pattern)
