@@ -23,6 +23,8 @@ class Canvas extends Component {
       selectMode: true,
       currentSymbols: {},
       currentGraphs: [],
+      clickedFigureId: -1,
+      clickedEquationId: -1,
     }
     this.symbolHash = {}
     if (debug) {
@@ -42,9 +44,11 @@ class Canvas extends Component {
       }, 500)
     }
 
-    this.figureRefs = []
     this.equationRefs = []
     this.graphRefs = []
+
+    this.figuresRef = React.createRef()
+    this.equationsRef = React.createRef()
     this.drawingLineRef = React.createRef()
   }
 
@@ -54,12 +58,37 @@ class Canvas extends Component {
     this.stage = Konva.stages[0]
   }
 
-  addGraph(figureId, equationId) {
-    const currentGraphs = this.state.currentGraphs
-    const graph = { figureId: figureId, equationId: equationId }
-    currentGraphs.push(graph)
-    currentGraphs = _.uniqWith(currentGraphs, _.isEqual)
-    this.setState({ currentGraphs: currentGraphs })
+  addGraph(hash) {
+    if (this.state.clickedEquationId === hash.clickedEquationId) {
+      this.setState({ clickedEquationId: - 1})
+      return
+    }
+    if (this.state.clickedFigureId === hash.clickedFigureId) {
+      this.setState({ clickedFigureId: - 1})
+      return
+    }
+    let equationId = this.state.clickedEquationId
+    let figureId = this.state.clickedFigureId
+    if (hash.clickedEquationId >= 0) equationId = hash.clickedEquationId
+    if (hash.clickedFigureId >= 0) figureId = hash.clickedFigureId
+
+    this.setState({ clickedEquationId: equationId }, () => {
+      this.setState({ clickedFigureId: figureId }, () => {
+        const equationId = this.state.clickedEquationId
+        const figureId = this.state.clickedFigureId
+        console.log(equationId, figureId)
+        if (equationId >= 0 && figureId >= 0) {
+          let currentGraphs = this.state.currentGraphs
+          const graph = { figureId: figureId, equationId: equationId }
+          currentGraphs.push(graph)
+          const graphRef = React.createRef()
+          this.graphRefs.push(graphRef)
+          currentGraphs = _.uniqWith(currentGraphs, _.isEqual)
+          console.log({ currentGraphs: currentGraphs })
+          this.setState({ currentGraphs: currentGraphs, clickedEquationId: -1, clickedFigureId: -1 })
+        }
+      })
+    })
   }
 
   updateValue(newSymbols, round=1) {
@@ -71,10 +100,10 @@ class Canvas extends Component {
 
     for (let graphRef of this.graphRefs) {
       const graph = graphRef.current
-      const equation = graph.state.equation
-      if (!equation) continue
-
-      let latex = _.clone(equation.props.latex)
+      // const equation = graph.props.latex
+      // if (!equation) continue
+      let latex = _.clone(graph.props.latex)
+      console.log(latex)
       // console.log(latex) // latex = 'y=(x+3)^{2}+1'
       latex = latex.replace(/\\sqrt/g, '\\SQRT')
       // const pattern = new RegExp(Object.keys(currentSymbols).map(s => '\\u{' + s + '}').join('|'), 'gu');
@@ -86,7 +115,6 @@ class Canvas extends Component {
       }
       const pattern = new RegExp(Object.keys(asciiSymbols).join('|'), 'gu');
       latex = latex.replace(pattern, match => asciiSymbols[match]);
-
       latex = latex.replace(/\\SQRT/g, '\\sqrt')
 
       // latex = `x = ${asciiSymbols['r']}`
@@ -183,17 +211,33 @@ class Canvas extends Component {
               <Words />
 
               {/* Figures > Axis + [Graph1, Graph2, ...] */}
-              <Figures />
+              <Figures
+                ref={ this.figuresRef }
+              />
 
               {/* Equations > Equation > Symbol */}
-              <Equations />
+              <Equations
+                ref={ this.equationsRef }
+              />
 
               { this.state.currentGraphs.map((graph, i) => {
+                const figureId = graph.figureId
+                const equationId = graph.equationId
+                const figures = this.figuresRef.current.state.figures
+                const equations = this.equationsRef.current.state.equations
+                const figure = figures[figureId]
+                const equation = equations[equationId]
                 return (
                   <Graph
                     id={ i }
-                    figureId={ graph.figureId }
-                    equationId={ graph.equationId }
+                    ref={ this.graphRefs[i] }
+                    figureId={ figureId }
+                    equationId={ equationId }
+                    origin={ figure.origin }
+                    xAxis={ figure.xAxis }
+                    yAxis={ figure.yAxis }
+                    originalSegments={ figure.originalSegments }
+                    latex={ equation.latex }
                   />
                 )
               })}
@@ -203,7 +247,7 @@ class Canvas extends Component {
 
               {/* Drawing Line */}
               <DrawingLine
-                ref={this.drawingLineRef}
+                ref={ this.drawingLineRef }
               />
 
             </Layer>

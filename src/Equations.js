@@ -9,8 +9,7 @@ class Equations extends Component {
     window.Equations = this
     this.state = {
       equations: [],
-      currentId: -1,
-      selectId: -1,
+      highlightId: -1,
     }
   }
 
@@ -152,22 +151,18 @@ class Equations extends Component {
 
   onMouseDown(i) {
     if (!Canvas.state.selectMode) return
-    if (this.state.selectId === i) {
-      this.setState({ selectId: -1 })
-    } else {
-      this.setState({ selectId: i })
-    }
+    Canvas.addGraph({ clickedEquationId: i })
   }
 
   onMouseEnter(i) {
     console.log(i)
     if (!Canvas.state.selectMode) return
-    this.setState({ currentId: i })
+    this.setState({ highlightId: i })
   }
 
   onMouseLeave(i) {
     if (!Canvas.state.selectMode) return
-    this.setState({ currentId: -1 })
+    this.setState({ highlightId: -1 })
   }
 
   render() {
@@ -178,11 +173,11 @@ class Equations extends Component {
           {/*if (i !== 4) return <></>*/}
           let stroke = '#eee'
           let fill = 'white'
-          if (this.state.currentId === i) {
+          if (this.state.highlightId === i) {
             stroke = App.strokeColor
             fill = App.fillColorBackground
           }
-          if (this.state.selectId === i) {
+          if (Canvas.state.clickedEquationId === i) {
             stroke = App.highlightColor
             fill = App.highlightColorBackground
           }

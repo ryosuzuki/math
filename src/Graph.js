@@ -22,13 +22,13 @@ class Graph extends Component {
 
     this.state.ratio = { x: 26, y: 28 }
     if (App.sampleId === 1) {
-      if (this.props.id === 8) this.state.ratio = { x: 37, y: 37 }
-      if (this.props.id === 9) this.state.ratio = { x: 37, y: 37 }
+      if (this.props.figureId === 8) this.state.ratio = { x: 37, y: 37 }
+      if (this.props.figureId === 9) this.state.ratio = { x: 37, y: 37 }
     }
     if (App.sampleId === 4) {
-      if (this.props.id === 2) this.state.ratio = { x: 65, y: 34 }
-      if (this.props.id === 3) this.state.ratio = { x: 32, y: 16 }
-      if (this.props.id === 4) this.state.ratio = { x: 32, y: 1.6 }
+      if (this.props.figureId === 2) this.state.ratio = { x: 65, y: 34 }
+      if (this.props.figureId === 3) this.state.ratio = { x: 32, y: 16 }
+      if (this.props.figureId === 4) this.state.ratio = { x: 32, y: 1.6 }
     }
     if (App.sampleId === 6) {
       this.state.ratio = { x: 38, y: 38 }
@@ -77,7 +77,7 @@ class Graph extends Component {
     let k = asciiSymbols['k'] || 0
     let r = asciiSymbols['r'] || 0
 
-    let latex = this.state.equation.props.latex
+    let latex = this.props.latex
     if (!latex.includes('(x-h)^{2}+(y-k)^{2}')) {
       h = asciiSymbols['2'] || 2
       k = -asciiSymbols['3'] || -3
@@ -237,6 +237,7 @@ class Graph extends Component {
     return (
       <>
         <Line
+          key={ this.props.id }
           x={ 0 }
           y={ 0 }
           points={ this.convert(this.state.points) }

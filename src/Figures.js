@@ -11,8 +11,7 @@ class Figures extends Component {
     super(props)
     window.Figures = this
     this.state = {
-      currentId: -1,
-      selectId: -1,
+      highlightId: -1,
       figures: [],
       extractedLines: [],
     }
@@ -67,8 +66,6 @@ class Figures extends Component {
       let figure = { bbox: bbox}
       figure = this.getAxis(figure)
       if (figure) {
-        const figureRef = React.createRef()
-        Canvas.figureRefs.push(figureRef)
         figures.push(figure)
       }
       // break
@@ -151,22 +148,18 @@ class Figures extends Component {
 
   onMouseDown(i) {
     if (!Canvas.state.selectMode) return
-    if (this.state.selectId === i) {
-      this.setState({ selectId: -1 })
-    } else {
-      this.setState({ selectId: i })
-    }
+    Canvas.addGraph({ clickedFigureId: i })
   }
 
   onMouseEnter(i) {
     console.log(i)
     if (!Canvas.state.selectMode) return
-    this.setState({ currentId: i })
+    this.setState({ highlightId: i })
   }
 
   onMouseLeave(i) {
     if (!Canvas.state.selectMode) return
-    this.setState({ currentId: -1 })
+    this.setState({ highlightId: -1 })
   }
 
   render() {
@@ -175,11 +168,11 @@ class Figures extends Component {
         { this.state.figures.map((figure, i) => {
           let stroke = 'rgba(0, 0, 0, 0)'
           let fill = 'rgba(0, 0, 0, 0)'
-          if (this.state.currentId === i) {
+          if (this.state.highlightId === i) {
             stroke = App.strokeColor
             fill = App.fillColorAlpha
           }
-          if (this.state.selectId === i) {
+          if (Canvas.state.clickedFigureId === i) {
             stroke = App.highlightColor
             fill = App.highlightColorAlpha
           }
