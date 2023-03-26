@@ -59,8 +59,10 @@ class App extends Component {
     this.strokeColor = '#002f2b'
     this.fillColor = '#004842'
     this.fillColorAlpha = 'rgba(0, 28, 26, 0.3)'
+    this.fillColorBackground = '#c3d5cb'
     this.highlightColor = '#ee00ab'
     this.highlightColorAlpha = 'rgba(238, 0, 171, 0.3)'
+    this.highlightColorBackground = '#fff0fb'
     this.strokeWidth = 8
     this.canvasRef = React.createRef()
   }

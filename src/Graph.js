@@ -77,7 +77,7 @@ class Graph extends Component {
     let k = asciiSymbols['k'] || 0
     let r = asciiSymbols['r'] || 0
 
-    let latex = Canvas.graphRefs[0].current.state.equation.props.latex
+    let latex = this.state.equation.props.latex
     if (!latex.includes('(x-h)^{2}+(y-k)^{2}')) {
       h = asciiSymbols['2'] || 2
       k = -asciiSymbols['3'] || -3

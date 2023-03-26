@@ -6,17 +6,18 @@ import parseSvg from 'parse-svg-path'
 
 import Graph from './Graph.js'
 
-class Graphs extends Component {
+class Figures extends Component {
   constructor(props) {
     super(props)
-    window.Graphs = this
+    window.Figures = this
     this.state = {
       currentId: -1,
       selectId: -1,
-      lines: [],
-      graphs: [],
-      segments: [],
+      figures: [],
+      extractedLines: [],
     }
+
+    this.axisVisible = false
   }
 
   componentDidMount() {
@@ -37,16 +38,16 @@ class Graphs extends Component {
     const url = `${App.domain}/public/sample/figure-line-${App.sampleId}.svg`
     let svgText = await this.fetchData(url)
     let svgJson = svgson.parseSync(svgText)
-    let lines = svgJson.children
-    lines = lines.filter((line) => line.attributes.d)
-    for (let i = 0; i < lines.length; i++) {
-      let line = lines[i]
-      let bbox = svgPathBbox(line.attributes.d)
-      line.bbox = bbox
-      line.visible = false
-      lines[i] = line
+    let extractedLines = svgJson.children
+    extractedLines = extractedLines.filter((line) => line.attributes.d)
+    for (let i = 0; i < extractedLines.length; i++) {
+      let extractedLine = extractedLines[i]
+      let bbox = svgPathBbox(extractedLine.attributes.d)
+      extractedLine.bbox = bbox
+      extractedLine.visible = false
+      extractedLines[i] = extractedLine
     }
-    this.setState({ lines: lines })
+    this.setState({ extractedLines: extractedLines })
   }
 
   async processContour() {
@@ -55,7 +56,7 @@ class Graphs extends Component {
     let svgJson = svgson.parseSync(svgText)
     let contours = svgJson.children
     contours = contours.filter((contour) => contour.attributes.d)
-    let graphs = []
+    let figures = []
     for (let i = 0; i < contours.length; i++) {
       let path = contours[i]
       let bbox = svgPathBbox(path.attributes.d)
@@ -63,30 +64,30 @@ class Graphs extends Component {
       let height = bbox[3] - bbox[1]
       if (width < 100 || height < 100) continue
       if (width > 1000 && height > 1000) continue
-      let graph = { bbox: bbox}
-      graph = this.getAxis(graph)
-      if (graph) {
-        const graphRef = React.createRef()
-        Canvas.graphRefs.push(graphRef)
-        graphs.push(graph)
+      let figure = { bbox: bbox}
+      figure = this.getAxis(figure)
+      if (figure) {
+        const figureRef = React.createRef()
+        Canvas.figureRefs.push(figureRef)
+        figures.push(figure)
       }
       // break
     }
-    this.setState({ graphs: graphs })
+    this.setState({ figures: figures })
   }
 
-  getAxis(graph) {
-    let lines = this.state.lines
-    let currentLines = lines.filter((line) => {
-      return (line.bbox[0] > graph.bbox[0]
-           && line.bbox[1] > graph.bbox[1]
-           && line.bbox[2] < graph.bbox[2]
-           && line.bbox[3] < graph.bbox[3])
+  getAxis(figure) {
+    let extractedLines = this.state.extractedLines
+    let currentLines = extractedLines.filter((line) => {
+      return (line.bbox[0] > figure.bbox[0]
+           && line.bbox[1] > figure.bbox[1]
+           && line.bbox[2] < figure.bbox[2]
+           && line.bbox[3] < figure.bbox[3])
     })
     // currentLines.map((line) => line.visible = true )
     let horizontal = []
     let vertical = []
-    let graphs = []
+    let originalPaths = []
     let threshold = 5 // Important to get correct axis (5-10)
     // if (App.sampleId === 1) threshold = 10 // for sine curve
     for (let line of currentLines) {
@@ -100,20 +101,19 @@ class Graphs extends Component {
       } else if (diffX < threshold) {
         vertical.push(bbox)
       } else {
-        graphs.push(line)
+        originalPaths.push(line)
       }
     }
     let xAxis = this.getAxisPoints(horizontal, 'x')
     let yAxis = this.getAxisPoints(vertical, 'y')
-    let segments = this.getSegments(graphs)
+    let originalSegments = this.getSegments(originalPaths)
     if (xAxis && yAxis) {
-      graph.xAxis = xAxis
-      graph.yAxis = yAxis
-      graph.origin = { x: yAxis[0], y: xAxis[1] }
-      graph.visible = false
-      graph.graphs = graphs
-      graph.segments = segments
-      return graph
+      figure.xAxis = xAxis
+      figure.yAxis = yAxis
+      figure.origin = { x: yAxis[0], y: xAxis[1] }
+      figure.originalPaths = originalPaths
+      figure.originalSegments = originalSegments
+      return figure
     } else {
       return null
     }
@@ -136,17 +136,17 @@ class Graphs extends Component {
     }
   }
 
-  getSegments(graphs) {
-    let segments = []
-    for (let graph of graphs) {
+  getSegments(originalPaths) {
+    let originalSegments = []
+    for (let graph of originalPaths) {
       const path = graph.attributes.d
       // let pathData = pathParse(path).getSegments()
       // segments.push(pathData.segments)
       const pathSegments = parseSvg(path)
-      segments.push(pathSegments)
+      originalSegments.push(pathSegments)
     }
-    segments = _.flatten(segments)
-    return segments
+    originalSegments = _.flatten(originalSegments)
+    return originalSegments
   }
 
   onMouseDown(i) {
@@ -172,7 +172,7 @@ class Graphs extends Component {
   render() {
     return (
       <>
-        { this.state.graphs.map((graph, i) => {
+        { this.state.figures.map((figure, i) => {
           let stroke = 'rgba(0, 0, 0, 0)'
           let fill = 'rgba(0, 0, 0, 0)'
           if (this.state.currentId === i) {
@@ -187,10 +187,10 @@ class Graphs extends Component {
             <Group key={i}>
               <Rect
                 key={ `bounding-box-${i}` }
-                x={ graph.bbox[0] }
-                y={ graph.bbox[1] }
-                width={ graph.bbox[2] - graph.bbox[0] }
-                height={ graph.bbox[3] - graph.bbox[1] }
+                x={ figure.bbox[0] }
+                y={ figure.bbox[1] }
+                width={ figure.bbox[2] - figure.bbox[0] }
+                height={ figure.bbox[3] - figure.bbox[1] }
                 strokeWidth={ 3 }
                 stroke={ stroke }
                 fill={ fill }
@@ -203,48 +203,48 @@ class Graphs extends Component {
                 key={ `x-axis-${i}` }
                 x={ 0 }
                 y={ 0 }
-                points={ graph.xAxis }
+                points={ figure.xAxis }
                 strokeWidth={ 8 }
                 stroke={ 'red' }
-                visible={ graph.visible }
+                visible={ this.axisVisible }
               />
               {/* y-axis */}
               <Line
                 key={ `y-axis-${i}` }
                 x={ 0 }
                 y={ 0 }
-                points={ graph.yAxis }
+                points={ figure.yAxis }
                 strokeWidth={ 8 }
                 stroke={ 'red' }
-                visible={ graph.visible }
+                visible={ this.axisVisible }
               />
               {/* origin */}
               <Circle
                 key={ `origin-${i}` }
-                x={ graph.origin.x }
-                y={ graph.origin.y }
+                x={ figure.origin.x }
+                y={ figure.origin.y }
                 radius={ 10 }
                 fill={ 'red' }
-                visible={ graph.visible }
+                visible={ this.axisVisible }
               />
 
               <Graph
                 id={ i }
                 ref={ Canvas.graphRefs[i] }
-                origin={ graph.origin }
-                xAxis={ graph.xAxis }
-                yAxis={ graph.yAxis }
-                segments={ graph.segments }
-                graphs={ graph.graphs }
+                origin={ figure.origin }
+                xAxis={ figure.xAxis }
+                yAxis={ figure.yAxis }
+                originalSegments={ figure.originalSegments }
+                originalPaths={ figure.originalPaths }
               />
 
               {/* segments for debugging */}
-              { graph.segments.map((segment, j) => {
+              { figure.originalSegments.map((originalSegment, j) => {
                 return (
                   <Circle
-                    key={ `segment-${i}-${j}` }
-                    x={ segment[1] }
-                    y={ segment[2] }
+                    key={ `original-segment-${i}-${j}` }
+                    x={ originalSegment[1] }
+                    y={ originalSegment[2] }
                     radius={ 3 }
                     fill={ 'red' }
                     visible={ false }
@@ -253,11 +253,11 @@ class Graphs extends Component {
               })}
 
               {/* graph path for debugging */}
-              { graph.graphs.map((graph, j) => {
+              { figure.originalPaths.map((path, j) => {
                 return (
                   <Path
-                    key={ `graph-${i}-${j}` }
-                    data={ graph.attributes.d }
+                    key={ `original-graph-${i}-${j}` }
+                    data={ path.attributes.d }
                     strokeWidth={ 8 }
                     stroke={ 'green' }
                     visible={ false }
@@ -269,21 +269,21 @@ class Graphs extends Component {
         })}
 
         {/* figure line path for debugging */}
-        { this.state.lines.map((line, i) => {
+        { this.state.extractedLines.map((extractedLine, i) => {
           return (
             <>
               <Path
-                key={ `figure-line-${i}` }
-                data={ line.attributes.d }
+                key={ `extracted-line-${i}` }
+                data={ extractedLine.attributes.d }
                 strokeWidth={ 3 }
                 stroke={ 'blue' }
                 visible={ false }
               />
               <Rect
-                x={ line.bbox[0] }
-                y={ line.bbox[1] }
-                width={ line.bbox[2] - line.bbox[0] }
-                height={ line.bbox[3] - line.bbox[1] }
+                x={ extractedLine.bbox[0] }
+                y={ extractedLine.bbox[1] }
+                width={ extractedLine.bbox[2] - extractedLine.bbox[0] }
+                height={ extractedLine.bbox[3] - extractedLine.bbox[1] }
                 stroke={ 'purple' }
                 visible={ false }
               />
@@ -295,4 +295,4 @@ class Graphs extends Component {
   }
 }
 
-export default Graphs
+export default Figures

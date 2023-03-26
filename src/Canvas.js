@@ -4,7 +4,7 @@ import Konva from 'konva'
 
 import DrawingLine from './DrawingLine.js'
 import Words from './Words.js'
-import Graphs from './Graphs.js'
+import Figures from './Figures.js'
 import Equations from './Equations.js'
 import Slider from './Slider.js'
 
@@ -40,6 +40,7 @@ class Canvas extends Component {
       }, 500)
     }
 
+    this.figureRefs = []
     this.equationRefs = []
     this.graphRefs = []
     this.drawingLineRef = React.createRef()
@@ -171,8 +172,8 @@ class Canvas extends Component {
               {/* Words > Variable */}
               <Words />
 
-              {/* Graphs > Graph + Axis */}
-              <Graphs />
+              {/* Figures > Axis + [Graph1, Graph2, ...] */}
+              <Figures />
 
               {/* Equations > Equation > Symbol */}
               <Equations />

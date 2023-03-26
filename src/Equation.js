@@ -219,7 +219,7 @@ class Equation extends Component {
     const graph = Canvas.graphRefs[selectId].current
     graph.setState({ equation: this })
     graph.update(this.props.latex)
-    this.setState({ highlight: false })
+    this.setState({ highlight: false, graph: graph })
     Graphs.setState({ selectId: -1 })
   }
 
@@ -238,8 +238,15 @@ class Equation extends Component {
   render() {
     let stroke = '#eee'
     // stroke = 'black'
-    if (this.state.highlight) stroke = App.highlightColor
-    if (this.state.graph) stroke = App.highlightColor
+    let fill = 'white'
+    if (this.state.highlight) {
+      stroke = App.fillColor
+      fill = App.fillColorBackground
+    }
+    if (this.state.graph) {
+      stroke = App.highlightColor
+      fill = App.highlightColorBackground
+    }
     return (
       <>
         <Rect
@@ -248,7 +255,7 @@ class Equation extends Component {
           y={ this.props.y }
           width={ this.props.width }
           height={ this.props.height }
-          fill={ 'white' }
+          fill={ fill }
           stroke={ stroke }
           strokeWidth={ 3 }
           onMouseDown={ this.onMouseDown.bind(this) }
