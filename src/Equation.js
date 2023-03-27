@@ -23,6 +23,11 @@ class Equation extends Component {
   }
 
   componentDidMount() {
+    this.init()
+  }
+
+  init() {
+    this.setState({ symbols: [], rects: [] })
     window.texToSVG = texToSVG
     let latex = this.props.latex // 'y=x^2+6x+10=(x+3)^2+1'
     const options = { width: 100 }

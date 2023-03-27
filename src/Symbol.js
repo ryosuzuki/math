@@ -5,7 +5,7 @@ import svgPathBbox from 'svg-path-bbox'
 class Symbol extends Component {
   constructor(props) {
     super(props)
-    window.Symbol = this
+    // window.Symbol = this
     this.state = {
       highlight: false,
     }
@@ -124,7 +124,7 @@ class Symbol extends Component {
           fill={ this.props.fill }
         />
         {/* Bounding box for each symbol */}
-        { this.props.bbox.height < 1000 &&
+        { this.props.bbox.height < 500 &&
           // Todo: Bug of svgPathBbox for sampleId = 9, "i". Just disable
           <Rect
             x={ this.props.bbox.x }

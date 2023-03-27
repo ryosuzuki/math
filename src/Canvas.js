@@ -9,7 +9,6 @@ import Equations from './Equations.js'
 import Graph from './Graph.js'
 import Slider from './Slider.js'
 import Triangle from './Triangle.js'
-import Summation from './Summation.js'
 
 class Canvas extends Component {
   constructor(props) {
@@ -124,7 +123,12 @@ class Canvas extends Component {
       graph.update(latex)
     }
 
-    if (window.Triangle) {
+    if (App.sampleId === 9) {
+      for (let equation of window.Equations.state.equations) {
+        equation.summationRef.current.update()
+      }
+    }
+    if (App.sampleId === 10) {
       window.Triangle.updateFigure()
     }
   }
@@ -258,16 +262,10 @@ class Canvas extends Component {
               {/* Drawing Line */}
               <DrawingLine ref={this.drawingLineRef} />
 
-              {/* Summation component, works for any pdf with summation that has 'n', the pdf needs an ocr.json */}
-              { App.sampleId === 9 &&
-                <Summation currentSymbols={this.state.currentSymbols} />
-              }
-
-              {/* Triangle component, only works for sample-10.pdf */}
+              {/* Triangle */}
               { App.sampleId === 10 &&
                 <Triangle />
               }
-
 
             </Layer>
           </Stage>

@@ -5,6 +5,7 @@ import mathsteps from 'mathsteps'
 
 import Equation from './Equation.js'
 import Steps from './Steps.js'
+import Summation from './Summation.js'
 
 class Equations extends Component {
   constructor(props) {
@@ -99,6 +100,8 @@ class Equations extends Component {
       equation = this.getStepByStep(equation)
       const equationRef = React.createRef()
       Canvas.equationRefs.push(equationRef)
+      equation.stepsRef = React.createRef()
+      equation.summationRef = React.createRef()
       equations[i] = equation
     }
     equations = equations.filter(e => e.latex)
@@ -224,9 +227,18 @@ class Equations extends Component {
 
               <Steps
                 equationId={ i }
+                ref={ equation.stepsRef }
                 x={ equation.x + equation.width + 10 }
                 y={ equation.y - 20 }
                 solveSteps={ equation.solveSteps }
+              />
+
+              <Summation
+                equationId={ i }
+                ref={ equation.summationRef }
+                x={ equation.x + equation.width + 10 }
+                y={ equation.y }
+                latex={ equation.latex }
               />
             </Group>
           )
