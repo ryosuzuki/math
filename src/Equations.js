@@ -32,11 +32,11 @@ class Equations extends Component {
 
   async init() {
     const threshold = App.threshold
-    const url = `${App.domain}/public/sample/math-${App.sampleId}.json`
+    const url = `${App.domain}/public/sample/math-${App.fileId}.json`
     let equations = await this.fetchData(url)
     window.mathocr = equations
 
-    const url2 = `${App.domain}/public/sample/mathpix-${App.sampleId}.md`
+    const url2 = `${App.domain}/public/sample/mathpix-${App.fileId}.md`
     let mathpix = await this.fetchData(url2)
     window.mathpix = mathpix
 

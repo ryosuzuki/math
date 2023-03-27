@@ -16,9 +16,9 @@ function StepByStep(props) {
   // Get the OCR and Equation box results on dom mount
   useEffect(() => {
     async function getData() {
-      let url = `${App.domain}/public/sample/ocr-${App.sampleId}.json`;
+      let url = `${App.domain}/public/sample/ocr-${App.fileId}.json`;
       await fetchOCR(url);
-      url = `${App.domain}/public/sample/math-${App.sampleId}.json`;
+      url = `${App.domain}/public/sample/math-${App.fileId}.json`;
       await fetchEquations(url);
     }
     getData();

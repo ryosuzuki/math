@@ -15,7 +15,7 @@ class Words extends Component {
   }
 
   componentDidMount() {
-    const url = `${App.domain}/public/sample/ocr-${App.sampleId}.json`
+    const url = `${App.domain}/public/sample/ocr-${App.fileId}.json`
     this.fetchData(url)
   }
 

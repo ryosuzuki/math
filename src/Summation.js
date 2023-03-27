@@ -13,7 +13,7 @@ export default function Summation(props) {
   // Get the OCR and Equation box results on dom mount
   useEffect(() => {
     async function getData() {
-      let url = `${App.domain}/public/sample/ocr-${App.sampleId}.json`;
+      let url = `${App.domain}/public/sample/ocr-${App.fileId}.json`;
       console.log(url);
       await fetchOCR(url);
     }

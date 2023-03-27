@@ -42,6 +42,7 @@ class App extends Component {
     this.sampleIds = Array.from({length: num}, (_, i) => i+1)
     this.sampleId = parseInt(window.location.href.split('/?id=/')[1])
     if (isNaN(this.sampleId)) this.sampleId = 1
+    this.fileId = this.sampleId.toString().padStart(2, '0')
     this.baseURL = window.location.origin
 
     this.threshold = 0.5;

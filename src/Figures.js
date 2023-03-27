@@ -36,7 +36,7 @@ class Figures extends Component {
   }
 
   async processLine() {
-    const url = `${App.domain}/public/sample/figure-line-${App.sampleId}.svg`
+    const url = `${App.domain}/public/sample/figure-line-${App.fileId}.svg`
     let svgText = await this.fetchData(url)
     let svgJson = svgson.parseSync(svgText)
     let extractedLines = svgJson.children
@@ -52,7 +52,7 @@ class Figures extends Component {
   }
 
   async processContour() {
-    const url = `${App.domain}/public/sample/figure-contour-${App.sampleId}.svg`
+    const url = `${App.domain}/public/sample/figure-contour-${App.fileId}.svg`
     let svgText = await this.fetchData(url)
     let svgJson = svgson.parseSync(svgText)
     let contours = svgJson.children
