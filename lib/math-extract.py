@@ -2,13 +2,13 @@ import json
 from cnstd import LayoutAnalyzer
 
 # sample_ids = [1, 2, 3, 4]
-snum = 10
+num = 10
 sample_ids = list(range(1, num+1))
-path = '../public/sample'
+path = './public/sample'
 
 for sample_id in sample_ids:
   img = path + '/sample-{:02d}.jpg'.format(sample_id)
-  out = path + '/math-{:02d}.jpg'.format(sample_id)
+  out = path + '/math-{:02d}.json'.format(sample_id)
   analyzer = LayoutAnalyzer('mfd')
   equations = analyzer.analyze(img)
 

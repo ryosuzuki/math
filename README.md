@@ -50,7 +50,7 @@ cnstd analyze -m mfd -i sample-1.jpg -o output-1.jpg
 - Step 3. Perform OCR with [Google Cloud Vision API](https://cloud.google.com/vision/docs/drag-and-drop) and save response as a JSON file (e.g., `/public/sample/ocr-1.json`)
 - Step 4. Create an image target with [MindAR compiler](https://hiukim.github.io/mind-ar-js-doc/tools/compile/) and save it as a target file (e.g., `/public/sample/target-1.mind`)
 - Step 5. Perform math OCR with [MathPix Web Snip Tool](https://snip.mathpix.com/) and save it as a markdown file (e.g., `/public/sample/mathpix-1.md`)
-- Step 6. Perform CnST with `lib/math-extract.py`
+- Step 6. Perform CnST by running `$ python lib/math-extract.py`
 - Step 7. Get figure contour with `lib/figure-extract.py`
 - Step 8. Get figure line trace with `lib/figure-extract.js`
 
