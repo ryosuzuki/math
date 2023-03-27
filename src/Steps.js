@@ -33,29 +33,15 @@ class Steps extends Component {
         {this.props.solveSteps.map((step, i) => {
           const stepHeight = 40
           return (
-            <Group
-              key={ i }
+            <Equation
+              id={ -1 }
               x={ 10 }
-              y={ stepHeight * i + 10}
-            >
-              {/*
-              <Text
-                text={ step.newEquation.ascii() }
-                fontSize={ 20 }
-                fill={ App.highlightColor }
-              ></Text>
-              */}
-
-              <Equation
-                id={ -1 }
-                x={ 0 }
-                y={ 0 }
-                width={ 300 }
-                height={ 40 }
-                latex={ step.newEquation.latex() }
-                fill={ App.highlightColor }
-              />
-            </Group>
+              y={ stepHeight * i + 10 }
+              width={ 300 }
+              height={ 40 }
+              latex={ step.newEquation.latex() }
+              fill={ App.highlightColor }
+            />
           );
         })}
       </Group>
