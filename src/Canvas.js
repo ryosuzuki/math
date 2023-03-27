@@ -8,7 +8,7 @@ import Figures from './Figures.js'
 import Equations from './Equations.js'
 import Graph from './Graph.js'
 import Slider from './Slider.js'
-import Triangle from './Triangle-2.js'
+import Triangle from './Triangle.js'
 import Summation from './Summation.js'
 
 class Canvas extends Component {
@@ -123,6 +123,10 @@ class Canvas extends Component {
       latex = latex.replace(/\\SQRT/g, '\\sqrt')
       graph.update(latex)
     }
+
+    if (window.Triangle) {
+      window.Triangle.updateFigure()
+    }
   }
 
   convertAscii(tag) {
@@ -202,10 +206,6 @@ class Canvas extends Component {
     this.drawingLineRef.current.mouseUp()
   }
 
-  updateSymbols = (new_symbols) => {
-    this.setState({ currentSymbols: new_symbols })
-  }
-
   render() {
     return (
       <>
@@ -265,10 +265,7 @@ class Canvas extends Component {
 
               {/* Triangle component, only works for sample-10.pdf */}
               { App.sampleId === 10 &&
-                <Triangle
-                  onTriangleChange={this.updateSymbols}
-                  currentSymbols={this.state.currentSymbols}
-                />
+                <Triangle />
               }
 
 
