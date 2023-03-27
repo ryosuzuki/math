@@ -11,7 +11,7 @@ sample_ids = list(range(1, num+1))
 path = 'public/sample'
 
 for sample_id in sample_ids:
-  image = cv2.imread(path + '/sample-' + sample_id + '.jpg', 0)
+  image = cv2.imread(path + '/sample-' + str(sample_id) + '.jpg', 0)
   image = cv2.GaussianBlur(image, (5, 5), 0)
   image = cv2.Canny(image, 100, 200)
 
@@ -25,12 +25,12 @@ for sample_id in sample_ids:
   image2 = np.zeros_like(image)
   thickness = 3
   cv2.drawContours(image2, filtered_contours, -1, (255, 255, 255), thickness)
-  cv2.imwrite(path + '/figure-' + sample_id + '.jpg', cv2.bitwise_not(image2))
+  cv2.imwrite(path + '/figure-' + str(sample_id) + '.jpg', cv2.bitwise_not(image2))
 
   # Create SVG based on lines
   _, image2 = cv2.threshold(image2, 128, 255, cv2.THRESH_BINARY)
   polys = trace_skeleton.from_numpy(image2)
-  dwg = svgwrite.Drawing(path + '/figure-line-' + sample_id + '.svg', size=(str(image2.shape[1])+'px', str(image2.shape[0])+'px'))
+  dwg = svgwrite.Drawing(path + '/figure-line-' + str(sample_id) + '.svg', size=(str(image2.shape[1])+'px', str(image2.shape[0])+'px'))
   for poly in polys:
     c = (200*random.random(), 200*random.random(), 200*random.random())
     path_data = 'M'

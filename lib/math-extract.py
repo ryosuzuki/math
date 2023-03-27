@@ -7,8 +7,8 @@ sample_ids = list(range(1, num+1))
 path = '../public/sample'
 
 for sample_id in sample_ids:
-  img = path + '/sample-' + sample_id + '.jpg'
-  out = path + '/math-' + sample_id + '.json'
+  img = path + '/sample-' + str(sample_id) + '.jpg'
+  out = path + '/math-' + str(sample_id) + '.json'
   analyzer = LayoutAnalyzer('mfd')
   equations = analyzer.analyze(img)
 
