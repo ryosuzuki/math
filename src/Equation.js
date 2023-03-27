@@ -213,6 +213,7 @@ class Equation extends Component {
   }
 
   render() {
+    const fill = this.props.fill || 'black'
     return (
       <Group>
         {/* Symbols such as x, y, 1, 2, \sin */}
@@ -228,6 +229,7 @@ class Equation extends Component {
               bbox={ symbol.bbox }
               center={ symbol.center }
               transforms={ symbol.transforms }
+              fill={ fill }
             />
           )
         }) }
@@ -240,7 +242,7 @@ class Equation extends Component {
               y={ this.props.y + rect.y }
               width={ rect.width }
               height={ rect.height }
-              fill={ 'black' }
+              fill={ fill }
             />
           )
         }) }

@@ -1,7 +1,10 @@
 import React, { Component } from 'react'
 import { Group, Rect } from 'react-konva'
-import Equation from './Equation.js'
 import stringSimilarity from 'string-similarity'
+import mathsteps from 'mathsteps'
+
+import Equation from './Equation.js'
+import Steps from './Steps.js'
 
 class Equations extends Component {
   constructor(props) {
@@ -11,6 +14,7 @@ class Equations extends Component {
       equations: [],
       highlightId: -1,
     }
+    window.mathsteps = mathsteps
   }
 
   componentDidMount() {
@@ -92,6 +96,7 @@ class Equations extends Component {
         equation.text = items[id].text
         equation.raw = items[id].raw
       }
+      equation = this.getStepByStep(equation)
       const equationRef = React.createRef()
       Canvas.equationRefs.push(equationRef)
       equations[i] = equation
@@ -99,6 +104,15 @@ class Equations extends Component {
     equations = equations.filter(e => e.latex)
     console.log(equations)
     this.setState({ equations: equations })
+  }
+
+  getStepByStep(equation) {
+    let latex = equation.latex
+    if (!latex) return equation
+    latex = latex.replace(/\{/g, '')
+    latex = latex.replace(/\}/g, '')
+    equation.solveSteps = mathsteps.solveEquation(latex)
+    return equation
   }
 
   simpleConversion(text) {
@@ -206,6 +220,13 @@ class Equations extends Component {
                 width={ equation.width }
                 height={ equation.height }
                 latex={ equation.latex }
+              />
+
+              <Steps
+                equationId={ i }
+                x={ equation.x + equation.width + 10 }
+                y={ equation.y - 20 }
+                solveSteps={ equation.solveSteps }
               />
             </Group>
           )

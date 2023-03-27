@@ -121,7 +121,7 @@ class Symbol extends Component {
         {/* SVG path for each symbol */}
         <Path
           data={ this.props.pathData}
-          fill={ 'black' }
+          fill={ this.props.fill }
         />
         {/* Bounding box for each symbol */}
         { this.props.bbox.height < 1000 &&

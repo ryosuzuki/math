@@ -2,22 +2,21 @@ import React, { Component } from 'react'
 import { Stage, Layer, Group, Rect, Image } from 'react-konva'
 import Konva from 'konva'
 
-import DrawingLine from './DrawingLine.js';
-import Words from './Words.js';
-import Figures from './Figures.js';
-import Equations from './Equations.js';
-import Graph from './Graph.js';
-import Slider from './Slider.js';
-import Triangle from './Triangle.js';
-import Summation from './Summation.js';
-import StepByStep from './StepByStep.js';
+import DrawingLine from './DrawingLine.js'
+import Words from './Words.js'
+import Figures from './Figures.js'
+import Equations from './Equations.js'
+import Graph from './Graph.js'
+import Slider from './Slider.js'
+import Triangle from './Triangle.js'
+import Summation from './Summation.js'
 
 class Canvas extends Component {
   constructor(props) {
-    super(props);
-    window.Canvas = this;
-    window.canvas = this;
-    window.Konva = Konva;
+    super(props)
+    window.Canvas = this
+    window.canvas = this
+    window.Konva = Konva
     this.state = {
       event: {},
       paperImage: null,
@@ -25,8 +24,8 @@ class Canvas extends Component {
       currentGraphs: [],
       clickedFigureId: -1,
       clickedEquationId: -1,
-    };
-    this.symbolHash = {};
+    }
+    this.symbolHash = {}
 
     this.equationRefs = []
     this.graphRefs = []
@@ -36,39 +35,39 @@ class Canvas extends Component {
   }
 
   componentDidMount() {
-    let paperImage = document.getElementById('paper');
-    this.setState({ paperImage: paperImage });
-    this.stage = Konva.stages[0];
+    let paperImage = document.getElementById('paper')
+    this.setState({ paperImage: paperImage })
+    this.stage = Konva.stages[0]
   }
 
   addGraph(hash) {
     if (this.state.clickedEquationId === hash.clickedEquationId) {
-      this.setState({ clickedEquationId: -1 });
-      return;
+      this.setState({ clickedEquationId: -1 })
+      return
     }
     if (this.state.clickedFigureId === hash.clickedFigureId) {
-      this.setState({ clickedFigureId: -1 });
-      return;
+      this.setState({ clickedFigureId: -1 })
+      return
     }
-    let equationId = this.state.clickedEquationId;
-    let figureId = this.state.clickedFigureId;
-    if (hash.clickedEquationId >= 0) equationId = hash.clickedEquationId;
-    if (hash.clickedFigureId >= 0) figureId = hash.clickedFigureId;
+    let equationId = this.state.clickedEquationId
+    let figureId = this.state.clickedFigureId
+    if (hash.clickedEquationId >= 0) equationId = hash.clickedEquationId
+    if (hash.clickedFigureId >= 0) figureId = hash.clickedFigureId
 
     this.setState({ clickedEquationId: equationId }, () => {
       this.setState({ clickedFigureId: figureId }, () => {
-        const equationId = this.state.clickedEquationId;
-        const figureId = this.state.clickedFigureId;
-        console.log(equationId, figureId);
+        const equationId = this.state.clickedEquationId
+        const figureId = this.state.clickedFigureId
+        console.log(equationId, figureId)
         if (equationId >= 0 && figureId >= 0) {
-          let currentGraphs = this.state.currentGraphs;
-          const graph = { figureId: figureId, equationId: equationId };
-          currentGraphs.push(graph);
-          const graphRef = React.createRef();
-          this.graphRefs.push(graphRef);
-          console.log(this.graphRefs);
-          currentGraphs = _.uniqWith(currentGraphs, _.isEqual);
-          console.log({ currentGraphs: currentGraphs });
+          let currentGraphs = this.state.currentGraphs
+          const graph = { figureId: figureId, equationId: equationId }
+          currentGraphs.push(graph)
+          const graphRef = React.createRef()
+          this.graphRefs.push(graphRef)
+          console.log(this.graphRefs)
+          currentGraphs = _.uniqWith(currentGraphs, _.isEqual)
+          console.log({ currentGraphs: currentGraphs })
           this.setState(
             {
               currentGraphs: currentGraphs,
@@ -76,18 +75,18 @@ class Canvas extends Component {
               clickedFigureId: -1,
             },
             () => {
-              this.updateValue({});
+              this.updateValue({})
             }
-          );
+          )
         }
-      });
-    });
+      })
+    })
   }
 
   updateValue(newSymbols, round = 1) {
-    let currentSymbols = this.state.currentSymbols;
+    let currentSymbols = this.state.currentSymbols
     for (let tag of Object.keys(newSymbols)) {
-      currentSymbols[tag] = _.round(newSymbols[tag], round);
+      currentSymbols[tag] = _.round(newSymbols[tag], round)
     }
     this.setState({ currentSymbols: currentSymbols })
     const asciiSymbols = {}
@@ -118,8 +117,8 @@ class Canvas extends Component {
       delete asciiSymbols['y']
       latex = latex.replace(/\\sqrt/g, '\\SQRT')
       if (Object.keys(asciiSymbols).length > 0) {
-        const pattern = new RegExp(Object.keys(asciiSymbols).join('|'), 'g');
-        latex = latex.replace(pattern, match => asciiSymbols[match]);
+        const pattern = new RegExp(Object.keys(asciiSymbols).join('|'), 'g')
+        latex = latex.replace(pattern, match => asciiSymbols[match])
       }
       latex = latex.replace(/\\SQRT/g, '\\sqrt')
       graph.update(latex)
@@ -127,33 +126,33 @@ class Canvas extends Component {
   }
 
   convertAscii(tag) {
-    let codes = tag.split('-').map((a) => parseInt(a, 16));
+    let codes = tag.split('-').map((a) => parseInt(a, 16))
     let ascii = codes
       .map((code) => {
-        let offset = 0;
+        let offset = 0
         if (119886 <= code && code <= 119911) {
           offset = 119789; // math italic lower
         }
         if (119860 <= code && code <= 119885) {
           offset = 119795; // math italic upper
         }
-        code = code - offset;
-        return String.fromCharCode(code);
+        code = code - offset
+        return String.fromCharCode(code)
       })
-      .join('');
-    if (ascii === 'ℎ') ascii = 'h';
-    return ascii;
+      .join('')
+    if (ascii === 'ℎ') ascii = 'h'
+    return ascii
   }
 
   mouseDown(pos) {
-    console.log(App.state.mouse);
+    console.log(App.state.mouse)
     let event = new MouseEvent('mousedown', {
       clientX: pos.x,
       clientY: pos.y,
       pageX: pos.x,
       pageY: pos.y,
-    });
-    this.stage._pointerdown(event);
+    })
+    this.stage._pointerdown(event)
   }
 
   mouseMove(pos) {
@@ -162,8 +161,8 @@ class Canvas extends Component {
       clientY: pos.y,
       pageX: pos.x,
       pageY: pos.y,
-    });
-    this.stage._pointermove(event);
+    })
+    this.stage._pointermove(event)
   }
 
   mouseDrag(pos) {
@@ -172,8 +171,8 @@ class Canvas extends Component {
       clientY: pos.y,
       pageX: pos.x,
       pageY: pos.y,
-    });
-    Konva.DD._drag(event);
+    })
+    Konva.DD._drag(event)
   }
 
   mouseUp(pos) {
@@ -182,30 +181,30 @@ class Canvas extends Component {
       clientY: pos.y,
       pageX: pos.x,
       pageY: pos.y,
-    });
-    Konva.DD._endDragBefore(event);
-    this.stage._pointerup(event);
-    Konva.DD._endDragAfter(event);
+    })
+    Konva.DD._endDragBefore(event)
+    this.stage._pointerup(event)
+    Konva.DD._endDragAfter(event)
   }
 
   stageMouseDown(event) {
-    this.setState({ event: event });
-    this.drawingLineRef.current.mouseDown();
+    this.setState({ event: event })
+    this.drawingLineRef.current.mouseDown()
   }
 
   stageMouseMove(event) {
-    this.setState({ event: event });
-    this.drawingLineRef.current.mouseMove();
+    this.setState({ event: event })
+    this.drawingLineRef.current.mouseMove()
   }
 
   stageMouseUp(event) {
-    this.setState({ event: event });
-    this.drawingLineRef.current.mouseUp();
+    this.setState({ event: event })
+    this.drawingLineRef.current.mouseUp()
   }
 
   updateSymbols = (new_symbols) => {
-    this.setState({ currentSymbols: new_symbols });
-  };
+    this.setState({ currentSymbols: new_symbols })
+  }
 
   render() {
     return (
@@ -250,7 +249,7 @@ class Canvas extends Component {
                     figureId={ graph.figureId }
                     equationId={ graph.equationId }
                   />
-                );
+                )
               })}
 
               {/* Slider */}
@@ -258,11 +257,6 @@ class Canvas extends Component {
 
               {/* Drawing Line */}
               <DrawingLine ref={this.drawingLineRef} />
-
-              {/* Step by Step component, works for any pdf as long as it has a math.json and ocr.json */}
-              { App.sampleId === 8 &&
-                <StepByStep />
-              }
 
               {/* Summation component, works for any pdf with summation that has 'n', the pdf needs an ocr.json */}
               { App.sampleId === 9 &&
@@ -282,8 +276,8 @@ class Canvas extends Component {
           </Stage>
         </div>
       </>
-    );
+    )
   }
 }
 
-export default Canvas;
+export default Canvas
