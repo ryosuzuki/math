@@ -33,6 +33,7 @@ class Symbol extends Component {
   }
 
   onMouseEnter() {
+    console.log(this)
     let id = this.props.id
     console.log(id)
     if (id.includes('mo')) return
@@ -123,20 +124,23 @@ class Symbol extends Component {
           fill={ 'black' }
         />
         {/* Bounding box for each symbol */}
-        <Rect
-          x={ this.props.bbox.x }
-          y={ this.props.bbox.y }
-          width={ this.props.bbox.width }
-          height={ this.props.bbox.height }
-          fill={ fill }
-          draggable
-          onDragStart={ this.onDragStart.bind(this)}
-          onDragMove={ this.onDragMove.bind(this) }
-          onDragEnd={ this.onDragEnd.bind(this) }
-          onMouseDown={ this.onMouseDown.bind(this) }
-          onMouseEnter={ this.onMouseEnter.bind(this) }
-          onMouseLeave={ this.onMouseLeave.bind(this) }
-        />
+        { this.props.bbox.height < 1000 &&
+          // Todo: Bug of svgPathBbox for sampleId = 9, "i". Just disable
+          <Rect
+            x={ this.props.bbox.x }
+            y={ this.props.bbox.y }
+            width={ this.props.bbox.width }
+            height={ this.props.bbox.height }
+            fill={ fill }
+            draggable
+            onDragStart={ this.onDragStart.bind(this)}
+            onDragMove={ this.onDragMove.bind(this) }
+            onDragEnd={ this.onDragEnd.bind(this) }
+            onMouseDown={ this.onMouseDown.bind(this) }
+            onMouseEnter={ this.onMouseEnter.bind(this) }
+            onMouseLeave={ this.onMouseLeave.bind(this) }
+          />
+        }
       </Group>
     )
   }

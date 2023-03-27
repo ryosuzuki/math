@@ -108,6 +108,8 @@ class Equations extends Component {
     text = text.replace(/sin/g, "\\sin");
     text = text.replace(/···/g, "\\cdots");
     text = text.replace(/≤/g, "\\leqslant");
+    text = text.replace(/Σ/g, "\\sum_");
+    text = text.replace(/ai/g, "\\sum_{i=1}^{n} a_{i}");
     return text
   }
 
@@ -166,7 +168,7 @@ class Equations extends Component {
     return (
       <>
         { this.state.equations.map((equation, i) => {
-          if (equation.score < 0.3) return <></>
+          if (equation.score < App.threshold) return <></>
           {/*if (i !== 4) return <></>*/}
           let stroke = '#eee'
           let fill = 'white'

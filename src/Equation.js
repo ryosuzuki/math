@@ -19,6 +19,7 @@ class Equation extends Component {
       symbols: [],
       rects: [],
     }
+    window.svgPathBbox = svgPathBbox
   }
 
   componentDidMount() {
@@ -86,7 +87,7 @@ class Equation extends Component {
     }
     path = parseSvg(serializeSvg(scaleSvg(path, 0.02, -0.02)))
     // path = parseSvg(serializeSvg(translateSvg(path, this.props.x + 10, this.props.y + 20 )))
-    path = parseSvg(serializeSvg(translateSvg(path, this.props.x + 5, this.props.y + this.props.height/2 )))
+    path = parseSvg(serializeSvg(translateSvg(path, this.props.x + 5, this.props.y + this.props.height/2 + 5 )))
     path = serializeSvg(path)
 
     const box = svgPathBbox(path)
