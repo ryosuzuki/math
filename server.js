@@ -45,7 +45,6 @@ io.on('connection', (socket) => {
   pyshell.on('message', (result) => {
     socket.emit('sympy', result)
   })
-
 })
 
 function getJson(path) {

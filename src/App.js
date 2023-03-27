@@ -40,9 +40,8 @@ class App extends Component {
 
     const num = 10
     this.sampleIds = Array.from({length: num}, (_, i) => i+1)
-    this.sampleId = parseInt(window.location.href.split('/math/')[1])
+    this.sampleId = parseInt(window.location.href.split('/?id=/')[1])
     if (isNaN(this.sampleId)) this.sampleId = 1
-
     this.baseURL = window.location.origin
 
     this.threshold = 0.5;
@@ -175,7 +174,7 @@ class App extends Component {
         <div id='buttons'>
           { this.sampleIds.map((sampleId, i) => {
             return (
-              <button onClick={() => window.location.href = `${this.baseURL}/math/${sampleId}` }>
+              <button onClick={() => window.location.href = `${this.baseURL}/math/?id=${sampleId}` }>
                 { sampleId }
               </button>
             )
