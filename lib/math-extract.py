@@ -1,7 +1,9 @@
 import json
 from cnstd import LayoutAnalyzer
 
-sample_ids = ['1', '2', '3', '4', '5', '6', '7']
+# sample_ids = ['1', '2', '3', '4', '5', '6', '7']
+num = 10
+sample_ids = list(range(1, num+1))
 path = '../public/sample'
 
 for sample_id in sample_ids:

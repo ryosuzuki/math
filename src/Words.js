@@ -36,7 +36,6 @@ class Words extends Component {
   }
 
   onMouseDown(i) {
-    if (!Canvas.state.selectMode) return
     console.log(this.state.textAnnotations[i])
     let word = this.state.textAnnotations[i].description
     let symbols = Canvas.state.currentSymbols
@@ -52,12 +51,10 @@ class Words extends Component {
   }
 
   onMouseEnter(i) {
-    if (!Canvas.state.selectMode) return
     this.setState({ currentId: i })
   }
 
   onMouseLeave(i) {
-    if (!Canvas.state.selectMode) return
     this.setState({ currentId: -1 })
   }
 
@@ -89,7 +86,7 @@ class Words extends Component {
           if (Object.keys(currentSymbols).includes(word)) color = App.highlightColorAlpha
           if (this.state.currentId === i) color = App.highlightColorAlpha
 
-          if (Canvas.state.selectMode) {
+          if (App.state.selectMode) {
             return (
               <Rect
                 key={ i }

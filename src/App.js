@@ -38,7 +38,13 @@ class App extends Component {
     - (f(a+h) - f(a))/h = 4a + 2h - 5
     */
 
-    this.sampleId = 1;
+    const num = 10
+    this.sampleIds = Array.from({length: num}, (_, i) => i+1)
+    this.sampleId = parseInt(window.location.href.split('/math/')[1])
+    if (isNaN(this.sampleId)) this.sampleId = 1
+
+    this.baseURL = window.location.origin
+
     this.threshold = 0.5;
     if (this.sampleId === 6) this.threshold = 0.4;
     if (this.sampleId === 7) this.threshold = 0.3;
@@ -52,6 +58,7 @@ class App extends Component {
     this.dragging = false;
     this.initDrawing = true;
     this.state = {
+      selectMode: true,
       distance: 0,
       mouse2D: { x: 0, y: 0 },
       mouse: { x: 0, y: 0 },
@@ -165,6 +172,21 @@ class App extends Component {
   render() {
     return (
       <>
+        <div id='buttons'>
+          { this.sampleIds.map((sampleId, i) => {
+            return (
+              <button onClick={() => window.location.href = `${this.baseURL}/math/${sampleId}` }>
+                { sampleId }
+              </button>
+            )
+          }) }
+          <button
+            id='select'
+            onClick={() =>
+              this.setState({ selectMode: !this.state.selectMode })
+            }
+          >{`Select Mode: ${this.state.selectMode}`}</button>
+        </div>
         <Canvas ref={this.canvasRef} />
         <img
           id='paper'

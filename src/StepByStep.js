@@ -12,7 +12,6 @@ function StepByStep(props) {
   const [equations, setEquations] = useState([]);
   const [stepsVisible, setStepsVisible] = useState(false);
   const [selectedEquation, setSelectedEquation] = useState();
-  const { selectMode } = props;
 
   // Get the OCR and Equation box results on dom mount
   useEffect(() => {
@@ -191,7 +190,7 @@ function StepByStep(props) {
     setEquations(equations);
   }
 
-  if (!selectMode && equations.length > 0) {
+  if (!App.state.selectMode && equations.length > 0) {
     return (
       <>
         {stepsVisible && selectedEquation !== undefined ? (

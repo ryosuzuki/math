@@ -19,7 +19,6 @@ class Symbol extends Component {
   }
 
   onMouseDown() {
-    // if (!Canvas.state.selectMode) return
     const tag = this.props.tag
     const currentSymbols = Canvas.state.currentSymbols
     const ascii = Canvas.convertAscii(tag)
@@ -37,16 +36,12 @@ class Symbol extends Component {
     let id = this.props.id
     console.log(id)
     if (id.includes('mo')) return
-    if (Canvas.state.selectMode) {
-      this.setState({ highlight: true })
-    }
+    this.setState({ highlight: true })
   }
 
   onMouseLeave() {
     let id = this.props.id
-    if (Canvas.state.selectMode) {
-      this.setState({ highlight: false })
-    }
+    this.setState({ highlight: false })
   }
 
   onDragStart(event) {
@@ -63,7 +58,6 @@ class Symbol extends Component {
     Canvas.setState({ currentSymbols: currentSymbols })
     // this.setState({ highlight: true })
 
-    // if (Canvas.state.selectMode) return false
     const pos = App.state.mouse
     this.originValue = currentSymbols[tag]
     this.originX = this.props.center.x
@@ -78,7 +72,6 @@ class Symbol extends Component {
   }
 
   onDragMove(event) {
-    // if (Canvas.state.selectMode) return false
     const target = event.target
     target.x(this.props.bbox.x)
     target.y(this.props.bbox.y)

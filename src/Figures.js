@@ -153,18 +153,18 @@ class Figures extends Component {
   }
 
   onMouseDown(i) {
-    if (!Canvas.state.selectMode) return
+    if (!App.state.selectMode) return
     Canvas.addGraph({ clickedFigureId: i })
   }
 
   onMouseEnter(i) {
     console.log(i)
-    if (!Canvas.state.selectMode) return
+    if (!App.state.selectMode) return
     this.setState({ highlightId: i })
   }
 
   onMouseLeave(i) {
-    if (!Canvas.state.selectMode) return
+    if (!App.state.selectMode) return
     this.setState({ highlightId: -1 })
   }
 
@@ -197,7 +197,6 @@ class Figures extends Component {
                 onMouseEnter={ this.onMouseEnter.bind(this, i) }
                 onMouseLeave={ this.onMouseLeave.bind(this, i) }
               />
-
               <Graph
                 key={ `figure-${i}-x` }
                 ref={ Canvas.xGraphRefs[i] }

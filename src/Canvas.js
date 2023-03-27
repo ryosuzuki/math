@@ -12,8 +12,6 @@ import Triangle from './Triangle.js';
 import Summation from './Summation.js';
 import StepByStep from './StepByStep.js';
 
-let debug = false;
-
 class Canvas extends Component {
   constructor(props) {
     super(props);
@@ -23,29 +21,12 @@ class Canvas extends Component {
     this.state = {
       event: {},
       paperImage: null,
-      selectMode: true,
       currentSymbols: {},
       currentGraphs: [],
       clickedFigureId: -1,
       clickedEquationId: -1,
     };
     this.symbolHash = {};
-    if (debug) {
-      this.state.selectMode = false;
-      // this.state.currentSymbols = { '31': 1, '33': 3 }
-      this.state.currentSymbols = { '210E': 0, '1D458': 0, '1D45F': 2 };
-
-      setTimeout(() => {
-        // const graph = this.graphRefs[7].current
-        // const equation = this.equationRefs[10].current
-
-        const graph = this.graphRefs[0].current;
-        const equation = this.equationRefs[2].current;
-
-        graph.setState({ equation: equation });
-        graph.update(equation.props.latex);
-      }, 500);
-    }
 
     this.equationRefs = []
     this.graphRefs = []
@@ -114,7 +95,6 @@ class Canvas extends Component {
       let ascii = this.convertAscii(tag)
       asciiSymbols[ascii] = currentSymbols[tag]
     }
-    console.log(asciiSymbols)
     const figureIds = _.uniq(this.state.currentGraphs.map(g => g.figureId))
 
     for (let i = 0; i < this.xGraphRefs.length; i++) {
@@ -139,7 +119,6 @@ class Canvas extends Component {
       latex = latex.replace(/\\sqrt/g, '\\SQRT')
       if (Object.keys(asciiSymbols).length > 0) {
         const pattern = new RegExp(Object.keys(asciiSymbols).join('|'), 'g');
-        console.log(pattern)
         latex = latex.replace(pattern, match => asciiSymbols[match]);
       }
       latex = latex.replace(/\\SQRT/g, '\\sqrt')
@@ -231,15 +210,6 @@ class Canvas extends Component {
   render() {
     return (
       <>
-        <div id='buttons'>
-          <button
-            id='select'
-            onClick={() =>
-              this.setState({ selectMode: !this.state.selectMode })
-            }
-          >{`Select Mode: ${this.state.selectMode}`}</button>
-        </div>
-
         <div style={{ display: 'none' }}>
           <Stage
             width={App.size}
@@ -290,7 +260,9 @@ class Canvas extends Component {
               <DrawingLine ref={this.drawingLineRef} />
 
               {/* Step by Step component, works for any pdf as long as it has a math.json and ocr.json */}
-              <StepByStep selectMode={this.state.selectMode} />
+              { App.sampleId === 8 &&
+                <StepByStep />
+              }
 
               {/* Summation component, works for any pdf with summation that has 'n', the pdf needs an ocr.json */}
               { App.sampleId === 9 &&
