@@ -8,7 +8,7 @@ import Figures from './Figures.js'
 import Equations from './Equations.js'
 import Graph from './Graph.js'
 import Slider from './Slider.js'
-import Triangle from './Triangle.js'
+import Triangle from './Triangle-2.js'
 import Summation from './Summation.js'
 
 class Canvas extends Component {
