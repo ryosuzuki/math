@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Rect, Text } from 'react-konva'
+import { Group, Rect, Text } from 'react-konva'
 import Konva from 'konva'
 import _ from 'lodash'
 import Variable from './Variable.js'
@@ -66,7 +66,7 @@ class Words extends Component {
       asciiSymbols[ascii] = currentSymbols[tag]
     }
     return (
-      <>
+      <Group visible={ false }>
         <Text
           text={ `Selected Variables: ${ JSON.stringify(asciiSymbols) }` }
           x={ 50 }
@@ -118,7 +118,7 @@ class Words extends Component {
             )
           }
         })}
-      </>
+      </Group>
     )
   }
 }

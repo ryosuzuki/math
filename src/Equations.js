@@ -169,15 +169,18 @@ class Equations extends Component {
   }
 
   onMouseDown(i) {
+    if (!App.state.selectMode) return
     Canvas.addGraph({ clickedEquationId: i })
   }
 
   onMouseEnter(i) {
     console.log(i)
+    if (!App.state.selectMode) return
     this.setState({ highlightId: i })
   }
 
   onMouseLeave(i) {
+    if (!App.state.selectMode) return
     this.setState({ highlightId: -1 })
   }
 

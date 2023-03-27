@@ -8,7 +8,7 @@ AFRAME.registerComponent('drawing-plane', {
   tick: () => {},
 })
 
-let isCameraOn = false
+let isCameraOn = true
 
 class App extends Component {
   constructor(props) {
@@ -75,6 +75,9 @@ class App extends Component {
     this.highlightColorBackground = '#fff0fb'
     this.strokeWidth = 8
     this.canvasRef = React.createRef()
+
+    this.state.selectMode = false
+
   }
 
   componentDidMount() {

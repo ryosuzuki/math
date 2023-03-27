@@ -19,6 +19,7 @@ class Symbol extends Component {
   }
 
   onMouseDown() {
+    if (this.props.id.includes('mo')) return
     const tag = this.props.tag
     const currentSymbols = Canvas.state.currentSymbols
     const ascii = Canvas.convertAscii(tag)
@@ -33,19 +34,17 @@ class Symbol extends Component {
   }
 
   onMouseEnter() {
-    console.log(this)
-    let id = this.props.id
-    console.log(id)
-    if (id.includes('mo')) return
+    console.log(this.props.id)
+    if (this.props.id.includes('mo')) return
     this.setState({ highlight: true })
   }
 
   onMouseLeave() {
-    let id = this.props.id
     this.setState({ highlight: false })
   }
 
   onDragStart(event) {
+    if (this.props.id.includes('mo')) return
     let tag = this.props.tag
     let currentSymbols = Canvas.state.currentSymbols
     let ascii = Canvas.convertAscii(tag)
@@ -73,6 +72,7 @@ class Symbol extends Component {
   }
 
   onDragMove(event) {
+    if (this.props.id.includes('mo')) return
     const target = event.target
     target.x(this.props.bbox.x)
     target.y(this.props.bbox.y)
