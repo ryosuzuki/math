@@ -8,7 +8,7 @@ AFRAME.registerComponent('drawing-plane', {
   tick: () => {},
 })
 
-let isCameraOn = true
+let isCameraOn = false
 
 class App extends Component {
   constructor(props) {
