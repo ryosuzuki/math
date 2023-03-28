@@ -35,7 +35,7 @@
   "scripts": {
     "start": "react-scripts start",
     "server": "node server.js",
-    "build": "react-scripts build",
+    "build": "react-scripts build && cp build/static/js/*.js dist.js",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build",
     "test": "react-scripts test",
