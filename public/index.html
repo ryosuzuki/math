@@ -2,7 +2,7 @@
   <head>
     <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
     <script>
-      AFRAME.registerComponent('drawing-plane', {
+      AFRAME.registerComponent("drawing-plane", {
         init: () => {},
         tick: () => {},
       })
@@ -14,21 +14,21 @@
     </div>
     <a-scene>
       <a-camera
-        id='camera'
-        position='0 1.5 -0.4'
-        look-controls='enabled: false'
-        raycaster='objects: .cantap'
-        cursor='fuse: false; rayOrigin: mouse;'
+        id="camera"
+        position="0 1.5 -0.4"
+        look-controls="enabled: false"
+        raycaster="objects: .cantap"
+        cursor="fuse: false; rayOrigin: mouse;"
       ></a-camera>
-      <a-sphere position='0 1.5 -1.09' color="red" radius="0.1"></a-sphere>
+      <a-sphere position="0 1.5 -1.09" color="red" radius="0.1"></a-sphere>
       <a-plane
         drawing-plane
-        id='drawing-plane'
-        class='cantap'
-        position='0 1.5 -1'
-        width='1'
-        height='1'
-        color='#ccc'
+        id="drawing-plane"
+        class="cantap"
+        position="0 1.5 -1"
+        width="1"
+        height="1"
+        color="#ccc"
       ></a-plane>
     </a-scene>
   </body>

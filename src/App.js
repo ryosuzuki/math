@@ -22,7 +22,7 @@ class App extends Component {
     if (this.sampleId === 10) this.threshold = 0.2
     this.domain = 'https://raw.githubusercontent.com/ryosuzuki/math/main'
 
-    this.imageVisible = false
+    this.imageVisible = true
     if (window.location.href.includes('8thwall')) {
       this.imageVisible = false
     }
@@ -56,11 +56,8 @@ class App extends Component {
 
   componentDidMount() {
     this.sceneEl = document.querySelector('a-scene')
-    console.log(this.sceneEl)
     // this.sceneEl.renderer = new THREE.WebGLRenderer({ alpha: true })
-    // this.sceneEl.addEventListener('loaded', () => {
-      this.init()
-    // })
+    this.init()
   }
 
   init() {
