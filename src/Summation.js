@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import { Group } from 'react-konva'
-
 import Equation from './Equation.js'
 
 class Summation extends Component {

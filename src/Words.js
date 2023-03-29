@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import { Group, Rect, Text } from 'react-konva'
-import Konva from 'konva'
 import _ from 'lodash'
 import Variable from './Variable.js'
 
@@ -89,7 +88,7 @@ class Words extends Component {
           if (App.state.selectMode) {
             return (
               <Rect
-                key={ i }
+                key={ `word-bbox-${i}` }
                 x={ x }
                 y={ y }
                 width={ width }
@@ -103,7 +102,7 @@ class Words extends Component {
           } else if (Object.keys(currentSymbols).includes(word)) {
             return (
               <Variable
-                key={ i }
+                key={ `word-variable-${i}` }
                 x={ x }
                 y={ y }
                 width={ width }
@@ -111,10 +110,6 @@ class Words extends Component {
                 word={ word }
                 value={ currentSymbols[word] }
               />
-            )
-          } else {
-            return (
-              <></>
             )
           }
         })}

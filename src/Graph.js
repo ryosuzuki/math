@@ -1,10 +1,6 @@
 import React, { Component } from 'react'
 import { Line, Text } from 'react-konva'
 import texMathParser from 'tex-math-parser'
-import * as math from 'mathjs';
-import mathsteps from 'mathsteps'
-import algebra from 'algebra.js'
-import nerdamer from 'nerdamer/all.min.js'
 
 class Graph extends Component {
   constructor(props) {
@@ -14,11 +10,7 @@ class Graph extends Component {
       points: [],
       equation: null,
     }
-    window.math = math
     window.texMathParser = texMathParser
-    window.mathsteps = mathsteps
-    window.algebra = algebra
-    window.nerdamer = nerdamer
 
     const figureId = this.props.figureId
     const figure = Figures.state.figures[figureId]
@@ -130,48 +122,6 @@ class Graph extends Component {
     }
   }
 
-  update2(equation) {
-    try {
-      const points = []
-      equation = equation.replace(/\{/g, '')
-      equation = equation.replace(/\}/g, '')
-      let expressions = nerdamer.solveEquations(equation, 'y')
-      console.log(expressions[0].text(), equation)
-      for (let x = -10; x < 10; x += 0.5) {
-        for (let expression of expressions) {
-          let answer = nerdamer(expression.text(), { x: x }, 'numer')
-          let y = Number(answer.text())
-          points.push({ x: x, y: y })
-        }
-      }
-      this.setState({ points: points })
-    } catch (err) {
-      console.error(err)
-    }
-  }
-
-  update3(equation) {
-    try {
-      const points = []
-      // const eq = texMathParser.parseTex(equation).toString()
-      const expression = new algebra.parse(eq)
-      console.log(eq, expression)
-      // x: -10 to 10 with 0.05 step
-      for (let x = -200; x < 200; x += 1) {
-        let xa = new algebra.Fraction(x, 20)
-        let answers = expression.eval({ x: xa }).solveFor('y')
-        if (!answers.length) answers = [answers]
-        for (let answer of answers) {
-          let y = answer.numer / answer.denom
-          points.push({ x: x / 20, y: y })
-        }
-      }
-      this.setState({ points: points })
-    } catch (err) {
-      console.error(err)
-    }
-  }
-
   onDragStart(event) {
     const target = event.target
     this.originPos = App.state.mouse
@@ -217,46 +167,9 @@ class Graph extends Component {
     return linePoints
   }
 
-  getRatio() {
-    window.math = math
-
-    try {
-      let points = this.originalSegments.map((segment) => { return { x: segment[1], y: segment[2] } })
-      window.points = points
-
-      let p1 = points[0]
-      let p2 = _.last(points)
-
-      if (!p1 || !p2) return
-      let x1 = p1.x - this.origin.x
-      let y1 = this.origin.y - p1.y
-      let x2 = p2.x - this.origin.x
-      let y2 = this.origin.y - p2.y
-
-      const data = { x1: x1, y1: y1, x2: x2, y2: y2 }
-      console.log('emit sympy ' + JSON.stringify(data))
-      App.socket.emit('sympy', data)
-    } catch (err) {
-      console.error(err)
-    }
-
-    App.socket.on('sympy', (json) => {
-      console.log(json)
-      json = JSON.parse(json)
-      if (!json.x || !json.y) return
-
-      let xRatio = Number(json.x)
-      let yRatio = Number(json.y)
-      let ratio = { x: xRatio, y: -yRatio }
-      console.log(ratio)
-      this.setState({ ratio: ratio })
-    })
-  }
-
   render() {
     return (
       <Line
-        key={ this.props.key }
         x={ 0 }
         y={ 0 }
         points={ this.convert(this.state.points) }

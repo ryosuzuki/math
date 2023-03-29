@@ -1,0 +1,50 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="https://worried-pickled-jam.glitch.me/style.css">
+
+    <meta name="8thwall:renderer" content="aframe:1.2.0">
+    <meta name="8thwall:package" content="@8thwall.xrextras">
+    <meta name="8thwall:package" content="@8thwall.landing-page">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+
+    <script>
+      AFRAME.registerComponent('drawing-plane', {
+        init: () => {},
+        tick: () => {},
+      })
+    </script>
+    <script crossorigin="anonymous" defer="defer" src="https://worried-pickled-jam.glitch.me/main-2.js"></script>
+  </head>
+  <body>
+    <div id="container">
+      <div id="root"></div>
+    </div>
+    <a-scene
+      xrextras-gesture-detector
+      landing-page
+      xrextras-loading
+      xrextras-runtime-error
+      renderer="colorManagement:true; webgl2: true;"
+      xrweb="disableWorldTracking: true">
+
+      <a-camera
+        position="0 4 10"
+        raycaster="objects: .cantap"
+        cursor="fuse: false; rayOrigin: mouse;">
+      </a-camera>
+
+      <xrextras-named-image-target name="sample-01">
+        <a-sphere color="red" radius="0.1"></a-sphere>
+        <a-plane
+          drawing-plane
+          id='drawing-plane'
+          class='cantap'
+          width='1'
+          height='1'
+          color='#ccc'
+          opacity='0'
+        ></a-plane>
+      </xrextras-named-image-target>
+    </a-scene>
+  </body>
+</html>

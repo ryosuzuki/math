@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import { Group, Rect, Text, Line } from 'react-konva'
-
 import Equation from './Equation.js'
 
 class Steps extends Component {
@@ -34,6 +33,7 @@ class Steps extends Component {
           const stepHeight = 40
           return (
             <Equation
+              key={ `steps-equation-${i}` }
               id={ -1 }
               x={ 10 }
               y={ stepHeight * i + 10 }

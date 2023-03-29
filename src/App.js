@@ -1,42 +1,12 @@
 import React, { Component } from 'react'
 import './App.css'
-import { io } from 'socket.io-client'
 import Canvas from './Canvas.js'
-
-AFRAME.registerComponent('drawing-plane', {
-  init: () => {},
-  tick: () => {},
-})
-
-let isCameraOn = false
 
 class App extends Component {
   constructor(props) {
     super(props)
     window.app = this
     window.App = this
-
-    /*
-    Demo-1:
-    - y = (x + 3)^2 + 1
-    - y = \sin(2x)
-    - y = x^2 + 6x + 10
-    Demo-2:
-    - (x-h)^2 + (y-k)^2 = r^2
-    - x^2 - 4x + y^2 + 6y - 12 = 0
-    Demo-4:
-    - P(x) = ax^2 + bx + c
-    - P(x) = 2x^6 - x^4 + 2/5x^3 + \sqrt(2)
-    - y = x^3 - x + 1
-    - y = x^4 - 3x^2 + x
-    - y = 3x^5 - 25x^3 + 60x
-    Demo-6:
-    - f(x) = 2x - 1
-    - g(x) = x^2
-    - f(x) = 2x^2 - 5x + 1
-    - f(a+h) = 2(a+h)^2 - 5(a+h) + 1 = 2a^2 + 4ah + 2h^2 - 5a - 5h + 1
-    - (f(a+h) - f(a))/h = 4a + 2h - 5
-    */
 
     const num = 10
     this.sampleIds = Array.from({length: num}, (_, i) => i+1)
@@ -52,8 +22,12 @@ class App extends Component {
     if (this.sampleId === 10) this.threshold = 0.2
     this.domain = 'https://raw.githubusercontent.com/ryosuzuki/math/main'
 
+    this.imageVisible = false
+    if (window.location.href.includes('8thwall')) {
+      this.imageVisible = false
+    }
+
     if (window.location.href.includes('localhost')) {
-      this.socket = io('http://localhost:4000')
       this.domain = 'http://localhost:4000'
     }
     this.size = 1500; // 1024
@@ -82,12 +56,11 @@ class App extends Component {
 
   componentDidMount() {
     this.sceneEl = document.querySelector('a-scene')
-    this.sceneEl.renderer = new THREE.WebGLRenderer({ alpha: true })
-    this.sceneEl.addEventListener('loaded', () => {
+    console.log(this.sceneEl)
+    // this.sceneEl.renderer = new THREE.WebGLRenderer({ alpha: true })
+    // this.sceneEl.addEventListener('loaded', () => {
       this.init()
-      AFRAME.components['drawing-plane'].Component.prototype.tick =
-        this.tick.bind(this)
-    })
+    // })
   }
 
   init() {
@@ -100,6 +73,9 @@ class App extends Component {
     let material = new THREE.MeshBasicMaterial({
       map: texture,
       side: THREE.DoubleSide,
+      transparent: true,
+      opacity: 1,
+      alphaTest: 0.1,
     })
     mesh.material = material
     this.mesh = mesh
@@ -109,6 +85,8 @@ class App extends Component {
     el.sceneEl.addEventListener('touchstart', this.touchStart.bind(this))
     el.sceneEl.addEventListener('touchmove', this.touchMove.bind(this))
     el.sceneEl.addEventListener('touchend', this.touchEnd.bind(this))
+
+    AFRAME.components['drawing-plane'].Component.prototype.tick = this.tick.bind(this)
   }
 
   mouseDown(event) {
@@ -149,6 +127,7 @@ class App extends Component {
     const screenPosition = new THREE.Vector2(screenPositionX, -screenPositionY)
 
     let camera = document.getElementById('camera')
+    if (!camera) return false
     let threeCamera = camera.getObject3D('camera')
     this.state.raycaster.setFromCamera(screenPosition, threeCamera)
     const intersects = this.state.raycaster.intersectObject(this.mesh, true)
@@ -174,13 +153,17 @@ class App extends Component {
     }
   }
 
+  changeSample(sampleId) {
+     window.location.href = `${this.baseURL}/math/?id=${sampleId}`
+  }
+
   render() {
     return (
       <>
         <div id='buttons'>
           { this.sampleIds.map((sampleId, i) => {
             return (
-              <button onClick={() => window.location.href = `${this.baseURL}/math/?id=${sampleId}` }>
+              <button key={ `button-${i}` } onClick={ this.changeSample.bind(this, sampleId) }>
                 { sampleId }
               </button>
             )
@@ -199,61 +182,6 @@ class App extends Component {
           crossOrigin='anonymous'
           style={{ display: 'none' }}
         />
-        {isCameraOn ? (
-          ''
-        ) : (
-          <a-scene>
-            <a-camera
-              id='camera'
-              position='0 1.5 -0.4'
-              look-controls='enabled: false'
-              raycaster='objects: .cantap'
-              cursor='fuse: false; rayOrigin: mouse;'
-            ></a-camera>
-            <a-plane
-              drawing-plane
-              id='drawing-plane'
-              class='cantap'
-              position='0 1.5 -1'
-              width='1'
-              height='1'
-              color='#ccc'
-              opacity='0'
-            ></a-plane>
-          </a-scene>
-        )}
-        {!isCameraOn ? (
-          ''
-        ) : (
-          <a-scene
-            mindar-image={`imageTargetSrc: ${this.domain}/public/target.mind`}
-            embedded
-            color-space='sRGB'
-            renderer='colorManagement: true, physicallyCorrectLights'
-            vr-mode-ui='enabled: false'
-            device-orientation-permission-ui='enabled: false'
-          >
-            <a-camera
-              id='camera'
-              position='0 0 0'
-              look-controls='enabled: false'
-              raycaster='objects: .cantap'
-              cursor='fuse: false; rayOrigin: mouse;'
-            ></a-camera>
-            <a-entity mindar-image-target='targetIndex: 0'>
-              <a-plane
-                drawing-plane
-                id='drawing-plane'
-                class='cantap'
-                position='0 0 0'
-                width='1'
-                height='1'
-                color='#ccc'
-                opacity='0'
-              ></a-plane>
-            </a-entity>
-          </a-scene>
-        )}
       </>
     )
   }

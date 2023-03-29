@@ -1,8 +1,6 @@
 import React, { Component } from 'react'
 import { Stage, Layer, Group, Rect, Image } from 'react-konva'
-import Konva from 'konva'
 
-import DrawingLine from './DrawingLine.js'
 import Words from './Words.js'
 import Figures from './Figures.js'
 import Equations from './Equations.js'
@@ -30,7 +28,6 @@ class Canvas extends Component {
     this.graphRefs = []
     this.xGraphRefs = []
     this.yGraphRefs = []
-    this.drawingLineRef = React.createRef()
   }
 
   componentDidMount() {
@@ -197,17 +194,14 @@ class Canvas extends Component {
 
   stageMouseDown(event) {
     this.setState({ event: event })
-    this.drawingLineRef.current.mouseDown()
   }
 
   stageMouseMove(event) {
     this.setState({ event: event })
-    this.drawingLineRef.current.mouseMove()
   }
 
   stageMouseUp(event) {
     this.setState({ event: event })
-    this.drawingLineRef.current.mouseUp()
   }
 
   render() {
@@ -223,16 +217,20 @@ class Canvas extends Component {
           >
             <Layer ref={(ref) => (this.layer = ref)}>
               {/* Canvas Background */}
-              <Rect
-                x={0}
-                y={0}
-                width={App.size}
-                height={App.size}
-                fill={'rgba(255, 255, 0, 0.1)'}
-              />
+              { App.imageVisible &&
+                <Rect
+                  x={0}
+                  y={0}
+                  width={App.size}
+                  height={App.size}
+                  fill={'rgba(255, 255, 0, 0.1)'}
+                />
+              }
 
               {/* Paper Image */}
-              <Image image={this.state.paperImage} />
+              { App.imageVisible &&
+                <Image image={this.state.paperImage} />
+              }
 
               {/* Words > Variable */}
               <Words />
@@ -258,9 +256,6 @@ class Canvas extends Component {
 
               {/* Slider */}
               <Slider />
-
-              {/* Drawing Line */}
-              <DrawingLine ref={this.drawingLineRef} />
 
               {/* Triangle */}
               { App.sampleId === 10 &&
