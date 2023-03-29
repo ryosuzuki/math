@@ -13,7 +13,6 @@ class Equations extends Component {
     window.Equations = this
     this.state = {
       equations: [],
-      highlightId: -1,
     }
     window.mathsteps = mathsteps
   }
@@ -47,6 +46,9 @@ class Equations extends Component {
 
     equations = equations.filter(e => e.score > threshold)
     equations = equations.map((equation) => {
+      equation.bbox = equation.bbox.map((item) => {
+        return [item[0] * App.ratio.x, item[1] * App.ratio.y]
+      })
       equation.x = equation.bbox[0][0]
       equation.y = equation.bbox[0][1]
       equation.width = equation.bbox[2][0] - equation.x
@@ -168,54 +170,14 @@ class Equations extends Component {
     return equations;
   }
 
-  onMouseDown(i) {
-    if (!App.state.selectMode) return
-    Canvas.addGraph({ clickedEquationId: i })
-  }
-
-  onMouseEnter(i) {
-    console.log(i)
-    if (!App.state.selectMode) return
-    this.setState({ highlightId: i })
-  }
-
-  onMouseLeave(i) {
-    if (!App.state.selectMode) return
-    this.setState({ highlightId: -1 })
-  }
-
   render() {
     return (
       <>
         { this.state.equations.map((equation, i) => {
           if (equation.score < App.threshold) return <></>
-          {/*if (i !== 4) return <></>*/}
-          let stroke = '#eee'
-          let fill = 'white'
-          if (this.state.highlightId === i) {
-            stroke = App.strokeColor
-            fill = App.fillColorBackground
-          }
-          if (Canvas.state.clickedEquationId === i) {
-            stroke = App.highlightColor
-            fill = App.highlightColorBackground
-          }
+
           return (
             <Group key={i}>
-              {/* Bounding Box for Each Equation */}
-              <Rect
-                key={ `bbox-${i}` }
-                x={ equation.x }
-                y={ equation.y }
-                width={ equation.width }
-                height={ equation.height }
-                fill={ fill }
-                stroke={ stroke }
-                strokeWidth={ 3 }
-                onMouseDown={ this.onMouseDown.bind(this, i) }
-                onMouseEnter={ this.onMouseEnter.bind(this, i) }
-                onMouseLeave={ this.onMouseLeave.bind(this, i) }
-              />
               {/* Each Equation */}
               <Equation
                 key={ `equation-${i}` }

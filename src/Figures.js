@@ -3,6 +3,8 @@ import { Group, Rect, Path, Line, Circle } from 'react-konva'
 import svgson from 'svgson'
 import svgPathBbox from 'svg-path-bbox'
 import parseSvg from 'parse-svg-path'
+import serializeSvg from 'serialize-svg-path'
+import scaleSvg from 'scale-svg-path'
 
 import Graph from './Graph.js'
 
@@ -19,6 +21,7 @@ class Figures extends Component {
     }
 
     this.axisVisible = false
+    this.debugVisible = false
   }
 
   componentDidMount() {
@@ -43,6 +46,9 @@ class Figures extends Component {
     extractedLines = extractedLines.filter((line) => line.attributes.d)
     for (let i = 0; i < extractedLines.length; i++) {
       let extractedLine = extractedLines[i]
+      let pathData = extractedLine.attributes.d
+      pathData = serializeSvg(scaleSvg(parseSvg(pathData), App.ratio.x, App.ratio.y))
+      extractedLine.attributes.d = pathData
       let bbox = svgPathBbox(extractedLine.attributes.d)
       extractedLine.bbox = bbox
       extractedLine.visible = false
@@ -60,12 +66,15 @@ class Figures extends Component {
     let figures = []
     for (let i = 0; i < contours.length; i++) {
       let path = contours[i]
+      let pathData = path.attributes.d
+      pathData = serializeSvg(scaleSvg(parseSvg(pathData), App.ratio.x, App.ratio.y))
+      path.attributes.d = pathData
       let bbox = svgPathBbox(path.attributes.d)
       let width = bbox[2] - bbox[0]
       let height = bbox[3] - bbox[1]
       if (width < 100 || height < 100) continue
       if (width > 1000 && height > 1000) continue
-      let figure = { bbox: bbox}
+      let figure = { bbox: bbox }
       figure = this.getAxis(figure)
       if (figure) {
         figures.push(figure)
@@ -251,7 +260,7 @@ class Figures extends Component {
                     y={ originalSegment[2] }
                     radius={ 3 }
                     fill={ 'red' }
-                    visible={ false }
+                    visible={ this.debugVisible }
                   />
                 )
               })}
@@ -264,7 +273,7 @@ class Figures extends Component {
                     data={ path.attributes.d }
                     strokeWidth={ 8 }
                     stroke={ 'green' }
-                    visible={ false }
+                    visible={ this.debugVisible }
                   />
                 )
               })}
@@ -281,7 +290,7 @@ class Figures extends Component {
                 data={ extractedLine.attributes.d }
                 strokeWidth={ 3 }
                 stroke={ 'blue' }
-                visible={ false }
+                visible={ this.debugVisible }
               />
               <Rect
                 key={ `extracted-line-bbox-${i}` }
@@ -290,7 +299,7 @@ class Figures extends Component {
                 width={ extractedLine.bbox[2] - extractedLine.bbox[0] }
                 height={ extractedLine.bbox[3] - extractedLine.bbox[1] }
                 stroke={ 'purple' }
-                visible={ false }
+                visible={ this.debugVisible }
               />
             </Group>
           )

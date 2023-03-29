@@ -18,6 +18,7 @@ class Equation extends Component {
     this.state = {
       symbols: [],
       rects: [],
+      highlight: false
     }
     window.svgPathBbox = svgPathBbox
   }
@@ -196,9 +197,10 @@ class Equation extends Component {
             const ascii = Canvas.convertAscii(symbol.tag)
             Canvas.symbolHash[symbol.tag] = ascii
 
-            const temp = this.state.symbols
-            temp.push(symbol)
-            this.setState({ symbols: temp })
+            const currentSymbols = this.state.symbols
+            currentSymbols.push(symbol)
+            this.setState({ symbols: currentSymbols })
+
           } else {
             for (let child of element.children) {
               this.getElement.bind(this)(child, _.clone(prev))
@@ -217,10 +219,65 @@ class Equation extends Component {
     }
   }
 
+  onMouseDown() {
+    if (this.props.id < 0) return
+    if (!App.state.selectMode) return
+    Canvas.addGraph({ clickedEquationId: this.props.id })
+  }
+
+  onMouseEnter() {
+    if (this.props.id < 0) return
+    console.log(this.props.id)
+    if (!App.state.selectMode) return
+    this.setState({ highlight: true })
+  }
+
+  onMouseLeave(i) {
+    if (this.props.id < 0) return
+    if (!App.state.selectMode) return
+    this.setState({ highlight: false })
+  }
+
   render() {
-    const fill = this.props.fill || 'black'
+    let fill = this.props.fill || 'black'
+
+    let minX = _.min(this.state.symbols.map(symbol=> symbol.bbox.x))
+    let maxX = _.max(this.state.symbols.map(symbol=> symbol.bbox.x + symbol.bbox.width))
+    let minY = _.min(this.state.symbols.map(symbol=> symbol.bbox.y))
+    let maxY = _.max(this.state.symbols.map(symbol=> symbol.bbox.y + symbol.bbox.height))
+    let offsetX = 20
+    let offsetY = 10
+    minX = isNaN(minX) ? 0 : minX
+    maxX = isNaN(maxX) ? 0 : maxX
+    minY = isNaN(minY) ? 0 : minY
+    maxY = isNaN(maxY) ? 0 : maxY
+
+    let bboxStroke = App.paperColor
+    let bboxFill = App.paperColor
+    if (this.state.highlight) {
+      bboxStroke = App.strokeColor
+      bboxFill = App.fillColorBackground
+    }
+    if (Canvas.state.clickedEquationId === this.props.id) {
+      bboxStroke = App.highlightColor
+      bboxFill = App.highlightColorBackground
+    }
+
     return (
       <Group>
+        <Rect
+          x={ minX - offsetX/2 }
+          y={ minY - offsetY/2 }
+          width={ maxX - minX + offsetX }
+          height={ maxY - minY + offsetY }
+          stroke={ bboxStroke }
+          fill={ bboxFill }
+          strokeWidth={ 5 }
+          onMouseDown={ this.onMouseDown.bind(this) }
+          onMouseEnter={ this.onMouseEnter.bind(this) }
+          onMouseLeave={ this.onMouseLeave.bind(this) }
+        />
+
         {/* Symbols such as x, y, 1, 2, \sin */}
         { this.state.symbols.map((symbol, i) => {
           return (

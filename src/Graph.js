@@ -39,6 +39,9 @@ class Graph extends Component {
     if (App.sampleId === 6) {
       this.state.ratio = { x: 38, y: 38 }
     }
+
+    this.state.ratio.x *= App.ratio.x
+    this.state.ratio.y *= App.ratio.y
   }
 
   componentDidMount() {

@@ -28,6 +28,12 @@ class Words extends Component {
       const text = rawtext.replace(/(\r\n|\n|\r)/gm, " ")
       let textAnnotations = ocr.textAnnotations
       textAnnotations.shift()
+      textAnnotations = textAnnotations.map((textAnnotation) => {
+        textAnnotation.boundingPoly.vertices = textAnnotation.boundingPoly.vertices.map((vertex) => {
+          return { x: vertex.x * App.ratio.x, y: vertex.y * App.ratio.y }
+        })
+        return textAnnotation
+      })
       this.setState({ textAnnotations: textAnnotations })
     } catch (error) {
       console.log(error);

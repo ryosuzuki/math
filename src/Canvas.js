@@ -209,8 +209,8 @@ class Canvas extends Component {
       <>
         <div style={{ display: 'none' }}>
           <Stage
-            width={App.size}
-            height={App.size}
+            width={ App.canvasWidth }
+            height={ App.canvasHeight } //  8.5 / 11
             onMouseDown={this.stageMouseDown.bind(this)}
             onMouseMove={this.stageMouseMove.bind(this)}
             onMouseUp={this.stageMouseUp.bind(this)}
@@ -221,15 +221,23 @@ class Canvas extends Component {
                 <Rect
                   x={0}
                   y={0}
-                  width={App.size}
-                  height={App.size}
-                  fill={'rgba(255, 255, 0, 0.1)'}
+                  width={ App.canvasWidth }
+                  height={ App.canvasHeight }
+                  fill={'rgba(0, 0, 0, 0.1)'}
+                  stroke={ 'blue' }
+                  strokeWidth={ 20 }
                 />
               }
 
               {/* Paper Image */}
               { App.imageVisible &&
-                <Image image={this.state.paperImage} />
+                <Image
+                  image={this.state.paperImage}
+                  width={ App.paperSize.x * App.ratio.x }
+                  height={ App.paperSize.y * App.ratio.y }
+                  opacity={ 1 }
+                  storke={ 'blue' }
+                  strokeWidth={ 20 } />
               }
 
               {/* Words > Variable */}

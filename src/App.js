@@ -22,15 +22,21 @@ class App extends Component {
     if (this.sampleId === 10) this.threshold = 0.2
     this.domain = 'https://raw.githubusercontent.com/ryosuzuki/math/main'
 
-    this.imageVisible = true
-    if (window.location.href.includes('8thwall')) {
-      this.imageVisible = false
-    }
-
     if (window.location.href.includes('localhost')) {
       this.domain = 'http://localhost:4000'
     }
-    this.size = 1500; // 1024
+    this.size = 1280
+    this.canvasWidth = this.size * 0.86
+    this.canvasHeight = this.size * 1.12
+
+    this.paperSize = { x: 1284, y: 1541 }
+    this.ratio = {
+      x: 1 * this.canvasWidth / this.paperSize.x,
+      y: 1 * this.canvasHeight / this.paperSize.y
+    }
+
+    // 1156 x 1541
+    // 1284 x 1541
     this.dragging = false
     this.initDrawing = true
     this.state = {
@@ -47,11 +53,18 @@ class App extends Component {
     this.highlightColor = '#ee00ab'
     this.highlightColorAlpha = 'rgba(238, 0, 171, 0.3)'
     this.highlightColorBackground = '#fff0fb'
+
     this.strokeWidth = 8
     this.canvasRef = React.createRef()
 
-    this.state.selectMode = false
+    // this.state.selectMode = false
 
+    this.imageVisible = true
+    this.paperColor = '#f6f6f6'
+    if (window.location.href.includes('8thwall')) {
+      this.imageVisible = false
+      this.paperColor = '#DCD9C9'
+    }
   }
 
   componentDidMount() {
@@ -132,8 +145,8 @@ class App extends Component {
       const intersect = intersects[0]
       let point = intersect.point
       let mouse = {
-        x: this.size * intersect.uv.x,
-        y: this.size * (1 - intersect.uv.y),
+        x: this.canvasWidth * intersect.uv.x,
+        y: this.canvasHeight * (1 - intersect.uv.y),
       }
       this.setState({ distance: intersect.distance, mouse: mouse })
       if (this.dragging) {
