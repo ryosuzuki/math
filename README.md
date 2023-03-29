@@ -20,11 +20,6 @@ HTTPS=true npm start
 
 ## For Node.js
 
-[Mind AR.js Image Target Compiler](https://hiukim.github.io/mind-ar-js-doc/tools/compile)
-
-Dynamically create with [this example JS compile code](https://github.com/hiukim/mind-ar-js-doc/blob/a32d638b74935e2b0df9763794926c88b1d75d8c/static/samples/compile.html)
-
-
 When getting the node-canvas error for M1 Mac
 
 ```
@@ -53,17 +48,16 @@ cnstd analyze -m mfd -i sample-1.jpg -o output-1.jpg
 
 ## Preparation Pipeline
 
-- Step 1. Get a sample PDF page (e.g., `/public/sample/sample-1.pdf`)
-- Step 2. Convert PDF to JPG with [Ezgif](https://ezgif.com/pdf-to-jpg)
-- Step 3. Perform OCR with [Google Cloud Vision API](https://cloud.google.com/vision/docs/drag-and-drop) and save response as a JSON file (e.g., `/public/sample/ocr-1.json`)
-- Step 4. Create an image target with [MindAR compiler](https://hiukim.github.io/mind-ar-js-doc/tools/compile/) and save it as a target file (e.g., `/public/sample/target-1.mind`)
-- Step 5. Perform math OCR with [MathPix Web Snip Tool](https://snip.mathpix.com/) and save it as a markdown file (e.g., `/public/sample/mathpix-1.md`)
-- Step 6. Perform CnST by running `$ python lib/math-extract.py`
-- Step 7. Get figure contour with `$ python lib/figure-extract.py`
-- Step 8. Get figure line trace with `$ node lib/figure-extract.js`
+- Step 1. Get a sample PDF page (e.g., `/public/sample/sample-01.pdf`)
+- Step 2. Convert PDF to JPG with [Ezgif](https://ezgif.com/pdf-to-jpg) and save it (e.g., `/public/sample/sample-01.jpg`)
+- Step 3. Perform OCR with [Google Cloud Vision API](https://cloud.google.com/vision/docs/drag-and-drop) and save response as a JSON file (e.g., `/public/sample/ocr-01.json`)
+- Step 4. Perform math OCR with [MathPix Web Snip Tool](https://snip.mathpix.com/) and save it as a markdown file (e.g., `/public/sample/mathpix-01.md`)
+- Step 5. Perform CnST by running `$ python lib/math-extract.py`
+- Step 6. Get figure contour with `$ python lib/figure-extract.py`
+- Step 7. Get figure line trace with `$ node lib/figure-extract.js`
 
 
-## TexToSVG
+## TexToSVG MathML
 
 ```
 mi: [x, y], mo: [+, =, ()], mn: [1, 2, 3], msup: [^2]
