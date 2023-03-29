@@ -9,26 +9,15 @@
     </script>
   </head>
   <body>
-    <div id="container">
-      <div id="root"></div>
-    </div>
     <a-scene>
       <a-camera
         id="camera"
-        position="0 1.5 -0"
+        position="0 4 10"
         look-controls="enabled: false"
         raycaster="objects: .cantap"
         cursor="fuse: false; rayOrigin: mouse;"
       ></a-camera>
-      <a-plane
-        drawing-plane
-        id="drawing-plane"
-        class="cantap"
-        position="0 1.5 -1"
-        width='0.86'
-        height='1.12'
-        color="#ccc"
-      ></a-plane>
+      <a-entity id="root"></a-entity>
     </a-scene>
   </body>
 </html>

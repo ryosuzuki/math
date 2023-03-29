@@ -224,8 +224,7 @@ class Canvas extends Component {
                   width={ App.canvasWidth }
                   height={ App.canvasHeight }
                   fill={'rgba(0, 0, 0, 0.1)'}
-                  stroke={ 'blue' }
-                  strokeWidth={ 20 }
+                  stroke={ '#555' }
                 />
               }
 
@@ -236,8 +235,7 @@ class Canvas extends Component {
                   width={ App.paperSize.x * App.ratio.x }
                   height={ App.paperSize.y * App.ratio.y }
                   opacity={ 1 }
-                  storke={ 'blue' }
-                  strokeWidth={ 20 } />
+                />
               }
 
               {/* Words > Variable */}

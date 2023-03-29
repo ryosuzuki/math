@@ -241,16 +241,22 @@ class Equation extends Component {
   render() {
     let fill = this.props.fill || 'black'
 
-    let minX = _.min(this.state.symbols.map(symbol=> symbol.bbox.x))
-    let maxX = _.max(this.state.symbols.map(symbol=> symbol.bbox.x + symbol.bbox.width))
-    let minY = _.min(this.state.symbols.map(symbol=> symbol.bbox.y))
-    let maxY = _.max(this.state.symbols.map(symbol=> symbol.bbox.y + symbol.bbox.height))
+    const symbols = this.state.symbols.filter(symbol => symbol.bbox.height < 100)
+    let minX = _.min(symbols.map(symbol=> symbol.bbox.x))
+    let maxX = _.max(symbols.map(symbol=> symbol.bbox.x + symbol.bbox.width))
+    let minY = _.min(symbols.map(symbol=> symbol.bbox.y))
+    let maxY = _.max(symbols.map(symbol=> symbol.bbox.y + symbol.bbox.height))
     let offsetX = 20
     let offsetY = 10
     minX = isNaN(minX) ? 0 : minX
     maxX = isNaN(maxX) ? 0 : maxX
     minY = isNaN(minY) ? 0 : minY
     maxY = isNaN(maxY) ? 0 : maxY
+
+    minX = Math.min(minX, this.props.x)
+    maxX = Math.max(maxX, this.props.x + this.props.width)
+    minY = Math.min(minY, this.props.y)
+    maxY = Math.max(maxY, this.props.y + this.props.height)
 
     let bboxStroke = App.paperColor
     let bboxFill = App.paperColor
@@ -265,6 +271,7 @@ class Equation extends Component {
 
     return (
       <Group>
+        { this.props.id >= 0 &&
         <Rect
           x={ minX - offsetX/2 }
           y={ minY - offsetY/2 }
@@ -277,6 +284,7 @@ class Equation extends Component {
           onMouseEnter={ this.onMouseEnter.bind(this) }
           onMouseLeave={ this.onMouseLeave.bind(this) }
         />
+        }
 
         {/* Symbols such as x, y, 1, 2, \sin */}
         { this.state.symbols.map((symbol, i) => {

@@ -6,9 +6,16 @@ class Triangle extends Component {
     super(props);
     window.Triangle = this
     this.state = {}
-    this.state.ac = { x: 840, y: 1215 }
-    this.state.cb = { x: 1050, y: 1085 }
-    this.state.ab = { x: 1050, y: 1215 }
+    this.state.ac = { x: 745, y: 995 }
+    this.state.cb = { x: 935, y: 885 }
+    this.state.ab = { x: 935, y: 995 }
+
+    if (!App.imageVisible) {
+      this.state.ac = { x: 745, y: 1000 }
+      this.state.cb = { x: 915, y: 885 }
+      this.state.ab = { x: 915, y: 1000 }
+    }
+
   }
 
   componentDidMount() {

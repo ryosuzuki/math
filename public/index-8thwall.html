@@ -14,9 +14,6 @@
     <script crossorigin="anonymous" defer="defer" src="https://worried-pickled-jam.glitch.me/main-2.js"></script>
   </head>
   <body>
-    <div id="container">
-      <div id="root"></div>
-    </div>
     <a-scene
       xrextras-gesture-detector
       landing-page
@@ -31,17 +28,7 @@
         raycaster="objects: .cantap"
         cursor="fuse: false; rayOrigin: mouse;">
       </a-camera>
-      <xrextras-named-image-target name="sample-01">
-        <a-plane
-          drawing-plane
-          id="drawing-plane"
-          class="cantap"
-          width="0.8"
-          height="1"
-          color="#ccc"
-          opacity="0"
-        ></a-plane>
-      </xrextras-named-image-target>
+      <a-entity id="root"></a-entity>
     </a-scene>
   </body>
 </html>

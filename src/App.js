@@ -29,7 +29,17 @@ class App extends Component {
     this.canvasWidth = this.size * 0.86
     this.canvasHeight = this.size * 1.12
 
-    this.paperSize = { x: 1284, y: 1541 }
+    this.paperSize = { x: 1284, y: 1541 } // Target: 1156 x 1541
+    if (this.sampleId === 2) this.paperSize = { x: 1284, y: 1750 } // Target: 1240 x 1653
+    if (this.sampleId === 3) this.paperSize = { x: 1284, y: 1750 } // Target: 1240 x 1653
+    if (this.sampleId === 4) this.paperSize = { x: 1284, y: 1541 } // Target: 1156 x 1541
+    if (this.sampleId === 5) this.paperSize = { x: 1284, y: 1541 } // Target: 1156 x 1541
+    if (this.sampleId === 6) this.paperSize = { x: 1284, y: 1541 } // Target: 1156 x 1541
+    if (this.sampleId === 7) this.paperSize = { x: 1284, y: 1541 } // Target: 1156 x 1541
+    if (this.sampleId === 8) this.paperSize = { x: 1284, y: 1651 } // Target: 1238 x 1651
+    if (this.sampleId === 9) this.paperSize = { x: 1284, y: 1651 } // Target: 1238 x 1651
+    if (this.sampleId === 10) this.paperSize = { x: 1284, y: 1750 } // Target: 1240 x 1653
+
     this.ratio = {
       x: 1 * this.canvasWidth / this.paperSize.x,
       y: 1 * this.canvasHeight / this.paperSize.y
@@ -64,13 +74,21 @@ class App extends Component {
     if (window.location.href.includes('8thwall')) {
       this.imageVisible = false
       this.paperColor = '#DCD9C9'
+      XR8.XrController.configure({ imageTargets: [`sample-${this.fileId}`] })
     }
   }
 
   componentDidMount() {
     this.sceneEl = document.querySelector('a-scene')
     // this.sceneEl.renderer = new THREE.WebGLRenderer({ alpha: true })
-    this.init()
+
+    const interval = setInterval(() => {
+      let el = document.querySelector('#drawing-plane')
+      let mesh = el.object3D.children[0]
+      if (!mesh) return
+      this.init()
+      clearInterval(interval)
+    }, 10)
   }
 
   init() {
@@ -192,6 +210,28 @@ class App extends Component {
           crossOrigin='anonymous'
           style={{ display: 'none' }}
         />
+        { this.imageVisible &&
+          <a-plane
+            drawing-plane
+            id="drawing-plane"
+            class="cantap"
+            position="0 4 9"
+            width="0.86"
+            height="1.12"
+            color="#ccc"
+          ></a-plane>
+        }
+        { !this.imageVisible &&
+          <xrextras-named-image-target name={ `sample-${this.fileId}` }>
+            <a-plane
+              drawing-plane
+              id="drawing-plane"
+              class="cantap"
+              width="0.8"
+              height="1"
+            ></a-plane>
+          </xrextras-named-image-target>
+        }
       </>
     )
   }
