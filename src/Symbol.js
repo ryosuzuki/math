@@ -20,7 +20,8 @@ class Symbol extends Component {
 
   onMouseDown() {
     if (this.props.id.includes('mo')) return
-    const tag = this.props.tag
+    // const tag = this.props.tag
+    const tag = this.props.id
     const currentSymbols = Canvas.state.currentSymbols
     const ascii = Canvas.convertAscii(tag)
     const num = Number(ascii)
@@ -45,7 +46,8 @@ class Symbol extends Component {
 
   onDragStart(event) {
     if (this.props.id.includes('mo')) return
-    let tag = this.props.tag
+    // let tag = this.props.tag
+    let tag = this.props.id
     let currentSymbols = Canvas.state.currentSymbols
     let ascii = Canvas.convertAscii(tag)
     console.log(tag, ascii)
@@ -84,7 +86,8 @@ class Symbol extends Component {
     // console.log(pos, dx)
 
     let newSymbols = {}
-    newSymbols[this.props.tag] = this.originValue + dx
+    // newSymbols[this.props.tag] = this.originValue + dx
+    newSymbols[this.props.id] = this.originValue + dx
     // let round = this.props.word === '²' ? 0 : 1
     let round = 1
     Canvas.updateValue(newSymbols, round)
@@ -97,15 +100,17 @@ class Symbol extends Component {
 
   render() {
     let fill = 'rgba(0, 0, 0, 0)'
-    if (Object.keys(Canvas.state.currentSymbols).includes(this.props.tag)) fill = App.highlightColorAlpha
+    // if (Object.keys(Canvas.state.currentSymbols).includes(this.props.tag)) fill = App.highlightColorAlpha
+    if (Object.keys(Canvas.state.currentSymbols).includes(this.props.id)) fill = App.highlightColorAlpha
     if (this.state.highlight) fill = App.highlightColorAlpha
 
     return (
       <Group key={ this.props.id}>
         {/* Text for current value */}
-        { Canvas.state.currentSymbols[this.props.tag] !== undefined &&
+        {/*{ Canvas.state.currentSymbols[this.props.tag] !== undefined &&*/}
+        { Canvas.state.currentSymbols[this.props.id] !== undefined &&
           <Text
-            text={ Canvas.state.currentSymbols[this.props.tag] }
+            text={ Canvas.state.currentSymbols[this.props.id] }
             x={ this.props.center.x }
             y={ this.props.center.y }
             fontSize={ 20 }

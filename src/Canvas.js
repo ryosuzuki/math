@@ -131,6 +131,7 @@ class Canvas extends Component {
   }
 
   convertAscii(tag) {
+    tag = _.last(tag.split('-'))
     let codes = tag.split('-').map((a) => parseInt(a, 16))
     let ascii = codes
       .map((code) => {
