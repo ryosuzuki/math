@@ -18,7 +18,8 @@ class Summation extends Component {
 
   update() {
     if (!this.visible) return
-    const currentSymbols = Canvas.state.currentSymbols
+    let currentSymbols = Canvas.state.currentSymbols
+    currentSymbols = Canvas.extractTag(currentSymbols)
     let base = this.props.latex.split(' ')[1]
     let n = parseInt(currentSymbols['1D45B'])
     if (base === 'i') n = parseInt(currentSymbols['32-30'])

@@ -34,7 +34,8 @@ class Triangle extends Component {
   }
 
   updateFigure() {
-    const currentSymbols = Canvas.state.currentSymbols
+    let currentSymbols = Canvas.state.currentSymbols
+    currentSymbols = Canvas.extractTag(currentSymbols)
     const a = currentSymbols['1D44E'] * 100
     const b = currentSymbols['1D44F'] * 100
     const c = currentSymbols['1D450'] * 100

@@ -130,6 +130,16 @@ class Canvas extends Component {
     }
   }
 
+  extractTag(currentSymbols) {
+    for (let key of Object.keys(currentSymbols)) {
+      const value = currentSymbols[key]
+      key = _.last(key.split('-'))
+      if (key.includes('30')) key = '32-30'
+      currentSymbols[key] = value
+    }
+    return currentSymbols
+  }
+
   convertAscii(tag) {
     tag = _.last(tag.split('-'))
     let codes = tag.split('-').map((a) => parseInt(a, 16))
