@@ -27,9 +27,12 @@ class Triangle extends Component {
     const b = Math.sqrt((this.state.ab.x - this.state.cb.x)**2 + (this.state.ab.y - this.state.cb.y) ** 2)
     const c = Math.sqrt((this.state.cb.x - this.state.ac.x)**2 + (this.state.cb.y - this.state.ac.y)**2)
     const currentSymbols = Canvas.state.currentSymbols
-    currentSymbols['1D44E'] = Math.floor(a) / 100
-    currentSymbols['1D44F'] = Math.floor(b) / 100
-    currentSymbols['1D450'] = Math.floor(c) / 100
+    // currentSymbols['1D44E'] = Math.floor(a) / 100
+    // currentSymbols['1D44F'] = Math.floor(b) / 100
+    // currentSymbols['1D450'] = Math.floor(c) / 100
+    currentSymbols['12-math-msup-mi-1D44E'] = Math.floor(a) / 100
+    currentSymbols['12-math-msup-mi-1D44F'] = Math.floor(b) / 100
+    currentSymbols['12-math-msup-mi-1D450'] = Math.floor(c) / 100
     Canvas.setState({ currentSymbols: currentSymbols })
   }
 
