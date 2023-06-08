@@ -55,6 +55,8 @@ node lib/google-ocr.js
 
 ## Preparation Pipeline
 
+You can test and convert your textbook data for free with the following:
+
 - Step 1. Get a sample PDF page (e.g., `/public/sample/sample-01.pdf`)
 - Step 2. Convert PDF to JPG with [Ezgif](https://ezgif.com/pdf-to-jpg) and save it (e.g., `/public/sample/sample-01.jpg`)
 - Step 3. Perform OCR with [Google Cloud Vision API](https://cloud.google.com/vision/docs/drag-and-drop) and save response as a JSON file (e.g., `/public/sample/ocr-01.json`)
@@ -63,6 +65,7 @@ node lib/google-ocr.js
 - Step 6. Get figure contour with `$ python lib/figure-extract.py`
 - Step 7. Get figure line trace with `$ node lib/figure-extract.js`
 
+if you are willing to pay for the API usage, please use `lib/google-ocr.js` and `lib/mathpix.js`
 
 ## TexToSVG MathML
 
