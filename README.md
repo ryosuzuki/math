@@ -46,6 +46,13 @@ pip install cnstd cnocr
 cnstd analyze -m mfd -i sample-1.jpg -o output-1.jpg
 ```
 
+## For Google OCR
+Get key.json
+```
+node lib/google-ocr.js
+```
+
+
 ## Preparation Pipeline
 
 - Step 1. Get a sample PDF page (e.g., `/public/sample/sample-01.pdf`)
