@@ -15,6 +15,7 @@ class Equations extends Component {
       equations: [],
     }
     window.mathsteps = mathsteps
+
   }
 
   componentDidMount() {
@@ -36,11 +37,21 @@ class Equations extends Component {
 
   async init() {
     const threshold = App.threshold
-    const url = `${App.domain}/public/sample/math-${App.fileId}.json`
+    let url = `${App.domain}/public/sample/math-${App.fileId}.json`
+    if (App.testId) {
+      url = `${App.domain}/public/test/test/test-${App.testId}/math-${App.testId}-${App.fileId}.json`
+    }
+
     let equations = await this.fetchData(url)
     window.mathocr = equations
 
-    const url2 = `${App.domain}/public/sample/mathpix-${App.fileId}.md`
+    let url2 = `${App.domain}/public/sample/mathpix-${App.fileId}.md`
+
+    if (App.testId) {
+      url = `${App.domain}/public/test/test/test-${App.testId}/mathpix-${App.testId}-${App.fileId}.json`
+    }
+
+
     let mathpix = await this.fetchData(url2)
     window.mathpix = mathpix
 

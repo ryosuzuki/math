@@ -12,16 +12,19 @@ class Figures extends Component {
   constructor(props) {
     super(props)
     window.Figures = this
+
+    const isVisible = true
+
     this.state = {
       highlightId: -1,
       figures: [],
       extractedLines: [],
-      xGraphVisible: false,
-      yGraphVisible: false,
+      xGraphVisible: isVisible,
+      yGraphVisible: isVisible,
     }
 
-    this.axisVisible = false
-    this.debugVisible = false
+    this.axisVisible = isVisible
+    this.debugVisible = isVisible
   }
 
   componentDidMount() {
@@ -39,7 +42,12 @@ class Figures extends Component {
   }
 
   async processLine() {
-    const url = `${App.domain}/public/sample/figure-line-${App.fileId}.svg`
+    let url = `${App.domain}/public/sample/figure-line-${App.fileId}.svg`
+
+    if (App.testId) {
+      url = `${App.domain}/public/test/test/test-${App.testId}/figure-line-${App.testId}-${App.fileId}.svg`
+    }
+
     let svgText = await this.fetchData(url)
     let svgJson = svgson.parseSync(svgText)
     let extractedLines = svgJson.children
@@ -58,7 +66,12 @@ class Figures extends Component {
   }
 
   async processContour() {
-    const url = `${App.domain}/public/sample/figure-contour-${App.fileId}.svg`
+    let url = `${App.domain}/public/sample/figure-contour-${App.fileId}.svg`
+
+    if (App.testId) {
+      url = `${App.domain}/public/test/test/test-${App.testId}/figure-contour-${App.testId}-${App.fileId}.svg`
+    }
+
     let svgText = await this.fetchData(url)
     let svgJson = svgson.parseSync(svgText)
     let contours = svgJson.children

@@ -22,6 +22,13 @@ class App extends Component {
     if (this.sampleId === 10) this.threshold = 0.2
     this.domain = 'https://raw.githubusercontent.com/ryosuzuki/math/main'
 
+    this.dir = 'sample'
+
+    const test = true
+    if (test) {
+      this.testId = 14
+    }
+
     if (window.location.href.includes('localhost')) {
       this.domain = 'http://localhost:4000'
     }
@@ -186,6 +193,12 @@ class App extends Component {
   }
 
   render() {
+    this.imageURL = `${this.domain}/public/sample/sample-${this.fileId}.jpg`
+
+    if (this.testId) {
+      this.imageURL = `${this.domain}/public/test/test/test-${this.testId}/test-${this.testId}-${this.fileId}.jpg`
+    }
+
     return (
       <>
         <div id='buttons'>
@@ -206,7 +219,7 @@ class App extends Component {
         <Canvas ref={this.canvasRef} />
         <img
           id='paper'
-          src={`${this.domain}/public/sample/sample-${this.fileId}.jpg`}
+          src={ this.imageURL }
           crossOrigin='anonymous'
           style={{ display: 'none' }}
         />

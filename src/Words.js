@@ -14,7 +14,11 @@ class Words extends Component {
   }
 
   componentDidMount() {
-    const url = `${App.domain}/public/sample/ocr-${App.fileId}.json`
+    let url = `${App.domain}/public/sample/ocr-${App.fileId}.json`
+
+    if (App.testId) {
+      url = `${App.domain}/public/test/test/test-${App.testId}/ocr-${App.testId}-${App.fileId}.json`
+    }
     this.fetchData(url)
   }
 
@@ -22,7 +26,12 @@ class Words extends Component {
     try {
       const response = await fetch(url)
       const jsonData = await response.json()
-      const ocr = jsonData
+      let ocr = jsonData
+      if (App.testId) {
+        ocr = { textAnnotations: ocr }
+      }
+
+      console.log(ocr)
       window.ocr = ocr
       const rawtext = ocr.textAnnotations[0].description
       const text = rawtext.replace(/(\r\n|\n|\r)/gm, " ")
