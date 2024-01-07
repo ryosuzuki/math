@@ -51,11 +51,11 @@ class Equations extends Component {
     let url2 = `${App.domain}/public/sample/mathpix-${App.fileId}.md`
 
     if (App.testId) {
-      url = `${App.domain}/public/test/test/test-${App.testId}/mathpix-${App.testId}-${App.fileId}.json`
+      url2 = `${App.domain}/public/test/test/test-${App.testId}/mathpix-${App.testId}-${App.fileId}.md`
     }
 
     // TEMP FIX 2024-01-07
-    url = `https://worried-pickled-jam.glitch.me/mathpix-${App.fileId}.md`
+    url2 = `https://worried-pickled-jam.glitch.me/mathpix-${App.fileId}.md`
 
     let mathpix = await this.fetchData(url2)
     window.mathpix = mathpix

@@ -13,7 +13,10 @@ class Figures extends Component {
     super(props)
     window.Figures = this
 
-    const isVisible = true
+    let isVisible = false
+    if (App.test) {
+      isVisible = true
+    }
 
     this.state = {
       highlightId: -1,

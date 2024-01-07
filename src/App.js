@@ -27,8 +27,8 @@ class App extends Component {
 
     this.dir = 'sample'
 
-    const test = false
-    if (test) {
+    this.test = false
+    if (this.test) {
       this.testId = 14
     }
 
