@@ -8,6 +8,9 @@ class App extends Component {
     window.app = this
     window.App = this
 
+    // TEMP FIX 2024-01-07
+    this.fix = true
+
     const num = 10
     this.sampleIds = Array.from({length: num}, (_, i) => i+1)
     this.sampleId = parseInt(window.location.href.split('?id=')[1])
@@ -24,7 +27,7 @@ class App extends Component {
 
     this.dir = 'sample'
 
-    const test = true
+    const test = false
     if (test) {
       this.testId = 14
     }
@@ -194,6 +197,9 @@ class App extends Component {
 
   render() {
     this.imageURL = `${this.domain}/public/sample/sample-${this.fileId}.jpg`
+
+    // TEMP FIX 2024-01-07
+    this.imageURL = `https://cdn.glitch.global/a4b31ac2-a374-491d-9e88-74315ec15e53/sample-${this.fileId}.jpg?v=1704663901352`
 
     if (this.testId) {
       this.imageURL = `${this.domain}/public/test/test/test-${this.testId}/test-${this.testId}-${this.fileId}.jpg`

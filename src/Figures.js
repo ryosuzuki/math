@@ -48,6 +48,9 @@ class Figures extends Component {
       url = `${App.domain}/public/test/test/test-${App.testId}/figure-line-${App.testId}-${App.fileId}.svg`
     }
 
+    // TEMP FIX 2024-01-07
+    url = `https://cdn.glitch.global/a4b31ac2-a374-491d-9e88-74315ec15e53/figure-line-${App.fileId}.svg?v=1704663838411`
+
     let svgText = await this.fetchData(url)
     let svgJson = svgson.parseSync(svgText)
     let extractedLines = svgJson.children
@@ -71,6 +74,9 @@ class Figures extends Component {
     if (App.testId) {
       url = `${App.domain}/public/test/test/test-${App.testId}/figure-contour-${App.testId}-${App.fileId}.svg`
     }
+
+    // TEMP FIX 2024-01-07
+    url = `https://cdn.glitch.global/a4b31ac2-a374-491d-9e88-74315ec15e53/figure-contour-${App.fileId}.svg?v=1704663838411`
 
     let svgText = await this.fetchData(url)
     let svgJson = svgson.parseSync(svgText)

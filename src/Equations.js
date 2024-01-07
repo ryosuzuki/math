@@ -42,6 +42,9 @@ class Equations extends Component {
       url = `${App.domain}/public/test/test/test-${App.testId}/math-${App.testId}-${App.fileId}.json`
     }
 
+    // TEMP FIX 2024-01-07
+    url = `https://worried-pickled-jam.glitch.me/math-${App.fileId}.json`
+
     let equations = await this.fetchData(url)
     window.mathocr = equations
 
@@ -51,6 +54,8 @@ class Equations extends Component {
       url = `${App.domain}/public/test/test/test-${App.testId}/mathpix-${App.testId}-${App.fileId}.json`
     }
 
+    // TEMP FIX 2024-01-07
+    url = `https://worried-pickled-jam.glitch.me/mathpix-${App.fileId}.md`
 
     let mathpix = await this.fetchData(url2)
     window.mathpix = mathpix

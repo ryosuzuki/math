@@ -19,6 +19,10 @@ class Words extends Component {
     if (App.testId) {
       url = `${App.domain}/public/test/test/test-${App.testId}/ocr-${App.testId}-${App.fileId}.json`
     }
+
+    // TEMP FIX 2024-01-07
+    url = `https://worried-pickled-jam.glitch.me/ocr-${App.fileId}.json`
+
     this.fetchData(url)
   }
 
