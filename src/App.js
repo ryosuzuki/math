@@ -29,7 +29,12 @@ class App extends Component {
 
     this.test = false
     if (this.test) {
-      this.testId = 14
+      this.testId = 1
+    }
+    if (window.location.href.includes('test')) {
+      this.test = true
+    } else {
+      this.test = false
     }
 
     if (window.location.href.includes('localhost')) {
